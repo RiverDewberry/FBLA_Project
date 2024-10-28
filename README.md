@@ -6,12 +6,12 @@ This repo is structured such that if it was cloned, the directory could be run i
 ### directories
 note: this structure will likely be changed
 
-html - stores all .html files besides index.html
-js - all javascript files
+html - all .html files besides index.html
+js - all .js files
 wasm - all .wasm files
-css - all css files
-
+css - all .css files
 note: src stores the various files which are compiled to wasm
 src - has the folowing directories
   wat - all .wat files
+  c -all .c files
   more will probably be added
