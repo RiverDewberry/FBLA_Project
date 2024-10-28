@@ -6,27 +6,27 @@ This repo is structured such that if it was cloned, the directory could be run i
 ## directories
 note: this structure will likely be changed
 
-### html - all .html files besides index.html
+html - all .html files besides index.html
 
-  game.html - main game page
+    game.html - main game page
 
-  settings.html - a page to edit game settings
+    settings.html - a page to edit game settings
 
-### js - all .js files
+js - all .js files
 
-  main.js - has the main function in it
+    main.js - has the main function in it
 
-### wasm - all .wasm files
+wasm - all .wasm files
 
-  no files yet
+    no files yet
 
-### css - all .css files
+css - all .css files
 
-  styles.css - main css page
+    styles.css - main css page
 
 note: src stores the various files which are compiled to wasm
 
-### src - has the folowing directories:
+src - has the folowing directories:
 
   wat - all .wat files
 
