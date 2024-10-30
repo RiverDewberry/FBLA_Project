@@ -43,8 +43,8 @@ class Factory {//the factory class
     set workers(workers){
         this.#factoryDataVeiw.setInt16(16, workers, true);
     }
-    set happiness(happiness){
-        this.#factoryDataVeiw.setInt16(18, happiness, true);
+    set maxWorkers(maxWorkers){
+        this.#factoryDataVeiw.setInt16(18, maxWorkers, true);
     }
 
     //these functions let you get values from the binary array
@@ -63,7 +63,7 @@ class Factory {//the factory class
     get workers(){
         this.#factoryDataVeiw.setInt16(16, true);
     }
-    get happiness(){
+    get maxWorkers(){
         this.#factoryDataVeiw.setInt16(18, true);
     }
 }
