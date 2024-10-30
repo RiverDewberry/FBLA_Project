@@ -15,6 +15,7 @@ html - all .html files besides index.html
 js - all .js files
 
     main.js - has the main function in it
+    factory.js - has the factory class
 
 wasm - all .wasm files
 
@@ -26,7 +27,7 @@ css - all .css files
 
 note: src stores the various files which are compiled to wasm
 
-src - has the folowing directories:
+wasmSource - has the folowing directories:
 
   wat - all .wat files
 
