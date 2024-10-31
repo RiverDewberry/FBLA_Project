@@ -1,5 +1,5 @@
-//This file has the factory class, the array that stores factories, and functions to alter that 
-//array
+//This file has the factory class, the array that stores factories, and functions related 
+//to factories such as getTotalProfit
 
 const factories = [];//this is the array that stores factories
 
@@ -20,6 +20,33 @@ class Factory {//the factory class
     
     #factoryDataVeiw;
     //this allows for the raw data to be interpreted as many different types
+
+    static add(production, cost, saftey, happiness, workers, maxWorkers){
+        //this static method adds a factory to the array of factories and returns its index
+        return factories.push(new Factory(
+            production, 
+            cost, 
+            saftey, 
+            happiness, 
+            workers, 
+            maxWorkers
+        ));
+    }
+
+    static remove(index){
+        //this static method remove the factory at a given index in factories
+        factories.splice(index, 1);
+    }
+
+    static get totalNetProduction(){
+        //this method gets the net production across all factories in factories
+
+        let acc;//accumulator
+        for(let i = factories.length - 1; i > -1; i--){
+            acc += factories[i].production - factories[i].cost;
+        }
+        return acc;
+    }
 
     constructor(production, cost, saftey, happiness, workers, maxWorkers)
     {
