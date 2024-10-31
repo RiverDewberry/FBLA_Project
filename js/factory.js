@@ -25,6 +25,14 @@ class Factory {//the factory class
     {
         this.#factoryDataBytes = new ArrayBuffer(20);//makes the arrayBuffer
         this.#factoryDataVeiw = new DataView(this.#factoryDataBytes);//makes the data veiw
+
+        //the following 6 lines set starting values
+        this.#factoryDataVeiw.setInt32(0, production, true);
+        this.#factoryDataVeiw.setInt32(4, cost, true);
+        this.#factoryDataVeiw.setFloat32(8, saftey, true);
+        this.#factoryDataVeiw.setFloat32(12, happiness, true);
+        this.#factoryDataVeiw.setInt16(16, workers, true);
+        this.#factoryDataVeiw.setInt16(18, maxWorkers, true);
     }
 
     //these functions let you set values to the binary array
@@ -49,21 +57,21 @@ class Factory {//the factory class
 
     //these functions let you get values from the binary array
     get production(){
-        this.#factoryDataVeiw.getInt32(0, true);
+        return this.#factoryDataVeiw.getInt32(0, true);
     }
     get cost(){
-        this.#factoryDataVeiw.getInt32(4, true);
+        return this.#factoryDataVeiw.getInt32(4, true);
     }
     get saftey(){
-        this.#factoryDataVeiw.setFloat32(8, true);
+        return this.#factoryDataVeiw.getFloat32(8, true);
     }
     get happiness(){
-        this.#factoryDataVeiw.setFloat32(12, true);
+        return this.#factoryDataVeiw.getFloat32(12, true);
     }
     get workers(){
-        this.#factoryDataVeiw.setInt16(16, true);
+        return this.#factoryDataVeiw.getInt16(16, true);
     }
     get maxWorkers(){
-        this.#factoryDataVeiw.setInt16(18, true);
+        return this.#factoryDataVeiw.getInt16(18, true);
     }
 }
