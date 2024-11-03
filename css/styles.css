@@ -1,0 +1,8 @@
+:root{
+    --MainColor: #000000;
+    --Secondary: #b60000;
+    --Tertiary:  #0047cc;
+}
+.GameHolder{
+    background-color: var(--MainColor);
+}
