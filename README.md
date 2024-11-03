@@ -14,8 +14,9 @@ html - all .html files besides index.html
 
 js - all .js files
 
-    main.js - has the main function in it
-    factory.js - has the factory class
+    main.js - this file acts as a main function
+    factory.js - has the factories object in it
+    compositeArray.js - has the compositeArray class
 
 wasm - all .wasm files
 
