@@ -1,104 +1,107 @@
-//This file has the factory class, the array that stores factories, and functions related 
-//to factories such as getTotalProfit
+import { CompositeArray } from "./compositeArray";
+export const factories = {
+    //the factories object is mostly just a collection of wrappers to interact with the
+    //composite array in a more usable and readable format
 
-const factories = [];//this is the array that stores factories
+    factoryArray: new CompositeArray(//makes the class that stores the factory data
+        [//this specifies types in each factory
+            CompositeArray.uint32,//production
+            CompositeArray.uint32,//cost
+            CompositeArray.float32,//safety
+            CompositeArray.float32,//happiness
+            CompositeArray.uint16,//workers
+            CompositeArray.uint16,//minWorkers
+            CompositeArray.uint16,//maxworkers
+            CompositeArray.uint8,//hourlyPay
+            CompositeArray.uint8,//hoursWorked
+            CompositeArray.float32//workerUnrest
+        ],
+        64//the max amount of factories
+    ),
 
-class Factory {//the factory class
+    //getters and setters for each value
+    setProduction: function (index, val) {
+        this.factoryArray.setVal(index, 0, val);
+    },//sets production at a specified index
+    setCost: function (index, val) {
+        this.factoryArray.setVal(index, 1, val);
+    },//sets cost at a specified index
+    setSafety: function (index, val) {
+        this.factoryArray.setVal(index, 2, val);
+    },//sets safety at a specified index
+    setHappiness: function (index, val) {
+        this.factoryArray.setVal(index, 3, val);
+    },//sets happiness at a specified index
+    setWorkers: function (index, val) {
+        this.factoryArray.setVal(index, 4, val);
+    },//sets workers at a specified index
+    setMinWorkers: function (index, val) {
+        this.factoryArray.setVal(index, 5, val);
+    },//sets minWorkers at a specified index
+    setMaxWorkers: function (index, val) {
+        this.factoryArray.setVal(index, 6, val);
+    },//sets maxWorkers at a specified index
+    setHourlyPay: function (index, val) {
+        this.factoryArray.setVal(index, 7, val);
+    },//sets hourlyPay at a specified index
+    setHoursWorked: function (index, val) {
+        this.factoryArray.setVal(index, 8, val);
+    },//sets hoursWorked at a specified index
+    setWorkerUnrest: function (index, val) {
+        this.factoryArray.setVal(index, 9, val);
+    },//sets workerUnrest at a specified index
+    getProduction: function (index) {
+        return this.factoryArray.getVal(index, 0);
+    },//gets production at a specified index
+    getCost: function (index) {
+        return this.factoryArray.getVal(index, 1);
+    },//gets cost at a specified index
+    getSafety: function (index) {
+        return this.factoryArray.getVal(index, 2);
+    },//gets saftey at a specified index
+    getHappiness: function (index) {
+        return this.factoryArray.getVal(index, 3);
+    },//gets happiness at a specified index
+    getWorkers: function (index) {
+        return this.factoryArray.getVal(index, 4);
+    },//gets workers at a specified index
+    getMinWorkers: function (index) {
+        return this.factoryArray.getVal(index, 5);
+    },//gets minWorkers at a specified index
+    getMaxWorkers: function (index) {
+        return this.factoryArray.getVal(index, 6);
+    },//gets maxWorkers at a specified index
+    getHourlyPay: function (index) {
+        return this.factoryArray.getVal(index, 7);
+    },//gets hourlyPay at a specified index
+    getHoursWorked: function (index) {
+        return this.factoryArray.getVal(index, 8);
+    },//gets hoursWorked at a specified index
+    getWorkerUnrest: function (index) {
+        return this.factoryArray.getVal(index, 9);
+    },//gets workerUnrest at a specified index
 
-    //the actual factory data is stored as a typed array, and getters and setters are used to make
-    //the data easily accessable
+    makeFactory: function (//allows for the creation of a factory
+        production, cost, safety, happiness, workers,
+        minWorkers, maxWorkers, hourlyPay, hoursWorked, workerUnrest 
+    ) {
+        return this.factoryArray.addInstance(
+            [
+                production, cost, safety, happiness, workers,
+                minWorkers, maxWorkers, hourlyPay, hoursWorked, workerUnrest 
+            ]
+        );//this value is returned so it can be checked if it succeeds when called
+    },
 
-    #factoryDataBytes;
-    //this buffer stores factory data in the following format:
-    //
-    //bytes 0 - 3: the production amount of the factory before modifiers are applied (production)
-    //bytes 4 - 7: the cost of maintaining the factory (cost)
-    //bytes 8 - 11: the chance a worker will get injured on any given day (saftey)
-    //bytes 12 - 15: the happiness of workers measures as a value from 0 to 1 (happiness)
-    //bytes 16 - 17: amount of workers in the factory (workers)
-    //bytes 18 - 19: max workers that can be in the factory (maxWorkers)
-    
-    #factoryDataVeiw;
-    //this allows for the raw data to be interpreted as many different types
+    removeFactory: function (index) {//removes factories
+        this.factoryArray.removeInstance(index);
+    },
 
-    static add(production, cost, saftey, happiness, workers, maxWorkers){
-        //this static method adds a factory to the array of factories and returns its index
-        return factories.push(new Factory(
-            production, 
-            cost, 
-            saftey, 
-            happiness, 
-            workers, 
-            maxWorkers
-        ));
-    }
+    get length () {
+        return this.factoryArray.usedLength;
+    },//this is setup such that factories.length returns the amount of factories created
 
-    static remove(index){
-        //this static method remove the factory at a given index in factories
-        factories.splice(index, 1);
-    }
-
-    static get totalNetProduction(){
-        //this method gets the net production across all factories in factories
-
-        let acc;//accumulator
-        for(let i = factories.length - 1; i > -1; i--){
-            acc += factories[i].production - factories[i].cost;
-        }
-        return acc;
-    }
-
-    constructor(production, cost, saftey, happiness, workers, maxWorkers)
-    {
-        this.#factoryDataBytes = new ArrayBuffer(20);//makes the arrayBuffer
-        this.#factoryDataVeiw = new DataView(this.#factoryDataBytes);//makes the data veiw
-
-        //the following 6 lines set starting values
-        this.#factoryDataVeiw.setInt32(0, production, true);
-        this.#factoryDataVeiw.setInt32(4, cost, true);
-        this.#factoryDataVeiw.setFloat32(8, saftey, true);
-        this.#factoryDataVeiw.setFloat32(12, happiness, true);
-        this.#factoryDataVeiw.setInt16(16, workers, true);
-        this.#factoryDataVeiw.setInt16(18, maxWorkers, true);
-    }
-
-    //these functions let you set values to the binary array
-    set production(production){
-        this.#factoryDataVeiw.setInt32(0, production, true);
-    }
-    set cost(cost){
-        this.#factoryDataVeiw.setInt32(4, cost, true);
-    }
-    set saftey(saftey){
-        this.#factoryDataVeiw.setFloat32(8, saftey, true);
-    }
-    set happiness(happiness){
-        this.#factoryDataVeiw.setFloat32(12, happiness, true);
-    }
-    set workers(workers){
-        this.#factoryDataVeiw.setInt16(16, workers, true);
-    }
-    set maxWorkers(maxWorkers){
-        this.#factoryDataVeiw.setInt16(18, maxWorkers, true);
-    }
-
-    //these functions let you get values from the binary array
-    get production(){
-        return this.#factoryDataVeiw.getInt32(0, true);
-    }
-    get cost(){
-        return this.#factoryDataVeiw.getInt32(4, true);
-    }
-    get saftey(){
-        return this.#factoryDataVeiw.getFloat32(8, true);
-    }
-    get happiness(){
-        return this.#factoryDataVeiw.getFloat32(12, true);
-    }
-    get workers(){
-        return this.#factoryDataVeiw.getInt16(16, true);
-    }
-    get maxWorkers(){
-        return this.#factoryDataVeiw.getInt16(18, true);
+    get maxLength () {
+        return this.factoryArray.arrayLength;
     }
 }
