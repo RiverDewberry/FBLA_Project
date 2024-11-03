@@ -19,6 +19,7 @@ export const factories = {
         64//the max amount of factories
     ),
     
+    //dar code
     SetPrestFactoryValues: function (index,Type){ //should zero out data before hand
        switch (Type) {
         case 0:
@@ -69,7 +70,7 @@ export const factories = {
     ValTypeToStringName:function(val){
         switch (val) {
             default:
-                return "YOU FUCKED UP"
+                return "YOU messed UP"
             break;
             case 0: return "Production"; 
             case 1: return "Cost"; 
@@ -84,6 +85,7 @@ export const factories = {
              
         }
     },
+    //Dar code
     //getters and setters for each value
     setProduction: function (index, val) {
         this.factoryArray.setVal(index, 0, val);
