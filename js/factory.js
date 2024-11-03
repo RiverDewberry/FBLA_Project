@@ -2,7 +2,7 @@ import { CompositeArray } from "./compositeArray";
 export const factories = {
     //the factories object is mostly just a collection of wrappers to interact with the
     //composite array in a more usable and readable format
-
+    
     factoryArray: new CompositeArray(//makes the class that stores the factory data
         [//this specifies types in each factory
             CompositeArray.uint32,//production
@@ -18,7 +18,72 @@ export const factories = {
         ],
         64//the max amount of factories
     ),
-
+    
+    SetPrestFactoryValues: function (index,Type){ //should zero out data before hand
+       switch (Type) {
+        case 0:
+            this.setCost(index,0)
+            this.setWorkers(index,0)
+            this.setMinWorkers(index,0)
+            this.setMaxWorkers(index,100000)
+            this.setHourlyPay(index,0)
+            this.setHoursWorked(index,0)
+            this.setWorkerUnrest(index,0)
+            break;
+        case 1: //first factory
+            this.setProduction(index,10)
+            this.setCost(index,0)
+            this.setWorkers(index,1)
+            this.setMinWorkers(index,1)
+            this.setMaxWorkers(index,100000)
+            this.setHourlyPay(index,1)
+            this.setHoursWorked(index,0)
+            this.setWorkerUnrest(index,0)
+        default:
+            break;
+       }
+    },
+    ZeroOutData:function(index){
+        for (let i = 0; i < 9; i++) {
+                this.factoryArray.setVal(index, i,0);  
+        }
+    },
+    CheckErrors:function(){
+        for (let i = 0; i < this.length; i++) {
+            this.CheckErrors(i);//checks erros across whole factory array
+        }
+    },
+    CheckErrors:function(index){
+        for (let i = 0; i < this.ValLength; i++) { 
+            this.CheckErrors(index,i);//check 1 factorys data
+        }
+    },
+    CheckErrors:function(index,SpecVal){ //checks 1 factorys data val
+        if (typeof(this.factoryArray.getVal(index)) === "string") {
+            console.error("Null vall in fac " + index + "At val " + this.ValTypeToStringName(SpecVal));
+        }
+        if (typeof(this.factoryArray.getVal(index)) === "undefined") {
+            console.error("udf vall in fac " + index + "At val " + this.ValTypeToStringName(SpecVal));
+        }
+    },
+    ValTypeToStringName:function(val){
+        switch (val) {
+            default:
+                return "YOU FUCKED UP"
+            break;
+            case 0: return "Production"; 
+            case 1: return "Cost"; 
+            case 2: return "Safety"; 
+            case 3: return "Happiness"; 
+            case 4: return "Workers"; 
+            case 5: return "MinWorkers"; 
+            case 6: return "MaxWorkers"; 
+            case 7: return "HourlyPay"; 
+            case 8: return "HoursWorked"; 
+            case 9: return "WorkerUnrest";  
+             
+        }
+    },
     //getters and setters for each value
     setProduction: function (index, val) {
         this.factoryArray.setVal(index, 0, val);
@@ -50,6 +115,8 @@ export const factories = {
     setWorkerUnrest: function (index, val) {
         this.factoryArray.setVal(index, 9, val);
     },//sets workerUnrest at a specified index
+
+    //Func for geting fac values
     getProduction: function (index) {
         return this.factoryArray.getVal(index, 0);
     },//gets production at a specified index
@@ -100,7 +167,9 @@ export const factories = {
     get length () {
         return this.factoryArray.usedLength;
     },//this is setup such that factories.length returns the amount of factories created
-
+    get ValLength(){
+        return(9);
+    },
     get maxLength () {
         return this.factoryArray.arrayLength;
     }
