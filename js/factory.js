@@ -1,4 +1,4 @@
-import { CompositeArray } from "./compositeArray";
+import { CompositeArray } from "./compositeArray.js";
 export const factories = {
     //the factories object is mostly just a collection of wrappers to interact with the
     //composite array in a more usable and readable format
@@ -20,54 +20,56 @@ export const factories = {
     ),
     
     //dar code
-    SetPrestFactoryValues: function (index,Type){ //should zero out data before hand
-       switch (Type) {
-        case 0:
-            this.setCost(index,0)
-            this.setWorkers(index,0)
-            this.setMinWorkers(index,0)
-            this.setMaxWorkers(index,100000)
-            this.setHourlyPay(index,0)
-            this.setHoursWorked(index,0)
-            this.setWorkerUnrest(index,0)
-            break;
-        case 1: //first factory
-            this.setProduction(index,10)
-            this.setCost(index,0)
-            this.setWorkers(index,1)
-            this.setMinWorkers(index,1)
-            this.setMaxWorkers(index,100000)
-            this.setHourlyPay(index,1)
-            this.setHoursWorked(index,0)
-            this.setWorkerUnrest(index,0)
-        default:
-            break;
-       }
-    },
-    ZeroOutData:function(index){
-        for (let i = 0; i < 9; i++) {
-                this.factoryArray.setVal(index, i,0);  
+    //not anymore :3
+
+    presetFactoryValues: [
+        //an array of preset values for factories, I think this is easier to use than the previous
+        //method of using the getters and setters for each different type of factory
+        [0, 0, 0, 100000, 0, 0, 0],
+        [10, 0, 1, 1, 100000, 1, 0, 0],//first factory
+    ],
+
+    setPresetFactoryValues: function (index, type) { //should zero out data before hand
+        
+        if ((type < 0) || (type >= this.presetFactoryValues.length)) {
+            console.error("type does not exist");
+            return;
+	}//logs an error if the type does not exist
+
+        for (let i = 0; i < this.valLength; i++) {
+            this.factoryArray.setVal(index, i, this.presetFactoryValues[type][i]);
+            //sets data to the preset using the array
         }
     },
-    CheckErrors:function(){
+
+    zeroOutData: function (index) {
+        for (let i = 0; i < this.valLength; i++) {
+            this.factoryArray.setVal(index, i, 0);  
+        }
+    },
+
+    checkErrors: function() {
         for (let i = 0; i < this.length; i++) {
-            this.CheckErrors(i);//checks erros across whole factory array
+            this.checkErrors(i);//checks erros across whole factory array
         }
     },
-    CheckErrors:function(index){
+
+    checkErrors: function (index) {
         for (let i = 0; i < this.ValLength; i++) { 
-            this.CheckErrors(index,i);//check 1 factorys data
+            this.checkErrors(index,i);//check 1 factorys data
         }
     },
-    CheckErrors:function(index,SpecVal){ //checks 1 factorys data val
+
+    checkErrors: function (index, specVal) { //checks 1 factorys data val
         if (typeof(this.factoryArray.getVal(index)) === "string") {
-            console.error("Null vall in fac " + index + "At val " + this.ValTypeToStringName(SpecVal));
+            console.error("Null vall in fac " + index + "At val " + this.valTypeToStringName(specVal));
         }
         if (typeof(this.factoryArray.getVal(index)) === "undefined") {
-            console.error("udf vall in fac " + index + "At val " + this.ValTypeToStringName(SpecVal));
+            console.error("udf vall in fac " + index + "At val " + this.valTypeToStringName(specVal));
         }
     },
-    ValTypeToStringName:function(val){
+
+    valTypeToStringName: function (val) {
         switch (val) {
             default:
                 return "YOU messed UP"
@@ -86,6 +88,7 @@ export const factories = {
         }
     },
     //Dar code
+
     //getters and setters for each value
     setProduction: function (index, val) {
         this.factoryArray.setVal(index, 0, val);
@@ -162,6 +165,15 @@ export const factories = {
         );//this value is returned so it can be checked if it succeeds when called
     },
 
+    makePresetFactory: function (type) {//makes a factory from a preset type 
+        if ((type < 0) || (type >= this.presetFactoryValues.length)) {
+            console.error("type does not exist");
+            return;
+	}//logs an error if the type does not exist
+	
+        this.factoryArray.addInstance(this.presetFactoryValues[type]);//makes the factory
+    },
+
     removeFactory: function (index) {//removes factories
         this.factoryArray.removeInstance(index);
     },
@@ -169,9 +181,11 @@ export const factories = {
     get length () {
         return this.factoryArray.usedLength;
     },//this is setup such that factories.length returns the amount of factories created
-    get ValLength(){
-        return(9);
+    
+    get valLength(){
+        return this.factoryArray.types.length;
     },
+
     get maxLength () {
         return this.factoryArray.arrayLength;
     }
