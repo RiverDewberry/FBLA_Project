@@ -3,13 +3,19 @@
 This is a submision for the "Computer Game & Simulation Programming" event
 ## outline
 This repo is structured such that if it was cloned, the directory could be run in an http-server, as such index.html not being in the html directory is necessary
-## directories
+
+### files
+    
+    index.html - the home page
+    makefile - the makefile
+    mime.types - used to specify mime types
+
+### directories
 note: this structure will likely be changed
 
 html - all .html files besides index.html
 
     game.html - main game page
-
     settings.html - a page to edit game settings
 
 js - all .js files
