@@ -2,7 +2,7 @@ import { CompositeArray } from "./compositeArray.js"
 export const factories = {
     //the factories object is mostly just a collection of wrappers to interact with the
     //composite array in a more usable and readable format
-    
+
     factoryArray: new CompositeArray(//makes the class that stores the factory data
         [//this specifies types in each factory
             CompositeArray.uint32,//production - 0
@@ -18,7 +18,7 @@ export const factories = {
         ],
         64//the max amount of factories
     ),
-    
+
     //dar code
     //not anymore :3
 
@@ -32,11 +32,11 @@ export const factories = {
     ],
 
     setPresetFactoryValues: function (index, type) { //should zero out data before hand
-        
+
         if ((type < 0) || (type >= this.presetFactoryValues.length)) {
             console.error("type does not exist");
             return;
-	}//logs an error if the type does not exist
+        }//logs an error if the type does not exist
 
         for (let i = 0; i < this.valLength; i++) {
             this.factoryArray.setVal(index, i, this.presetFactoryValues[type][i]);
@@ -46,29 +46,29 @@ export const factories = {
 
     zeroOutData: function (index) {
         for (let i = 0; i < this.valLength; i++) {
-            this.factoryArray.setVal(index, i, 0);  
+            this.factoryArray.setVal(index, i, 0);
         }
     },
 
-    checkErrors: function() {
+    checkErrors: function () {
         for (let i = 0; i < this.length; i++) {
             this.checkErrors(i);//checks erros across whole factory array
         }
     },
 
     checkErrors: function (index) {
-        for (let i = 0; i < this.ValLength; i++) { 
-            this.checkErrors(index,i);//check 1 factorys data
+        for (let i = 0; i < this.ValLength; i++) {
+            this.checkErrors(index, i);//check 1 factorys data
         }
     },
 
     checkErrors: function (index, specVal) { //checks 1 factorys data val
-        if (typeof(this.factoryArray.getVal(index)) === "string") {
-            console.error("Null vall in fac " + index + "At val " + 
+        if (typeof (this.factoryArray.getVal(index)) === "string") {
+            console.error("Null vall in fac " + index + "At val " +
                 this.valTypeToStringName(specVal));
         }
-        if (typeof(this.factoryArray.getVal(index)) === "undefined") {
-            console.error("udf vall in fac " + index + "At val " + 
+        if (typeof (this.factoryArray.getVal(index)) === "undefined") {
+            console.error("udf vall in fac " + index + "At val " +
                 this.valTypeToStringName(specVal));
         }
     },
@@ -77,18 +77,18 @@ export const factories = {
         switch (val) {
             default:
                 return "YOU messed UP"
-            break;
-            case 0: return "Production"; 
-            case 1: return "Cost"; 
-            case 2: return "Safety"; 
-            case 3: return "Happiness"; 
-            case 4: return "Workers"; 
-            case 5: return "MinWorkers"; 
-            case 6: return "MaxWorkers"; 
-            case 7: return "HourlyPay"; 
-            case 8: return "HoursWorked"; 
-            case 9: return "WorkerUnrest";  
-             
+                break;
+            case 0: return "Production";
+            case 1: return "Cost";
+            case 2: return "Safety";
+            case 3: return "Happiness";
+            case 4: return "Workers";
+            case 5: return "MinWorkers";
+            case 6: return "MaxWorkers";
+            case 7: return "HourlyPay";
+            case 8: return "HoursWorked";
+            case 9: return "WorkerUnrest";
+
         }
     },
     //Dar code
@@ -159,12 +159,12 @@ export const factories = {
 
     makeFactory: function (//allows for the creation of a factory
         production, cost, safety, happiness, workers,
-        minWorkers, maxWorkers, hourlyPay, hoursWorked, workerUnrest 
+        minWorkers, maxWorkers, hourlyPay, hoursWorked, workerUnrest
     ) {
         return this.factoryArray.addInstance(
             [
                 production, cost, safety, happiness, workers,
-                minWorkers, maxWorkers, hourlyPay, hoursWorked, workerUnrest 
+                minWorkers, maxWorkers, hourlyPay, hoursWorked, workerUnrest
             ]
         );//this value is returned so it can be checked if it succeeds when called
     },
@@ -173,8 +173,8 @@ export const factories = {
         if ((type < 0) || (type >= this.presetFactoryValues.length)) {
             console.error("type does not exist");
             return;
-	}//logs an error if the type does not exist
-	
+        }//logs an error if the type does not exist
+
         this.factoryArray.addInstance(this.presetFactoryValues[type]);//makes the factory
     },
 
@@ -182,15 +182,15 @@ export const factories = {
         this.factoryArray.removeInstance(index);
     },
 
-    get length () {
+    get length() {
         return this.factoryArray.usedLength;
     },//this is setup such that factories.length returns the amount of factories created
-    
-    get valLength(){
+
+    get valLength() {
         return this.factoryArray.types.length;
     },
 
-    get maxLength () {
+    get maxLength() {
         return this.factoryArray.arrayLength;
     }
 }
