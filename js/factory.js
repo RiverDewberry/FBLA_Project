@@ -1,3 +1,4 @@
+import { CompositeArray } from "./compositeArray.js"
 export const factories = {
     //the factories object is mostly just a collection of wrappers to interact with the
     //composite array in a more usable and readable format
