@@ -1,20 +1,19 @@
-import { CompositeArray } from "./compositeArray.js";
-export const factories = {
+const factories = {
     //the factories object is mostly just a collection of wrappers to interact with the
     //composite array in a more usable and readable format
     
     factoryArray: new CompositeArray(//makes the class that stores the factory data
         [//this specifies types in each factory
-            CompositeArray.uint32,//production
-            CompositeArray.uint32,//cost
-            CompositeArray.float32,//safety
-            CompositeArray.float32,//happiness
-            CompositeArray.uint16,//workers
-            CompositeArray.uint16,//minWorkers
-            CompositeArray.uint16,//maxworkers
-            CompositeArray.uint8,//hourlyPay
-            CompositeArray.uint8,//hoursWorked
-            CompositeArray.float32//workerUnrest
+            CompositeArray.uint32,//production - 0
+            CompositeArray.uint32,//cost - 1
+            CompositeArray.float32,//safety - 2
+            CompositeArray.float32,//happiness - 3
+            CompositeArray.uint16,//workers - 4
+            CompositeArray.uint16,//minWorkers - 5
+            CompositeArray.uint16,//maxworkers - 6
+            CompositeArray.uint8,//hourlyPay - 7
+            CompositeArray.uint8,//hoursWorked - 8
+            CompositeArray.float32//workerUnrest - 9
         ],
         64//the max amount of factories
     ),
@@ -25,8 +24,10 @@ export const factories = {
     presetFactoryValues: [
         //an array of preset values for factories, I think this is easier to use than the previous
         //method of using the getters and setters for each different type of factory
-        [0, 0, 0, 100000, 0, 0, 0],
-        [10, 0, 1, 1, 100000, 1, 0, 0],//first factory
+
+        //see lines 7 - 16 for what value each index represents
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [100, 10, 1, 1, 2, 1, 3, 10, 1, 0],//first factory
     ],
 
     setPresetFactoryValues: function (index, type) { //should zero out data before hand
@@ -62,10 +63,12 @@ export const factories = {
 
     checkErrors: function (index, specVal) { //checks 1 factorys data val
         if (typeof(this.factoryArray.getVal(index)) === "string") {
-            console.error("Null vall in fac " + index + "At val " + this.valTypeToStringName(specVal));
+            console.error("Null vall in fac " + index + "At val " + 
+                this.valTypeToStringName(specVal));
         }
         if (typeof(this.factoryArray.getVal(index)) === "undefined") {
-            console.error("udf vall in fac " + index + "At val " + this.valTypeToStringName(specVal));
+            console.error("udf vall in fac " + index + "At val " + 
+                this.valTypeToStringName(specVal));
         }
     },
 
