@@ -82,5 +82,7 @@
     height: 10%;
 }
 .GameHolder{
+    margin:0px;
+    padding:0px;
     background-color: var(--MainGameColor);
 }

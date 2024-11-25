@@ -1,5 +1,142 @@
 import { factories } from "./factory.js";
 
+//DISPLAY
+//creating and setting up canvas
+const canvas = document.getElementById("canvas")
+let ctx, captureSize, ratio, centerX, centerY, captureX, captureY, captureW, captureH, captureScale;
+centerX = 256;//the x position of center of the capture
+centerY = 512;//the y position of the center of the capture
+captureSize = 512;//the size in pixels of the width of the captured area
+canvasSetup();
+captureX = 0;
+captureY = 512 - captureH;
+
+//mouse tracking
+let mouseIsDown = false;
+let oldMouseX;
+let oldMouseY;
+let deltaCenterX = 0;
+let deltaCenterY = 0;
+
+//images
+const grass1 = new Image();
+grass1.src = "./sprites/grass1.png";
+grass1.onload = (e) => {
+    drawScreen();
+};
+
+function canvasSetup() {
+    //this creates a new context when each 
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    ctx = canvas.getContext("2d");
+    ctx.imageSmoothingEnabled = false;
+    ctx.fillStyle = "#FF0000";
+
+    //controlls the area of the game that is captured by the onscreen display
+    ratio = window.innerHeight / window.innerWidth;//the aspect ratio (h/w)
+    captureW = Math.round(captureSize);//the width of the capture
+    captureH = Math.round(captureSize * ratio);//the height of the capture
+    captureX = Math.round(256 - captureSize * 0.5) + centerX - 256;
+    //the x position the capture starts at
+    captureY = Math.round(256 - captureSize * 0.5 * ratio) + centerY - 256;
+    //the y position the capture starts at
+    captureScale = canvas.width / captureSize;
+    //the amount values should be scaled to allow the capture to work
+}
+
+function zoom(e) {//zooms the capture area
+    e.preventDefault();
+    captureSize += 4 * Math.sign(e.deltaY);//adjusts the capture size when the player zooms in or out
+
+    if (captureSize < 64) captureSize = 64;//lower bound for capture size
+    if (captureSize > 512) captureSize = 512;//upper bound for capture size
+
+    //resizes capture area
+    captureW = Math.round(captureSize);
+    captureH = Math.round(captureSize * ratio);
+
+    captureScale = canvas.width / captureSize;//calculates scaling
+
+    adjustCaptureArea();//bounds resized area
+
+    drawScreen();
+}
+
+function moveCapture(e) {
+    if (!mouseIsDown) {
+        oldMouseX = Math.round(e.offsetX);
+        oldMouseY = Math.round(e.offsetY);
+        deltaCenterX = 0;
+        deltaCenterY = 0;
+        return;
+    }
+
+    if (oldMouseX === undefined) oldMouseX = e.offsetX;
+    if (oldMouseY === undefined) oldMouseY = e.offsetY;
+
+    centerX -= deltaCenterX;
+    centerY -= deltaCenterY;
+
+    deltaCenterX = -Math.round((e.offsetX - oldMouseX) / captureScale);
+    deltaCenterY = -Math.round((e.offsetY - oldMouseY) / captureScale);
+
+    centerX += deltaCenterX;
+    centerY += deltaCenterY;
+
+    adjustCaptureArea();
+
+    drawScreen();
+}
+
+function adjustCaptureArea() {
+    captureX = Math.round(256 - captureSize * 0.5) + centerX - 256;
+    captureY = Math.round(256 - captureSize * 0.5 * ratio) + centerY - 256;
+
+    if (captureX < 0) captureX = 0;
+    if (captureY < 0) captureY = 0;
+    if (captureX + captureW >= 512) captureX = 512 - captureW;
+    if (captureY + captureH >= 512) captureY = 512 - captureH;
+
+    if ((centerX - (captureW * 0.5)) < 0) centerX = 0 + captureW * 0.5;
+    if ((centerY - (captureH * 0.5)) < 0) centerY = 0 + captureH * 0.5;
+    if ((centerX + (captureW * 0.5)) >= 512) centerX = 512 - captureW * 0.5;
+    if ((centerY + (captureH * 0.5)) >= 512) centerY = 512 - captureH * 0.5;
+}
+
+function drawScreen() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+            drawScaledImg(grass1, 64 * i + 32 * ((7 - j) - i), 16 * (i - (7 - j)) + 336, 64, 64);
+        }
+    }
+}
+
+function drawScaledImg(img, x, y, w, h) {
+    ctx.drawImage(
+        img,
+        (x - captureX) * captureScale,
+        (y - captureY) * captureScale,
+        w * captureScale,
+        h * captureScale
+    );
+}//draws a properly scaled image
+
+//events
+canvas.addEventListener("wheel", zoom);
+canvas.addEventListener("mousemove", moveCapture);
+canvas.addEventListener("mousedown", (e) => { mouseIsDown = true; });
+canvas.addEventListener("mouseup", (e) => { mouseIsDown = false; });
+window.addEventListener("resize", (e) => {
+    canvasSetup();
+    adjustCaptureArea();
+    drawScreen();
+});
+//DISPLAY END
+
+//GAME LOGIC
+
 //stores the game state in the gamestate object
 const gameState = {
     funds: 0,//how much money the player has
@@ -85,3 +222,5 @@ function factoryUnrest(index) {
         (factories.getHourlyPay(index) < 10 ? 0.01 : 0)
     )
 }//calculates the unrest in each factory
+
+//GAME LOGIC END
