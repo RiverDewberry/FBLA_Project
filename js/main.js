@@ -20,7 +20,7 @@ let deltaCenterY = 0;
 
 //images
 const grass1 = new Image();
-grass1.src = "./sprites/grass1.png";
+grass1.src = "../sprites/grass1.png";
 grass1.onload = (e) => {
     drawScreen();
 };
