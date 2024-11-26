@@ -6,6 +6,9 @@
     --DarkModeMain: #212121;
     
 }
+.DarkBack{
+    background-color: var(--DarkModeMain);
+}
 .HomeMain{
     background-color: var(--DarkModeMain);
     width: 100%;
@@ -19,7 +22,8 @@
     width: 100%;
     background-color: var(--DarkModeMain);
     height: auto;
-    margin: 0%;
+    
+    margin-top: 1%;
 
 }
 #ButtonHolder{
