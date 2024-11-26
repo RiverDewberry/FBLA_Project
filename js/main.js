@@ -3,6 +3,8 @@ import { factories } from "./factory.js";
 //DISPLAY
 //creating and setting up canvas
 const canvas = document.getElementById("canvas")
+let displayCtx = canvas.getContext("bitmaprenderer");
+let offscreen;
 let ctx, captureSize, ratio, centerX, centerY, captureX, captureY, captureW, captureH, captureScale;
 centerX = 256;//the x position of center of the capture
 centerY = 512;//the y position of the center of the capture
@@ -29,7 +31,9 @@ function canvasSetup() {
     //this creates a new context when each 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    ctx = canvas.getContext("2d");
+    displayCtx = canvas.getContext("bitmaprenderer");
+    offscreen = new OffscreenCanvas(canvas.width, canvas.height);
+    ctx = offscreen.getContext("2d");
     ctx.imageSmoothingEnabled = false;
     ctx.fillStyle = "#FF0000";
 
@@ -45,9 +49,8 @@ function canvasSetup() {
     //the amount values should be scaled to allow the capture to work
 }
 
-function zoom(e) {//zooms the capture area
-    e.preventDefault();
-    captureSize += 4 * Math.sign(e.deltaY);//adjusts the capture size when the player zooms in or out
+function zoom(deltaY) {//zooms the capture area
+    captureSize += 4 * Math.sign(deltaY);//adjusts the capture size when the player zooms in or out
 
     if (captureSize < 64) captureSize = 64;//lower bound for capture size
     if (captureSize > 512) captureSize = 512;//upper bound for capture size
@@ -63,23 +66,23 @@ function zoom(e) {//zooms the capture area
     drawScreen();
 }
 
-function moveCapture(e) {
+function moveCapture(X, Y) {
     if (!mouseIsDown) {
-        oldMouseX = Math.round(e.offsetX);
-        oldMouseY = Math.round(e.offsetY);
+        oldMouseX = Math.round(X);
+        oldMouseY = Math.round(Y);
         deltaCenterX = 0;
         deltaCenterY = 0;
         return;
     }
 
-    if (oldMouseX === undefined) oldMouseX = e.offsetX;
-    if (oldMouseY === undefined) oldMouseY = e.offsetY;
+    if (oldMouseX === undefined) oldMouseX = X;
+    if (oldMouseY === undefined) oldMouseY = Y;
 
     centerX -= deltaCenterX;
     centerY -= deltaCenterY;
 
-    deltaCenterX = -Math.round((e.offsetX - oldMouseX) / captureScale);
-    deltaCenterY = -Math.round((e.offsetY - oldMouseY) / captureScale);
+    deltaCenterX = -Math.round((X - oldMouseX) / captureScale);
+    deltaCenterY = -Math.round((Y - oldMouseY) / captureScale);
 
     centerX += deltaCenterX;
     centerY += deltaCenterY;
@@ -111,6 +114,7 @@ function drawScreen() {
             drawScaledImg(grass1, 64 * i + 32 * ((7 - j) - i), 16 * (i - (7 - j)) + 336, 64, 64);
         }
     }
+    displayCtx.transferFromImageBitmap(offscreen.transferToImageBitmap());
 }
 
 function drawScaledImg(img, x, y, w, h) {
@@ -124,8 +128,11 @@ function drawScaledImg(img, x, y, w, h) {
 }//draws a properly scaled image
 
 //events
-canvas.addEventListener("wheel", zoom);
-canvas.addEventListener("mousemove", moveCapture);
+canvas.addEventListener("wheel", (e) => {
+	e.preventDefault();
+	zoom(e.deltaY);
+});
+canvas.addEventListener("mousemove", (e) => {moveCapture(e.offsetX, e.offsetY);});
 canvas.addEventListener("mousedown", (e) => { mouseIsDown = true; });
 canvas.addEventListener("mouseup", (e) => { mouseIsDown = false; });
 window.addEventListener("resize", (e) => {
