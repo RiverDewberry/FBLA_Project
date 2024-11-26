@@ -104,6 +104,7 @@ function adjustCaptureArea() {
     if ((centerY + (captureH * 0.5)) >= 512) centerY = 512 - captureH * 0.5;
 }
 
+
 function drawScreen() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (let i = 0; i < 8; i++) {
