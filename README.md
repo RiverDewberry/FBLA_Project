@@ -27,4 +27,4 @@ js - all .js files
 
 StyleSheet - all .css files
     
-    styles.css - the main stylesheetxdg-settings set default-web-browser firefox.desktop
+    styles.css - the main stylesheet
