@@ -15,6 +15,7 @@ let deltaCenterX = 0;
 let deltaCenterY = 0;
 
 let img = {};//stores images
+let imgArr = [];
 
 let factoryMouseOver = -1;//the factory that the mouse is over
 
@@ -58,7 +59,7 @@ function zoom(deltaY) {//zooms the capture area
 
     adjustCaptureArea();//bounds resized area
 
-    factoryMouseOver(oldMouseX, oldMouseY);
+    factoryAt(oldMouseX, oldMouseY);
 
     drawScreen();
 }
@@ -109,8 +110,8 @@ function adjustCaptureArea() {
 
 function factoryAt(x, y) {
     let oldPos = factoryMouseOver;
-    x = Math.round(x * captureW / canvas.width + captureX);
-    y = Math.round(y * captureH / canvas.height + captureY);
+    x = Math.round(x * captureW / cw + captureX);
+    y = Math.round(y * captureH / ch + captureY);
 
     let yOff;
     let xOff;
@@ -141,7 +142,7 @@ function drawScreen() {
             if(factoryMouseOver === (i << 3) + j)
                 drawScaledImg(img.boxBack,
                 64 * i + 32 * ((7 - j) - i), 16 * (i - (7 - j)) + 331, 64, 64);
-            drawScaledImg(img.grass1,
+            drawScaledImg(imgArr[(i << 3) | j],
                 64 * i + 32 * ((7 - j) - i), 16 * (i - (7 - j)) + 331, 64, 64);
             if(factoryMouseOver === (i << 3) + j)
                 drawScaledImg(img.boxFront,
@@ -186,6 +187,10 @@ onmessage = (e) => {
             for (let i = 0; i < e.data[3]; i++) {
                 img["" + e.data[1][i]] = e.data[2][i];
             }
+
+            for(let i = 0; i < 64; i++) {
+                imgArr[i] = img["grass" + (1 + Math.floor(Math.random() * 5))];
+	    }
             break;
         case 6:
             rendering = false;

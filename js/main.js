@@ -8,35 +8,31 @@ const display = new Worker("../js/display.js");
 display.postMessage([0, canvas.width, canvas.height]);
 canvasSetup();
 
-const spriteNum = 3;
 let loadedNum = 0;
 
 //images
-const grass1 = new Image();
-grass1.src = "../sprites/grass1.png";
-grass1.onload = sendSpriteBitmaps;
+const imgs = [];
+const imgbmps = [];
+const srcs = [
+    "grass1", "grass2", "grass3", "grass4", "grass5", "boxFront", "boxBack"
+];
 
-const boxBack = new Image();
-boxBack.src = "../sprites/boxBack.png";
-boxBack.onload = sendSpriteBitmaps;
-
-const boxFront = new Image();
-boxFront.src = "../sprites/boxFront.png";
-boxFront.onload = sendSpriteBitmaps;
+for(let i = 0; i < srcs.length; i++){
+    imgs[i] = new Image();
+    imgs[i].src = "../sprites/" + srcs[i] + ".png";
+    imgs[i].onload = sendSpriteBitmaps;
+}
 
 function sendSpriteBitmaps() {
     loadedNum++;
-    if(spriteNum !== loadedNum)return;
-    Promise.all([
-        createImageBitmap(grass1),
-        createImageBitmap(boxBack),
-        createImageBitmap(boxFront)
-    ]).then((sprites) => {
-        display.postMessage([5, [
-            "grass1",
-            "boxBack",
-            "boxFront"
-        ], sprites, spriteNum]);
+    if(srcs.length !== loadedNum)return;
+
+    for(let i = 0; i < srcs.length; i++){
+        imgbmps[i] = createImageBitmap(imgs[i]);
+    }
+
+    Promise.all(imgbmps).then((sprites) => {
+        display.postMessage([5, srcs, sprites, srcs.length]);
         display.postMessage([1]);
     });
 }
