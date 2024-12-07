@@ -16,6 +16,8 @@ let deltaCenterY = 0;
 
 let img = {};//stores images
 
+let factoryMouseOver = -1;//the factory that the mouse is over
+
 let rendering = false;
 let renderRequest = false;
 
@@ -30,7 +32,7 @@ function canvasSetup(w, h) {
     ctx.fillStyle = "#FF0000";
 
     //controlls the area of the game that is captured by the onscreen display
-    ratio = h/w;//the aspect ratio (h/w)
+    ratio = h / w;//the aspect ratio (h/w)
     captureW = Math.round(captureSize);//the width of the capture
     captureH = Math.round(captureSize * ratio);//the height of the capture
     captureX = Math.round(256 - captureSize * 0.5) + centerX - 256;
@@ -56,6 +58,8 @@ function zoom(deltaY) {//zooms the capture area
 
     adjustCaptureArea();//bounds resized area
 
+    factoryMouseOver(oldMouseX, oldMouseY);
+
     drawScreen();
 }
 
@@ -71,8 +75,8 @@ function moveCapture(X, Y) {
     if (oldMouseX === undefined) oldMouseX = X;
     if (oldMouseY === undefined) oldMouseY = Y;
 
-    if(deltaCenterX === -Math.round((X - oldMouseX) / captureScale) && 
-	    deltaCenterY === -Math.round((Y - oldMouseY) / captureScale))return;
+    if (deltaCenterX === -Math.round((X - oldMouseX) / captureScale) &&
+        deltaCenterY === -Math.round((Y - oldMouseY) / captureScale)) return;
 
     centerX -= deltaCenterX;
     centerY -= deltaCenterY;
@@ -103,10 +107,30 @@ function adjustCaptureArea() {
     if ((centerY + (captureH * 0.5)) >= 512) centerY = 512 - captureH * 0.5;
 }
 
+function factoryAt(x, y) {
+    let oldPos = factoryMouseOver;
+    x = Math.round(x * captureW / canvas.width + captureX);
+    y = Math.round(y * captureH / canvas.height + captureY);
+
+    let yOff;
+    let xOff;
+
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+            yOff = Math.abs(y - (16 * (i - (7 - j)) + 378));
+            xOff = Math.abs(x - (64 * i + 32 * ((7 - j) - i) + 32.5));
+            if (xOff + (yOff << 1) < 30.5) {
+                factoryMouseOver = (i << 3) + j;
+                return;
+            }
+        }
+    }
+    factoryMouseOver = -1;
+};
 
 function drawScreen() {
-    if(!setup)return;
-    if(rendering){ 
+    if (!setup) return;
+    if (rendering) {
         renderRequest = true;
         return;
     }
@@ -114,9 +138,14 @@ function drawScreen() {
     ctx.clearRect(0, 0, cw, ch);
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
-            drawScaledImg(
-                img.grass1, 64 * i + 32 * ((7 - j) - i), 16 * (i - (7 - j)) + 336, 64, 64
-	    );
+            if(factoryMouseOver === (i << 3) + j)
+                drawScaledImg(img.boxBack,
+                64 * i + 32 * ((7 - j) - i), 16 * (i - (7 - j)) + 331, 64, 64);
+            drawScaledImg(img.grass1,
+                64 * i + 32 * ((7 - j) - i), 16 * (i - (7 - j)) + 331, 64, 64);
+            if(factoryMouseOver === (i << 3) + j)
+                drawScaledImg(img.boxFront,
+                64 * i + 32 * ((7 - j) - i), 16 * (i - (7 - j)) + 331, 64, 64);
         }
     }
     let resultBitmap = offscreen.transferToImageBitmap();
@@ -134,33 +163,38 @@ function drawScaledImg(img, x, y, w, h) {
 }//draws a properly scaled image
 
 onmessage = (e) => {
-	switch(e.data[0]) {
-		case 0:
-			canvasSetup(e.data[1], e.data[2]);
-			break;
-		case 1:
-			drawScreen();
-			break;
-		case 2:
-			zoom(e.data[1]);
-			break;
-		case 3:
-			mouseIsDown = e.data[1];
-			break;
-		case 4:
-			moveCapture(e.data[1], e.data[2]);
-			break;
-		case 5:
-			img["" + e.data[1]] = e.data[2];
-			break;
-		case 6:
-			rendering = false;
-			if(renderRequest) {
-				renderRequest = false;
-				drawScreen();
-			}
-			break;
-		default:
-			break;
-	}
+    switch (e.data[0]) {
+        case 0:
+            canvasSetup(e.data[1], e.data[2]);
+            break;
+        case 1:
+            drawScreen();
+            break;
+        case 2:
+            zoom(e.data[1]);
+            break;
+        case 3:
+            mouseIsDown = e.data[1];
+            break;
+        case 4:
+            let oldPos = factoryMouseOver;
+            moveCapture(e.data[1], e.data[2]);
+            factoryAt(e.data[1], e.data[2]);
+            if(oldPos !== factoryMouseOver)drawScreen();
+            break;
+        case 5:
+            for (let i = 0; i < e.data[3]; i++) {
+                img["" + e.data[1][i]] = e.data[2][i];
+            }
+            break;
+        case 6:
+            rendering = false;
+            if (renderRequest) {
+                renderRequest = false;
+                drawScreen();
+            }
+            break;
+        default:
+            break;
+    }
 }

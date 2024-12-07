@@ -8,17 +8,39 @@ const display = new Worker("../js/display.js");
 display.postMessage([0, canvas.width, canvas.height]);
 canvasSetup();
 
+const spriteNum = 3;
+let loadedNum = 0;
+
 //images
 const grass1 = new Image();
 grass1.src = "../sprites/grass1.png";
-grass1.onload = (e) => {
-	Promise.all([
-		createImageBitmap(grass1),
-	]).then((sprites) => {
-    	display.postMessage([5, "grass1", sprites[0]]);
-	display.postMessage([1]);
-  });
-};
+grass1.onload = sendSpriteBitmaps;
+
+const boxBack = new Image();
+boxBack.src = "../sprites/boxBack.png";
+boxBack.onload = sendSpriteBitmaps;
+
+const boxFront = new Image();
+boxFront.src = "../sprites/boxFront.png";
+boxFront.onload = sendSpriteBitmaps;
+
+function sendSpriteBitmaps() {
+    loadedNum++;
+    if(spriteNum !== loadedNum)return;
+    Promise.all([
+        createImageBitmap(grass1),
+        createImageBitmap(boxBack),
+        createImageBitmap(boxFront)
+    ]).then((sprites) => {
+        display.postMessage([5, [
+            "grass1",
+            "boxBack",
+            "boxFront"
+        ], sprites, spriteNum]);
+        display.postMessage([1]);
+    });
+}
+
 display.onmessage = (e) => {
     displayCtx.transferFromImageBitmap(e.data);
     display.postMessage([6]);
@@ -34,17 +56,18 @@ function canvasSetup() {
 
 //events
 canvas.addEventListener("wheel", (e) => {
-	e.preventDefault();
-	display.postMessage([2, e.deltaY]);
+    e.preventDefault();
+    display.postMessage([2, e.deltaY]);
 });
 canvas.addEventListener("mousemove", (e) => {
-	display.postMessage([4, e.offsetX, e.offsetY]);}
+    display.postMessage([4, e.offsetX, e.offsetY]);
+}
 );
-canvas.addEventListener("mousedown", (e) => { 
-	display.postMessage([3, true]);
+canvas.addEventListener("mousedown", (e) => {
+    display.postMessage([3, true]);
 });
-canvas.addEventListener("mouseup", (e) => { 
-	display.postMessage([3, false]);
+canvas.addEventListener("mouseup", (e) => {
+    display.postMessage([3, false]);
 });
 window.addEventListener("resize", (e) => {
     canvasSetup();
