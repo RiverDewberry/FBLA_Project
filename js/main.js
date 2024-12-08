@@ -1,5 +1,23 @@
 import { factories } from "./factory.js";
 
+let captureX, captureY, captureW, captureH;
+function factoryAt(x, y) {
+    x = Math.round(x * captureW / canvas.width + captureX);
+    y = Math.round(y * captureH / canvas.height + captureY);
+
+    let yOff;
+    let xOff;
+
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+            yOff = Math.abs(y - (16 * (i - (7 - j)) + 378));
+            xOff = Math.abs(x - (64 * i + 32 * ((7 - j) - i) + 32.5));
+            if (xOff + (yOff << 1) < 30.5) return (i << 3) + j;
+        }
+    }
+    return -1;
+};
+
 //DISPLAY
 //creating and setting up canvas
 const canvas = document.getElementById("canvas")
@@ -28,7 +46,7 @@ function sendSpriteBitmaps() {
     if(srcs.length !== loadedNum)return;
 
     for(let i = 0; i < srcs.length; i++){
-        imgbmps[i] = createImageBitmap(imgs[i]);
+	    imgbmps[i] = createImageBitmap(imgs[i]);
     }
 
     Promise.all(imgbmps).then((sprites) => {
@@ -38,8 +56,15 @@ function sendSpriteBitmaps() {
 }
 
 display.onmessage = (e) => {
-    displayCtx.transferFromImageBitmap(e.data);
-    display.postMessage([6]);
+    if(e.data.length === undefined){
+        displayCtx.transferFromImageBitmap(e.data);
+        display.postMessage([6]);
+        return;
+    }
+    captureX = e.data[0];
+    captureY = e.data[1];
+    captureW = e.data[2];
+    captureH = e.data[3];
 }
 
 function canvasSetup() {
@@ -51,6 +76,8 @@ function canvasSetup() {
 }
 
 //events
+let mouseDownX = 0;
+let mouseDownY = 0;
 canvas.addEventListener("wheel", (e) => {
     e.preventDefault();
     display.postMessage([2, e.deltaY]);
@@ -61,9 +88,14 @@ canvas.addEventListener("mousemove", (e) => {
 );
 canvas.addEventListener("mousedown", (e) => {
     display.postMessage([3, true]);
+    mouseDownX = e.offsetX;
+    mouseDownY = e.offsetY;
 });
 canvas.addEventListener("mouseup", (e) => {
     display.postMessage([3, false]);
+    if(mouseDownX === e.offsetX && mouseDownY === e.offsetY){
+        console.log(factoryAt(e.offsetX, e.offsetY));
+    }
 });
 window.addEventListener("resize", (e) => {
     canvasSetup();

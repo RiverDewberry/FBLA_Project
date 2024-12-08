@@ -109,7 +109,6 @@ function adjustCaptureArea() {
 }
 
 function factoryAt(x, y) {
-    let oldPos = factoryMouseOver;
     x = Math.round(x * captureW / cw + captureX);
     y = Math.round(y * captureH / ch + captureY);
 
@@ -151,6 +150,7 @@ function drawScreen() {
     }
     let resultBitmap = offscreen.transferToImageBitmap();
     postMessage(resultBitmap, [resultBitmap]);
+    postMessage([captureX, captureY, captureW, captureH]);
 }
 
 function drawScaledImg(img, x, y, w, h) {
@@ -198,6 +198,9 @@ onmessage = (e) => {
                 renderRequest = false;
                 drawScreen();
             }
+            break;
+	case 7:
+            imgArr[e.data[1]] = img["" + e.data[2]];
             break;
         default:
             break;
