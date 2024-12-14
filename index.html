@@ -4,14 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="StyleSheets/styles.css">
+    
     <title>Game</title>
     <h1 class="TitleText">SKIBIDi TOILET FACTORY SIM</h1>
     <h2 class="TitleText">THE GREATIST THING SINCE SLICED BREAD</h2>
 </head>
-<body class="DarkBack">
+<body class="DarkBack" style="background-image: url(sprites/Gif.gif); background-size: 100%;" >
     <script src="js/main.js" type="module"></script>
+    <script>
+        const d = new Date();
+        let Time = d.getTime();
+        let B = document.getElementById("PlayButton");
+        B.style.top =(100* Math.sin(Time)) -100;
+    </script>
     
-    <div  class="HomeMain">
+    <div  class="HomeMain" >
         <div id="ButtonHolder">
             <a href="html/game.html"><button id="PlayButton" class="ButtonStyle">Play</button></a>
             <a href="html/settings.html"><button id="SettingsButton" class="ButtonStyle">Settings</button></a>

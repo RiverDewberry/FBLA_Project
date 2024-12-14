@@ -2,8 +2,9 @@
     --MainGameColor: #000000;
     --SecondaryGameColor: #b60000;
     --TertiaryGameColor:  #0047cc;
+    --transpar: #00000000;
 
-    --DarkModeMain: #212121;
+    --DarkModeMain: #00000000;
     
 }
 .DarkBack{
@@ -15,6 +16,8 @@
     height: 1000px; 
     margin: 0%;
     align-content: center;
+    
+    
 }
 .TitleText{
     text-align: center;
@@ -46,6 +49,7 @@
    border-style: solid;
    border-width: 5px;
    color: #ffffff;
+   background-color: #000000;
   
 }
 .UiBasic{
