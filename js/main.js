@@ -32,7 +32,7 @@ let loadedNum = 0;
 const imgs = [];
 const imgbmps = [];
 const srcs = [
-    "grass1", "grass2", "grass3", "grass4", "grass5", "boxFront", "boxBack"
+    "grass1", "grass2", "grass3", "grass4", "grass5", "boxFront", "boxBack", "factory1"
 ];
 
 for(let i = 0; i < srcs.length; i++){
@@ -94,7 +94,7 @@ canvas.addEventListener("mousedown", (e) => {
 canvas.addEventListener("mouseup", (e) => {
     display.postMessage([3, false]);
     if(mouseDownX === e.offsetX && mouseDownY === e.offsetY){
-        console.log(factoryAt(e.offsetX, e.offsetY));
+        display.postMessage([7, factoryAt(e.offsetX, e.offsetY), "factory1"]);
     }
 });
 window.addEventListener("resize", (e) => {

@@ -118,8 +118,8 @@ function factoryAt(x, y) {
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
             yOff = Math.abs(y - (16 * (i - (7 - j)) + 378));
-            xOff = Math.abs(x - (64 * i + 32 * ((7 - j) - i) + 32.5));
-            if (xOff + (yOff << 1) < 30.5) {
+            xOff = Math.abs(x - (64 * i + 32 * ((7 - j) - i) + 31.5));
+            if (xOff + (yOff << 1) < 31) {
                 factoryMouseOver = (i << 3) + j;
                 return;
             }
@@ -201,6 +201,7 @@ onmessage = (e) => {
             break;
 	case 7:
             imgArr[e.data[1]] = img["" + e.data[2]];
+            drawScreen();
             break;
         default:
             break;
