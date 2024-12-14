@@ -11,19 +11,27 @@
 </head>
 <body class="DarkBack" style="background-image: url(sprites/Gif.gif); background-size: 100%;" >
     <script src="js/main.js" type="module"></script>
-    <script>
-        const d = new Date();
-        let Time = d.getTime();
-        let B = document.getElementById("PlayButton");
-        B.style.top =(100* Math.sin(Time)) -100;
-    </script>
+    
     
     <div  class="HomeMain" >
         <div id="ButtonHolder">
-            <a href="html/game.html"><button id="PlayButton" class="ButtonStyle">Play</button></a>
+            <a href="html/game.html"><button Id="PlayButton" class="ButtonStyle">Play</button></a>
             <a href="html/settings.html"><button id="SettingsButton" class="ButtonStyle">Settings</button></a>
         </div>
 
     </div>
+    
 </body>
+<script>
+    const d = new Date();
+    let Time = d.getTime();
+    let B = document.getElementById("PlayButton"); 
+    B.style.position = "absolute";
+    setInterval(Name,15);
+    function Name() {
+        console.log(Math.sin(new Date().getTime()) * 100);
+        B.style.top = (1 * Math.sin((new Date().getTime())* .005)) + 50 + '%';
+    }
+   
+</script>
 </html>
