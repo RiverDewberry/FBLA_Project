@@ -54,38 +54,48 @@
 }
 .UiBasic{
     position: absolute;
-    background-color: #b6000099;
+    background-color: #b6000044;
     width: 100px;
     height: 100px;
-    border-color: #ffffff;
+    border-color: #ffffff44;
     border-width: 2px;
     border-style: solid ;
+    z-index: 1;
+}
+.ThreeWay{
+    width: 33.333%;
+    height: 100%;
+    text-align:center;
+    
+    color: #ffffff;
 }
 #TopUI{
+    display: flex;
     top: 0px;
     left: 0px;
     width: 100%;
     height: 10%;
     
+    
 }
 #SideBarLeft{
     
     left: 0px;
-    top:0px;
-    width: 7%;
-    height: 69%;
-    margin-top: 5.8%;
+    top:10%;
+    width: 10%;
+    height: 80%;
+    
 }
 #SideBarRight{
-    left: 92.5%;
-    top:0px;
-    width: 7%;
-    height: 69%;
-    margin-top: 5.8%;
+    left: 89.5%;
+    top:10%;
+    width: 10%;
+    height: 80%;
+    margin-top: 0%;
 
 }
 #BottemUI{
-    top:80%;
+    top:90%;
     width: 100%;
     height: 10%;
 }
@@ -94,3 +104,4 @@
     padding:0px;
     background-color: var(--MainGameColor);
 }
+
