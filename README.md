@@ -23,25 +23,8 @@ js - all .js files
     main.js - this file acts as a main function
     factory.js - has the factories object in it
     compositeArray.js - has the compositeArray class
+    display.js - renders the canvas
 
-wasm - all .wasm files
-
-    no files yet
-
-css - all .css files
-
-    styles.css - main css page
-
-note: src stores the various files which are compiled to wasm
-
-wasmSource - has the folowing directories:
-
-  wat - all .wat files
-
-    no files yet
-  
-  c -all .c files
-
-    no files yet
-  
-  more will probably be added
+StyleSheet - all .css files
+    
+    styles.css - the main stylesheet

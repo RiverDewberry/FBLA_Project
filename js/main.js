@@ -1,145 +1,105 @@
 import { factories } from "./factory.js";
 
+let captureX, captureY, captureW, captureH;
+function factoryAt(x, y) {
+    x = Math.round(x * captureW / canvas.width + captureX);
+    y = Math.round(y * captureH / canvas.height + captureY);
+
+    let yOff;
+    let xOff;
+
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+            yOff = Math.abs(y - (16 * (i - (7 - j)) + 378));
+            xOff = Math.abs(x - (64 * i + 32 * ((7 - j) - i) + 32.5));
+            if (xOff + (yOff << 1) < 30.5) return (i << 3) + j;
+        }
+    }
+    return -1;
+};
+
 //DISPLAY
 //creating and setting up canvas
 const canvas = document.getElementById("canvas")
 let displayCtx = canvas.getContext("bitmaprenderer");
-let offscreen;
-let ctx, captureSize, ratio, centerX, centerY, captureX, captureY, captureW, captureH, captureScale;
-centerX = 256;//the x position of center of the capture
-centerY = 512;//the y position of the center of the capture
-captureSize = 512;//the size in pixels of the width of the captured area
+const display = new Worker("../js/display.js");
+display.postMessage([0, canvas.width, canvas.height]);
 canvasSetup();
-captureX = 0;
-captureY = 512 - captureH;
 
-//mouse tracking
-let mouseIsDown = false;
-let oldMouseX;
-let oldMouseY;
-let deltaCenterX = 0;
-let deltaCenterY = 0;
+let loadedNum = 0;
 
 //images
-const grass1 = new Image();
-grass1.src = "../sprites/grass1.png";
-grass1.onload = (e) => {
-    drawScreen();
-};
+const imgs = [];
+const imgbmps = [];
+const srcs = [
+    "grass1", "grass2", "grass3", "grass4", "grass5", "boxFront", "boxBack", "factory1"
+];
+
+for(let i = 0; i < srcs.length; i++){
+    imgs[i] = new Image();
+    imgs[i].src = "../sprites/" + srcs[i] + ".png";
+    imgs[i].onload = sendSpriteBitmaps;
+}
+
+function sendSpriteBitmaps() {
+    loadedNum++;
+    if(srcs.length !== loadedNum)return;
+
+    for(let i = 0; i < srcs.length; i++){
+	    imgbmps[i] = createImageBitmap(imgs[i]);
+    }
+
+    Promise.all(imgbmps).then((sprites) => {
+        display.postMessage([5, srcs, sprites, srcs.length]);
+        display.postMessage([1]);
+    });
+}
+
+display.onmessage = (e) => {
+    if(e.data.length === undefined){
+        displayCtx.transferFromImageBitmap(e.data);
+        display.postMessage([6]);
+        return;
+    }
+    captureX = e.data[0];
+    captureY = e.data[1];
+    captureW = e.data[2];
+    captureH = e.data[3];
+}
 
 function canvasSetup() {
     //this creates a new context when each 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     displayCtx = canvas.getContext("bitmaprenderer");
-    offscreen = new OffscreenCanvas(canvas.width, canvas.height);
-    ctx = offscreen.getContext("2d");
-    ctx.imageSmoothingEnabled = false;
-    ctx.fillStyle = "#FF0000";
-
-    //controlls the area of the game that is captured by the onscreen display
-    ratio = window.innerHeight / window.innerWidth;//the aspect ratio (h/w)
-    captureW = Math.round(captureSize);//the width of the capture
-    captureH = Math.round(captureSize * ratio);//the height of the capture
-    captureX = Math.round(256 - captureSize * 0.5) + centerX - 256;
-    //the x position the capture starts at
-    captureY = Math.round(256 - captureSize * 0.5 * ratio) + centerY - 256;
-    //the y position the capture starts at
-    captureScale = canvas.width / captureSize;
-    //the amount values should be scaled to allow the capture to work
+    display.postMessage([0, canvas.width, canvas.height]);
 }
-
-function zoom(deltaY) {//zooms the capture area
-    captureSize += 4 * Math.sign(deltaY);//adjusts the capture size when the player zooms in or out
-
-    if (captureSize < 64) captureSize = 64;//lower bound for capture size
-    if (captureSize > 512) captureSize = 512;//upper bound for capture size
-
-    //resizes capture area
-    captureW = Math.round(captureSize);
-    captureH = Math.round(captureSize * ratio);
-
-    captureScale = canvas.width / captureSize;//calculates scaling
-
-    adjustCaptureArea();//bounds resized area
-
-    drawScreen();
-}
-
-function moveCapture(X, Y) {
-    if (!mouseIsDown) {
-        oldMouseX = Math.round(X);
-        oldMouseY = Math.round(Y);
-        deltaCenterX = 0;
-        deltaCenterY = 0;
-        return;
-    }
-
-    if (oldMouseX === undefined) oldMouseX = X;
-    if (oldMouseY === undefined) oldMouseY = Y;
-
-    centerX -= deltaCenterX;
-    centerY -= deltaCenterY;
-
-    deltaCenterX = -Math.round((X - oldMouseX) / captureScale);
-    deltaCenterY = -Math.round((Y - oldMouseY) / captureScale);
-
-    centerX += deltaCenterX;
-    centerY += deltaCenterY;
-
-    adjustCaptureArea();
-
-    drawScreen();
-}
-
-function adjustCaptureArea() {
-    captureX = Math.round(256 - captureSize * 0.5) + centerX - 256;
-    captureY = Math.round(256 - captureSize * 0.5 * ratio) + centerY - 256;
-
-    if (captureX < 0) captureX = 0;
-    if (captureY < 0) captureY = 0;
-    if (captureX + captureW >= 512) captureX = 512 - captureW;
-    if (captureY + captureH >= 512) captureY = 512 - captureH;
-
-    if ((centerX - (captureW * 0.5)) < 0) centerX = 0 + captureW * 0.5;
-    if ((centerY - (captureH * 0.5)) < 0) centerY = 0 + captureH * 0.5;
-    if ((centerX + (captureW * 0.5)) >= 512) centerX = 512 - captureW * 0.5;
-    if ((centerY + (captureH * 0.5)) >= 512) centerY = 512 - captureH * 0.5;
-}
-
-
-function drawScreen() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (let i = 0; i < 8; i++) {
-        for (let j = 0; j < 8; j++) {
-            drawScaledImg(grass1, 64 * i + 32 * ((7 - j) - i), 16 * (i - (7 - j)) + 336, 64, 64);
-        }
-    }
-    displayCtx.transferFromImageBitmap(offscreen.transferToImageBitmap());
-}
-
-function drawScaledImg(img, x, y, w, h) {
-    ctx.drawImage(
-        img,
-        (x - captureX) * captureScale,
-        (y - captureY) * captureScale,
-        w * captureScale,
-        h * captureScale
-    );
-}//draws a properly scaled image
 
 //events
+let mouseDownX = 0;
+let mouseDownY = 0;
 canvas.addEventListener("wheel", (e) => {
-	e.preventDefault();
-	zoom(e.deltaY);
+    e.preventDefault();
+    display.postMessage([2, e.deltaY]);
 });
-canvas.addEventListener("mousemove", (e) => {moveCapture(e.offsetX, e.offsetY);});
-canvas.addEventListener("mousedown", (e) => { mouseIsDown = true; });
-canvas.addEventListener("mouseup", (e) => { mouseIsDown = false; });
+canvas.addEventListener("mousemove", (e) => {
+    display.postMessage([4, e.offsetX, e.offsetY]);
+}
+);
+canvas.addEventListener("mousedown", (e) => {
+    display.postMessage([3, true]);
+    mouseDownX = e.offsetX;
+    mouseDownY = e.offsetY;
+});
+canvas.addEventListener("mouseup", (e) => {
+    display.postMessage([3, false]);
+    if(mouseDownX === e.offsetX && mouseDownY === e.offsetY){
+        display.postMessage([7, factoryAt(e.offsetX, e.offsetY), "factory1"]);
+    }
+});
 window.addEventListener("resize", (e) => {
     canvasSetup();
-    adjustCaptureArea();
-    drawScreen();
+    display.postMessage([1]);
 });
 //DISPLAY END
 

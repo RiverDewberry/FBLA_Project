@@ -35,7 +35,7 @@ export class CompositeArray {
     //note: the size of each type (in bytes) can be found by "1 << (typeNumber & 3)" where 
     //typeNumber is the number that indicates the type
 
-    constructor (types, arrayLength) {
+    constructor(types, arrayLength) {
         this.#types = new Uint8Array(types);//assigns this.#types to the provided array of types
         this.#typesOffset = new Uint8Array(types.length);//makes the array for the offset
 
@@ -69,10 +69,10 @@ export class CompositeArray {
         return this.#types;
     }
 
-    addInstance (vals) {//adds an instance of the composite type to the buffer
+    addInstance(vals) {//adds an instance of the composite type to the buffer
         //returns 1 on success, and -1 on failure
 
-        if(this.#usedLength < this.#arrayLength) this.#usedLength++;
+        if (this.#usedLength < this.#arrayLength) this.#usedLength++;
         else return -1;//checks if there is space in this.#bytes,
         //and if there is marks that space as used otherwise, returns -1
 
@@ -83,27 +83,27 @@ export class CompositeArray {
         return 1;//returns 1 on success
     }
 
-    removeInstance (index) {
+    removeInstance(index) {
         if (index >= this.#usedLength || (index < 0)) return;//returns if index is out of bounds
         this.#usedLength--;//decreases this.#usedLength by 1
 
-        for(let i = index * this.#compositeSize; i < this.#usedLength * this.#compositeSize; i++){
-            if(i + this.#compositeSize < this.#bytes.byteLength)
+        for (let i = index * this.#compositeSize; i < this.#usedLength * this.#compositeSize; i++) {
+            if (i + this.#compositeSize < this.#bytes.byteLength)
                 this.#view.setUint8(i, this.#view.getUint8(i + this.#compositeSize));//moves values
         }//removes values at the index, and shifts values over to fill space
     }
 
-    setVal (index, attribute, val) {
+    setVal(index, attribute, val) {
         //sets the value of an attribute in the composite type at a specific index to a vlaue
 
         if (index >= this.#usedLength || (index < 0)) {
             console.error("index does not exist");
             return 0;//returns 0 if index is out of bounds
-	}
+        }
         if (attribute >= this.#types.length) {
             console.error("attribute does not exist");
             return 0;//returns 0 if attribute dosn't exist
-	}
+        }
 
         const offset = this.#typesOffset[attribute] + index * this.#compositeSize;
         //the offset of the attribute in the byte array
@@ -144,17 +144,17 @@ export class CompositeArray {
         }
     }
 
-    getVal (index, attribute) {
+    getVal(index, attribute) {
         //gets the value of an attribute in the composite type at a specific index
 
         if (index >= this.#usedLength || (index < 0)) {
             console.error("index does not exist");
             return 0;//returns 0 if index is out of bounds
-	}
+        }
         if (attribute >= this.#types.length) {
             console.error("attribute does not exist");
             return 0;//returns 0 if attribute dosn't exist
-	}
+        }
 
         const offset = this.#typesOffset[attribute] + index * this.#compositeSize;
         //the offset of the attribute in the byte array
