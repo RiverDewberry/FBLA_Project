@@ -24,13 +24,41 @@
 </body>
 <script>
     const d = new Date();
+    let Dist = 0
+    let slope = 0
+    let CenterX = 0
+
+    let CenterY = 0
+    let RealX =0
+    let Xpos = 0
+    let s = 0
+    let tx =0
     let Time = d.getTime();
     let B = document.getElementById("PlayButton"); 
     B.style.position = "absolute";
-    setInterval(Name,15);
-    function Name() {
-        console.log(Math.sin(new Date().getTime()) * 100);
-        B.style.top = (1 * Math.sin((new Date().getTime())* .005)) + 50 + '%';
+    window.addEventListener("mousemove", Name);
+
+    function Name(e) {
+        CenterY = window.innerHeight *.5;
+        CenterX = window.innerWidth *.5;
+        Xpos =(e.offsetX - CenterX);
+        Ypos =((e.offsetY +scrollY) - CenterY);
+        slope = Ypos/(Xpos);
+        
+        Dist = Math.sqrt(Math.pow(((e.offsetY - CenterY)),2) + Math.pow(((e.offsetX -CenterX)) -.5,2))
+        Dist = 250/(Dist +250) + .1;
+        RealX =lerp(CenterX,e.offsetX,Dist)
+        B.style.left = RealX - 150 + 'px';
+        console.log(slope);
+        B.style.top = Line(slope,CenterX,CenterY,RealX) + 'px';
+        
+    }
+    function lerp(x1, x2, t) {
+    return x1 + (x2 - x1) * t;
+    }
+    function Line (slope,XP,YP,EvalAt){
+        return (slope*(EvalAt - XP) + YP)
+
     }
    
 </script>
