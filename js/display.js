@@ -138,6 +138,12 @@ function drawScreen() {
     ctx.clearRect(0, 0, cw, ch);
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
+            drawScaledImg(img.border,
+                64 * i + 32 * ((7 - j) - i), 16 * (i - (7 - j)) + 331, 64, 64);
+        }
+    }
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
             if(factoryMouseOver === (i << 3) + j)
                 drawScaledImg(img.boxBack,
                 64 * i + 32 * ((7 - j) - i), 16 * (i - (7 - j)) + 331, 64, 64);

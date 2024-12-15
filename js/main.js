@@ -32,7 +32,8 @@ let loadedNum = 0;
 const imgs = [];
 const imgbmps = [];
 const srcs = [
-    "grass1", "grass2", "grass3", "grass4", "grass5", "boxFront", "boxBack", "factory1"
+    "grass1", "grass2", "grass3", "grass4", "grass5", "boxFront", "boxBack", "factory1",
+    "border"
 ];
 
 for(let i = 0; i < srcs.length; i++){
