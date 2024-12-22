@@ -30,6 +30,11 @@ export const factories = {
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [100, 10, 1, 1, 2, 1, 3, 9, 13, 0],//first factory
     ],
+    
+    presetCosts: [
+	0,
+	5000
+    ],
 
     setPresetFactoryValues: function (index, type) { //should zero out data before hand
 

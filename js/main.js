@@ -95,7 +95,8 @@ canvas.addEventListener("mousedown", (e) => {
 canvas.addEventListener("mouseup", (e) => {
     display.postMessage([3, false]);
     if(mouseDownX === e.offsetX && mouseDownY === e.offsetY){
-        display.postMessage([7, factoryAt(e.offsetX, e.offsetY), "factory1"]);
+	if(factoryAt(e.offsetX, e.offsetY) === -1)return;
+        buyFactory(factoryAt(e.offsetX, e.offsetY), 1);
     }
 });
 window.addEventListener("resize", (e) => {
@@ -108,19 +109,35 @@ window.addEventListener("resize", (e) => {
 
 //stores the game state in the gamestate object
 const gameState = {
-    funds: 0,//how much money the player has
+    funds: 10000,//how much money the player has
     hour: 0,//the current in-game hour (24 hour format)
     day: 0,//the current in-game day
 }
 
-factories.makePresetFactory(1);//makes factory of type 1
+const factoryLinks = [];
 
-for (let i = 0; i < 24; i++) {
-    gameLogicTick();
+function buyFactory(position, factory){
+    if(position < 0 || position > 63) return;
+    if(factoryLinks.includes(position)) {
+        removeFactory(position);   
+        return;
+    }
+    if(factories.presetCosts[factory] > gameState.funds)return;
+    gameState.funds -= factories.presetCosts[factory];
+    factoryLinks.push(position);
+
+    factories.makePresetFactory(factory);
+    display.postMessage([7, position, "factory" + factory]);
 }
 
-console.log(factories.getWorkerUnrest(0));
-console.log(factories.getHappiness(0));
+function removeFactory(position) {
+    if(position < 0 || position > 63)return;
+    if(factoryLinks.includes(position) === false)return;
+    let index = factoryLinks.indexOf(position);
+    factoryLinks.splice(index, 1);
+    display.postMessage([7, position, "grass" + Math.floor(Math.random() * 5 + 1)]);
+    factories.removeFactory(index);
+}
 
 function gameLogicTick() {
 
