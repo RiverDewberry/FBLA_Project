@@ -115,6 +115,24 @@ const gameState = {
 }
 
 const factoryLinks = [];
+const upgradeNumbers = new Uint8Array(factories.upgradeData.names.length << 6);
+
+function upgradeFactory(position, upgradeNum){
+    let index = factoryLinks.indexOf(position);
+    if(index === -1)return;
+    let cost = factories.upgradeData.costs[upgradeNum] * (1.15 ** upgradeNumbers[
+        (position << 6) + upgradenum
+    ]);
+    if(cost > gameState.funds)return;
+    gamestate.funds -= cost;
+    upgradeNumbers[(position << 6) + upgradeNum]++;
+    
+    for(let i = 0; i < 10; i++){
+        factories.factoryArray.setVal(
+            index, 1, factories.upgradeData.effects[upgradeNum][i]
+	);
+    }
+}
 
 function buyFactory(position, factory){
     if(position < 0 || position > 63) return;
