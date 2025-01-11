@@ -1,4 +1,5 @@
 import { factories } from "./factory.js";
+import { upgradeData } from "./upgrades.js";
 
 let captureX, captureY, captureW, captureH;
 function factoryAt(x, y) {
@@ -25,6 +26,10 @@ let displayCtx = canvas.getContext("bitmaprenderer");
 const display = new Worker("../js/display.js");
 display.postMessage([0, canvas.width, canvas.height]);
 canvasSetup();
+for (let i = 0; i < upgradeData.names.length; i++) {
+    CreateUpgradeUI(upgradeData.names[i]+"",IntToRomanNumeral(21),upgradeData.costs)
+    
+}
 
 let loadedNum = 0;
 
@@ -74,6 +79,7 @@ function canvasSetup() {
     canvas.height = window.innerHeight;
     displayCtx = canvas.getContext("bitmaprenderer");
     display.postMessage([0, canvas.width, canvas.height]);
+    
 }
 
 //events
@@ -108,10 +114,55 @@ window.addEventListener("resize", (e) => {
 
 
 //UI DisplayStart
-function CreateUpgradeUI(UName) {
+function CreateUpgradeUI(UName,UpgradeLvl,Price,) {
+    const UpgradeHolder = document.getElementById("UpgradesBox");
     const UpG = document.getElementById("UpgradeRef");
-    document.cloneNode()
+    let clone = UpG.cloneNode(true);
+
+    clone.id = UName;
+    clone.children[0].children[0].textContent = UName + "";
+    clone.children[1].children[0].textContent = UpgradeLvl + "";
+    clone.children[2].textContent = "$"+ Price + "";
+    UpgradeHolder.appendChild(clone);
+    
+}  
+function IntToRomanNumeral (int){
+    let output = ""
+    let num = int;
+    let temp = int
+    for (let i = 0; i < Math.floor(temp/500); i++) {
+        output += "D" ;
+        num -=500;  
+    }
+    temp = num
+    for (let i = 0; i < Math.floor(temp/100); i++) {
+        output += "C" ;
+        num -=100;  
+    }
+    temp = num
+    for (let i = 0; i < Math.floor(temp/50); i++) {
+        output += "L" ;
+        num -=50;  
+    }
+    temp = num
+    for (let i = 0; i < Math.floor(temp/10)+1; i++) {
+        output += "X" ;
+        num -=10;  
+    }
+    temp = num
+    for (let i = 0; i < Math.floor(temp/5); i++) {
+        output += "V" ;
+        num -=5;  
+    }
+    temp = num
+    for (let i = 0; i < Math.floor(temp/1); i++) {
+        output += "I" ;
+        num -=1;  
+    }
+    temp = num
+    return (output);
 }
+
 //UI Display ENd
 
 //GAME LOGIC
