@@ -103,7 +103,16 @@ window.addEventListener("resize", (e) => {
     canvasSetup();
     display.postMessage([1]);
 });
-//DISPLAY END
+//Game DISPLAY END
+
+
+
+//UI DisplayStart
+function CreateUpgradeUI(UName) {
+    const UpG = document.getElementById("UpgradeRef");
+    document.cloneNode()
+}
+//UI Display ENd
 
 //GAME LOGIC
 
