@@ -30,6 +30,10 @@ for (let i = 0; i < upgradeData.names.length; i++) {
     CreateUpgradeUI(upgradeData.names[i]+"",IntToRomanNumeral(21),upgradeData.costs)
     
 }
+for (let i = 0; i < 10; i++) {
+    CreateStatUI("name",IntToPlaceValue(100000) + "")
+    
+}
 
 let loadedNum = 0;
 
@@ -126,6 +130,17 @@ function CreateUpgradeUI(UName,UpgradeLvl,Price,) {
     UpgradeHolder.appendChild(clone);
     
 }  
+function CreateStatUI(SName,Stat) {
+    const UpgradeHolder = document.getElementById("StatsBox");
+    const UpG = document.getElementById("StatsRef");
+    let clone = UpG.cloneNode(true);
+
+    clone.id = SName;
+    clone.children[0].children[0].textContent = SName + "";
+    clone.children[1].children[0].textContent = Stat + "";
+    UpgradeHolder.appendChild(clone);
+    
+}
 function IntToRomanNumeral (int){
     let output = ""
     let num = int;
@@ -145,7 +160,7 @@ function IntToRomanNumeral (int){
         num -=50;  
     }
     temp = num
-    for (let i = 0; i < Math.floor(temp/10)+1; i++) {
+    for (let i = 0; i < Math.floor(temp/10); i++) {
         output += "X" ;
         num -=10;  
     }
@@ -162,6 +177,18 @@ function IntToRomanNumeral (int){
     temp = num
     return (output);
 }
+function IntToPlaceValue(int){
+    let places = [12,9,6,3]
+    let Abriv =  ["T","B","M","K"]
+    for (let i = 0; i < places.length; i++) {
+        if (int >= Math.pow(10,places[i])) {
+            return (int/Math.pow(10,places[i]))+ Abriv[i];
+        } 
+    }
+    return int;
+    
+}
+
 
 //UI Display ENd
 

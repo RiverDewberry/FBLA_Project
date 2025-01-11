@@ -69,8 +69,13 @@
     height: 100%;
     text-align:center;
     flex-direction:column;
-    
-    
+}
+.TwoWay{
+    display: flex;
+    width: 50%;
+    height: 100%;
+    text-align:center;
+    flex-direction:column;
 }
 #TopUI{
     display: flex;
