@@ -2,7 +2,7 @@ let ctx, captureSize, ratio, centerX, centerY, captureX, captureY, captureW, cap
 let setup = false;
 centerX = 256;//the x position of center of the capture
 centerY = 512;//the y position of the center of the capture
-captureSize = 512;//the size in pixels of the width of the captured area
+captureSize = 1024;//the size in pixels of the width of the captured area
 captureX = 0;
 captureY = 512 - captureH;
 let cw, ch;
@@ -49,7 +49,7 @@ function zoom(deltaY) {//zooms the capture area
     captureSize += 3 * Math.sign(deltaY);//adjusts the capture size when the player zooms in or out
 
     if (captureSize < 63) captureSize = 64;//lower bound for capture size
-    if (captureSize > 511) captureSize = 512;//upper bound for capture size
+    if (captureSize > 1023) captureSize = 1024;//upper bound for capture size
 
     //resizes capture area
     captureW = Math.round(captureSize);
@@ -97,14 +97,14 @@ function adjustCaptureArea() {
     captureX = Math.round(256 - captureSize * 0.5) + centerX - 256;
     captureY = Math.round(256 - captureSize * 0.5 * ratio) + centerY - 256;
 
-    if (captureX < 0) captureX = 0;
+    if (captureX < -256) captureX = -256;
     if (captureY < 0) captureY = 0;
-    if (captureX + captureW >= 512) captureX = 512 - captureW;
+    if (captureX + captureW >= 768) captureX = 768 - captureW;
     if (captureY + captureH >= 512) captureY = 512 - captureH;
 
-    if ((centerX - (captureW * 0.5)) < 0) centerX = 0 + captureW * 0.5;
+    if ((centerX - (captureW * 0.5)) < -256) centerX = -256 + captureW * 0.5;
     if ((centerY - (captureH * 0.5)) < 0) centerY = 0 + captureH * 0.5;
-    if ((centerX + (captureW * 0.5)) >= 512) centerX = 512 - captureW * 0.5;
+    if ((centerX + (captureW * 0.5)) >= 768) centerX = 768 - captureW * 0.5;
     if ((centerY + (captureH * 0.5)) >= 512) centerY = 512 - captureH * 0.5;
 }
 
@@ -117,7 +117,7 @@ function factoryAt(x, y) {
 
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
-            yOff = Math.abs(y - (16 * (i - (7 - j)) + 378));
+            yOff = Math.abs(y - (16 * (i - (7 - j)) + 297));
             xOff = Math.abs(x - (64 * i + 32 * ((7 - j) - i) + 31.5));
             if (xOff + (yOff << 1) < 31) {
                 factoryMouseOver = (i << 3) + j;
@@ -139,19 +139,19 @@ function drawScreen() {
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
             drawScaledImg(img.border,
-                64 * i + 32 * ((7 - j) - i), 16 * (i - (7 - j)) + 331, 64, 64);
+                64 * i + 32 * ((7 - j) - i), 16 * (i - (7 - j)) + 250, 64, 64);
         }
     }
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
             if(factoryMouseOver === (i << 3) + j)
                 drawScaledImg(img.boxBack,
-                64 * i + 32 * ((7 - j) - i), 16 * (i - (7 - j)) + 331, 64, 64);
+                64 * i + 32 * ((7 - j) - i), 16 * (i - (7 - j)) + 250, 64, 64);
             drawScaledImg(imgArr[(i << 3) | j],
-                64 * i + 32 * ((7 - j) - i), 16 * (i - (7 - j)) + 331, 64, 64);
+                64 * i + 32 * ((7 - j) - i), 16 * (i - (7 - j)) + 250, 64, 64);
             if(factoryMouseOver === (i << 3) + j)
                 drawScaledImg(img.boxFront,
-                64 * i + 32 * ((7 - j) - i), 16 * (i - (7 - j)) + 331, 64, 64);
+                64 * i + 32 * ((7 - j) - i), 16 * (i - (7 - j)) + 250, 64, 64);
         }
     }
     let resultBitmap = offscreen.transferToImageBitmap();

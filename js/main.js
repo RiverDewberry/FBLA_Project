@@ -1,7 +1,7 @@
 import { factories } from "./factory.js";
 import { upgradeData } from "./upgrades.js";
 
-let captureX, captureY, captureW, captureH;
+let captureX, captureY, captureW, captureH, overzoom;
 function factoryAt(x, y) {
     x = Math.round(x * captureW / canvas.width + captureX);
     y = Math.round(y * captureH / canvas.height + captureY);
@@ -11,7 +11,7 @@ function factoryAt(x, y) {
 
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
-            yOff = Math.abs(y - (16 * (i - (7 - j)) + 378));
+            yOff = Math.abs(y - (16 * (i - (7 - j)) + 297));
             xOff = Math.abs(x - (64 * i + 32 * ((7 - j) - i) + 32.5));
             if (xOff + (yOff << 1) < 30.5) return (i << 3) + j;
         }
