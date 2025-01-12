@@ -27,10 +27,10 @@ const display = new Worker("../js/display.js");
 display.postMessage([0, canvas.width, canvas.height]);
 canvasSetup();
 for (let i = 0; i < upgradeData.names.length; i++) {
-    CreateUpgradeUI(upgradeData.names[i]+"",IntToRomanNumeral(21),upgradeData.costs)
+    CreateUpgradeUI(upgradeData.names[i],IntToRomanNumeral(21),upgradeData.costs)
     
 }
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < 5; i++) {
     CreateStatUI("name",IntToPlaceValue(100000) + "")
     
 }
@@ -144,32 +144,32 @@ function CreateStatUI(SName,Stat) {
 function IntToRomanNumeral (int){
     let output = ""
     let num = int;
-    let temp = int
+    let temp = int;
     for (let i = 0; i < Math.floor(temp/500); i++) {
         output += "D" ;
         num -=500;  
     }
-    temp = num
+    temp = num;
     for (let i = 0; i < Math.floor(temp/100); i++) {
         output += "C" ;
         num -=100;  
     }
-    temp = num
+    temp = num;
     for (let i = 0; i < Math.floor(temp/50); i++) {
         output += "L" ;
         num -=50;  
     }
-    temp = num
+    temp = num;
     for (let i = 0; i < Math.floor(temp/10); i++) {
         output += "X" ;
         num -=10;  
     }
-    temp = num
+    temp = num;
     for (let i = 0; i < Math.floor(temp/5); i++) {
         output += "V" ;
         num -=5;  
     }
-    temp = num
+    temp = num;
     for (let i = 0; i < Math.floor(temp/1); i++) {
         output += "I" ;
         num -=1;  
