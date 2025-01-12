@@ -159,7 +159,7 @@ function CreateBacroundImg(){
         }
     }
     let d =0;
-    const Range = (2 * BackWidth * (1/CloudX.length));
+    const Range = (1.5 * BackWidth * (1/CloudX.length));
     for (let x = 0; x < BackWidth; x++) {
         for (let y = 0; y < BackHight; y++) {
             d = AvgDist(x,y);
