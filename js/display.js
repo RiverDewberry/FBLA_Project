@@ -160,6 +160,7 @@ function CreateBacroundImg(){
         }
     }
     let d =0;
+    const ImgDat = Backround.getContext('2d').createImageData(BackWidth,BackHight);
     const Range = (.55 * BackWidth * (1/CloudX.length));
     for (let x = 0; x < BackWidth; x++) {
         for (let y = 0; y < BackHight; y++) {
@@ -168,15 +169,16 @@ function CreateBacroundImg(){
             if (Rd > 255) {Rd = 255;}
             if (d >  Range) {
                 
-                writePixel(x,y,255,255,255,255);
+                setPixel(ImgDat,x,y,255,255,255,255);
             }
             else{
-                writePixel(x,y,Rd  ,Rd ,255 ,255);
+                setPixel(ImgDat,x,y,Rd  ,Rd ,255 ,255);
                 
             } 
             
         }
     }
+    Backround.getContext('2d').putImageData(ImgDat,0,0);
 
 }
 function blurCanvas(offscreenCanvas, blurAmount) {
@@ -251,11 +253,18 @@ function writePixel(x, y, r, g, b, a) {
     Backround.getContext('2d').putImageData(imageData, x, y);
     
 }
+function setPixel(imageData, x, y, r, g, b, a) {
+    const index = (y * imageData.width + x) * 4;
+    imageData.data[index] = r;
+    imageData.data[index + 1] = g;
+    imageData.data[index + 2] = b;
+    imageData.data[index + 3] = a;
+}
 function AvgDist (x,y){
     let avg = 0; 
     const L = CloudX.length;
     for (let i = 1; i < L; i++) {
-        let Zratio =BackHight/(((CloudY[i]+1)/BackHight)+BackHight)
+        let Zratio =(BackHight * 1.5)/(((CloudY[i]+1)/BackHight)+BackHight)
         avg += 1/(dist(x,y,CloudX[i],CloudY[i]*Zratio)+1);  
     }
     return avg;
