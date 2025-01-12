@@ -170,7 +170,7 @@ function CreateBacroundImg(){
                 writePixel(x,y,255,255,255,255);
             }
             else{
-                writePixel(x,y,Rd +50 ,Rd +60,255 ,255);
+                writePixel(x,y,Rd  ,Rd ,255 ,255);
                 
             } 
             
