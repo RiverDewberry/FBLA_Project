@@ -24,7 +24,7 @@ let renderRequest = false;
 let FramesRenderd = 0;
 
 const Scale = 1;
-const BackWidth =128 *Scale;
+const BackWidth =256 *Scale;
 const BackHight =128 *Scale;
 let   CloudX = [120,4,64]
 let   CloudY = [12,98,55]
@@ -145,21 +145,22 @@ function factoryAt(x, y) {
 ///NOT CURSED CODE LAND I SWEAR
 
 function CreateBacroundImg(){
+    
     while (CloudX.length < 100) {
         CloudX.push(Math.round(Math.random()* BackWidth));
         CloudY.push(Math.round(Math.random()* BackHight));
         CloudSpeed.push(Math.round(Math.random()* 2 +1));
     }
     for (let i = 0; i < CloudX.length; i++) {
-        CloudX[i] -= CloudSpeed[i]
+        CloudX[i] -= CloudSpeed[i] * ((((CloudY[i]+1)/BackHight)*.5) +.5)
         if (CloudX[i] <= -50) {
             CloudX[i] = BackWidth +50;
             CloudY[i] = Math.round(Math.random()* BackHight);
-            CloudSpeed[i] = Math.round(Math.random()* 2 +1)
+            CloudSpeed[i] = (Math.random()* 2) +1
         }
     }
     let d =0;
-    const Range = (1.5 * BackWidth * (1/CloudX.length));
+    const Range = (.55 * BackWidth * (1/CloudX.length));
     for (let x = 0; x < BackWidth; x++) {
         for (let y = 0; y < BackHight; y++) {
             d = AvgDist(x,y);
@@ -254,7 +255,8 @@ function AvgDist (x,y){
     let avg = 0; 
     const L = CloudX.length;
     for (let i = 1; i < L; i++) {
-        avg += 1/(dist(x,y,CloudX[i],CloudY[i])+1);  
+        let Zratio =BackHight/(((CloudY[i]+1)/BackHight)+BackHight)
+        avg += 1/(dist(x,y,CloudX[i],CloudY[i]*Zratio)+1);  
     }
     return avg;
 }
@@ -276,7 +278,7 @@ function drawScreen() {
     ctx.clearRect(0, 0, cw, ch);
     CreateBacroundImg(); // genreat backround img
     blurCanvas(Backround,2)
-    drawScaledImg(Backround,0,0,BackWidth*(4/Scale),BackHight*(4/Scale))// draw it
+    drawScaledImg(Backround,-250,-25,BackWidth*(4/Scale) ,BackHight*(4/Scale))// draw it
     
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
