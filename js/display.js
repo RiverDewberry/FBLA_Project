@@ -147,16 +147,16 @@ function factoryAt(x, y) {
 function CreateBacroundImg(){
     
     while (CloudX.length < 100) {
-        CloudX.push(Math.round(Math.random()* BackWidth));
+        CloudX.push(Math.round(Math.random()* BackWidth +100) - 50);
         CloudY.push(Math.round(Math.random()* BackHight));
-        CloudSpeed.push(Math.round(Math.random()* 2 +1));
+        CloudSpeed.push((Math.random() *.5)+ .5);
     }
     for (let i = 0; i < CloudX.length; i++) {
         CloudX[i] -= CloudSpeed[i] * ((((CloudY[i]+1)/BackHight)*.5) +.5)
         if (CloudX[i] <= -50) {
             CloudX[i] = BackWidth +50;
             CloudY[i] = Math.round(Math.random()* BackHight);
-            CloudSpeed[i] = (Math.random()* 2) +1
+            CloudSpeed[i] = (Math.random()* .5) +.5
         }
     }
     let d =0;
@@ -169,7 +169,10 @@ function CreateBacroundImg(){
             if (Rd > 255) {Rd = 255;}
             if (d >  Range) {
                 
-                setPixel(ImgDat,x,y,225,225,225,255);
+                setPixel(ImgDat,x,y,235,235,235,255);
+                if( Math.round(d -.1) ==2){
+                    setPixel(ImgDat,x,y,235 -(Rd*.25),235 -(Rd*.25),235-(Rd*.25),255);
+                }
                 if (y != 0) {
                     if (getPixelValue(ImgDat,x,y-1,"B") == 255) {
                         setPixel(ImgDat,x,y-1,255,255,254,255)
@@ -177,7 +180,7 @@ function CreateBacroundImg(){
                 }
             }
             else{
-                setPixel(ImgDat,x,y,0,0 ,255 ,255);
+                setPixel(ImgDat,x,y,0, 1.25* Rd ,255 ,255);
                 if (y != 0) {
                     if (getPixelValue(ImgDat,x,y-1,"R") !== 0) {
                         setPixel(ImgDat,x,y-1,0,0,0,255)
