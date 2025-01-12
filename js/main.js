@@ -22,10 +22,12 @@ function factoryAt(x, y) {
 //DISPLAY
 //creating and setting up canvas
 const canvas = document.getElementById("canvas")
+
 let displayCtx = canvas.getContext("bitmaprenderer");
 const display = new Worker("../js/display.js");
 display.postMessage([0, canvas.width, canvas.height]);
 canvasSetup();
+
 for (let i = 0; i < upgradeData.names.length; i++) {
     CreateUpgradeUI(upgradeData.names[i],IntToRomanNumeral(21),upgradeData.costs)
     
@@ -35,9 +37,13 @@ for (let i = 0; i < 5; i++) {
     
 }
 
+
 let loadedNum = 0;
 
 //images
+
+
+
 const imgs = [];
 const imgbmps = [];
 const srcs = [

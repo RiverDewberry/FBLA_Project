@@ -21,6 +21,16 @@ let factoryMouseOver = -1;//the factory that the mouse is over
 
 let rendering = false;
 let renderRequest = false;
+let FramesRenderd = 0;
+
+const Scale = 2;
+const BackWidth =128 *Scale;
+const BackHight =128 *Scale;
+let   CloudX = [120,4,64]
+let   CloudY = [12,98,55]
+let   CloudSpeed = [1,1,1]
+const Backround = new OffscreenCanvas(BackWidth,BackHight)
+
 
 function canvasSetup(w, h) {
     cw = w;
@@ -43,6 +53,7 @@ function canvasSetup(w, h) {
     captureScale = w / captureSize;
     //the amount values should be scaled to allow the capture to work
     adjustCaptureArea();
+    
 }
 
 function zoom(deltaY) {//zooms the capture area
@@ -61,6 +72,7 @@ function zoom(deltaY) {//zooms the capture area
 
     factoryAt(oldMouseX, oldMouseY);
 
+    
     drawScreen();
 }
 
@@ -128,16 +140,147 @@ function factoryAt(x, y) {
     factoryMouseOver = -1;
 };
 
+
+
+///NOT CURSED CODE LAND I SWEAR
+
+function CreateBacroundImg(){
+    while (CloudX.length < 100) {
+        CloudX.push(Math.round(Math.random()* BackWidth));
+        CloudY.push(Math.round(Math.random()* BackHight));
+        CloudSpeed.push(Math.round(Math.random()* 2 +1));
+    }
+    for (let i = 0; i < CloudX.length; i++) {
+        CloudX[i] -= CloudSpeed[i]
+        if (CloudX[i] <= -50) {
+            CloudX[i] = BackWidth +50;
+            CloudY[i] = Math.round(Math.random()* BackHight);
+            CloudSpeed[i] = Math.round(Math.random()* 2 +1)
+        }
+    }
+    let d =0;
+    const Range = (.5 * BackWidth * (1/CloudX.length));
+    for (let x = 0; x < BackWidth; x++) {
+        for (let y = 0; y < BackHight; y++) {
+            d = AvgDist(x,y);
+            Rd = 0 * Math.round(Math.log10(((.5* d) +1))* 2 * 255)
+            if (Rd > 255) {Rd = 255;}
+            if (d >  Range) {
+                
+                writePixel(x,y,255,255,255,255);
+            }
+            else{
+                writePixel(x,y,Rd ,Rd,255 ,255);
+                
+            } 
+            
+        }
+    }
+
+}
+function blurCanvas(offscreenCanvas, blurAmount) {
+    const ctx = offscreenCanvas.getContext('2d');
+    const width = offscreenCanvas.width;
+    const height = offscreenCanvas.height;
+    const imageData = ctx.getImageData(0, 0, width, height);
+    const data = imageData.data;
+
+    const weights = [];
+    const kernelSize = Math.floor(blurAmount * 2) + 1;
+    const halfKernelSize = Math.floor(kernelSize / 2);
+    const sigma = blurAmount / 3;
+    const sigma2 = sigma * sigma;
+    const sigma2x2 = 2 * sigma2;
+    const sqrtSigmaPi2 = Math.sqrt(Math.PI * sigma2);
+    let sum = 0;
+
+    for (let i = -halfKernelSize; i <= halfKernelSize; i++) {
+        const weight = Math.exp(-0.5 * (i * i) / sigma2) / sqrtSigmaPi2;
+        weights.push(weight);
+        sum += weight;
+    }
+
+    for (let i = 0; i < weights.length; i++) {
+        weights[i] /= sum;
+    }
+
+    const applyKernel = (data, width, height, weights, kernelSize) => {
+        const halfKernelSize = Math.floor(kernelSize / 2);
+        const output = new Uint8ClampedArray(data.length);
+
+        for (let y = 0; y < height; y++) {
+            for (let x = 0; x < width; x++) {
+                let r = 0, g = 0, b = 0, a = 0;
+                for (let ky = -halfKernelSize; ky <= halfKernelSize; ky++) {
+                    for (let kx = -halfKernelSize; kx <= halfKernelSize; kx++) {
+                        const weight = weights[ky + halfKernelSize] * weights[kx + halfKernelSize];
+                        const ix = Math.min(width - 1, Math.max(0, x + kx));
+                        const iy = Math.min(height - 1, Math.max(0, y + ky));
+                        const index = (iy * width + ix) * 4;
+                        r += data[index] * weight;
+                        g += data[index + 1] * weight;
+                        b += data[index + 2] * weight;
+                        a += data[index + 3] * weight;
+                    }
+                }
+                const index = (y * width + x) * 4;
+                output[index] = r;
+                output[index + 1] = g;
+                output[index + 2] = b;
+                output[index + 3] = a;
+            }
+        }
+
+        return output;
+    };
+
+    const blurredData = applyKernel(data, width, height, weights, kernelSize);
+    ctx.putImageData(new ImageData(blurredData, width, height), 0, 0);
+}
+
+
+// Function to write to a specific pixel on the canvas
+function writePixel(x, y, r, g, b, a) {
+    
+    const imageData = ctx.createImageData(1, 1);
+    imageData.data[0] = r; // Red
+    imageData.data[1] = g; // Green
+    imageData.data[2] = b; // Blue
+    imageData.data[3] = a; // Alpha
+    Backround.getContext('2d').putImageData(imageData, x, y);
+    
+}
+function AvgDist (x,y){
+    let avg = 0; 
+    const L = CloudX.length;
+    for (let i = 1; i < L; i++) {
+        avg += 1/(dist(x,y,CloudX[i],CloudY[i])+1);  
+    }
+    return avg;
+}
+function dist(x,y,x2,y2){
+        const dx = x - x2;
+        const dy = y - y2;
+        return Math.sqrt(dx * dx + dy * dy);
+}
+
 function drawScreen() {
+   
     if (!setup) return;
-    if (rendering) {
+    if (rendering) { // if not rending dont do anything else
         renderRequest = true;
         return;
     }
     rendering = true;
+    FramesRenderd +=1;
     ctx.clearRect(0, 0, cw, ch);
+    CreateBacroundImg(); // genreat backround img
+    blurCanvas(Backround,4)
+    drawScaledImg(Backround,0,0,BackWidth*2,BackHight*2)// draw it
+    
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
+            
             drawScaledImg(img.border,
                 64 * i + 32 * ((7 - j) - i), 16 * (i - (7 - j)) + 250, 64, 64);
         }
