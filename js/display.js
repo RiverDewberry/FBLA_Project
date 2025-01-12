@@ -23,7 +23,7 @@ let rendering = false;
 let renderRequest = false;
 let FramesRenderd = 0;
 
-const Scale = 2;
+const Scale = 1;
 const BackWidth =128 *Scale;
 const BackHight =128 *Scale;
 let   CloudX = [120,4,64]
@@ -159,18 +159,18 @@ function CreateBacroundImg(){
         }
     }
     let d =0;
-    const Range = (.5 * BackWidth * (1/CloudX.length));
+    const Range = (2 * BackWidth * (1/CloudX.length));
     for (let x = 0; x < BackWidth; x++) {
         for (let y = 0; y < BackHight; y++) {
             d = AvgDist(x,y);
-            Rd = 0 * Math.round(Math.log10(((.5* d) +1))* 2 * 255)
+            Rd = Math.round(Math.log10(((.3* d) +1))* 2 * 255)
             if (Rd > 255) {Rd = 255;}
             if (d >  Range) {
                 
                 writePixel(x,y,255,255,255,255);
             }
             else{
-                writePixel(x,y,Rd ,Rd,255 ,255);
+                writePixel(x,y,Rd +50 ,Rd +60,255 ,255);
                 
             } 
             
@@ -275,8 +275,8 @@ function drawScreen() {
     FramesRenderd +=1;
     ctx.clearRect(0, 0, cw, ch);
     CreateBacroundImg(); // genreat backround img
-    blurCanvas(Backround,4)
-    drawScaledImg(Backround,0,0,BackWidth*2,BackHight*2)// draw it
+    blurCanvas(Backround,2)
+    drawScaledImg(Backround,0,0,BackWidth*(4/Scale),BackHight*(4/Scale))// draw it
     
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
