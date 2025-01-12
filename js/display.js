@@ -161,7 +161,7 @@ function CreateBacroundImg(){
     }
     let d =0;
     const ImgDat = Backround.getContext('2d').createImageData(BackWidth,BackHight);
-    const Range = (.55 * BackWidth * (1/CloudX.length));
+    const Range = (.52 * BackWidth * (1/CloudX.length));
     for (let x = 0; x < BackWidth; x++) {
         for (let y = 0; y < BackHight; y++) {
             d = AvgDist(x,y);
@@ -169,10 +169,20 @@ function CreateBacroundImg(){
             if (Rd > 255) {Rd = 255;}
             if (d >  Range) {
                 
-                setPixel(ImgDat,x,y,255,255,255,255);
+                setPixel(ImgDat,x,y,225,225,225,255);
+                if (y != 0) {
+                    if (getPixelValue(ImgDat,x,y-1,"B") == 255) {
+                        setPixel(ImgDat,x,y-1,255,255,254,255)
+                    }
+                }
             }
             else{
-                setPixel(ImgDat,x,y,Rd  ,Rd ,255 ,255);
+                setPixel(ImgDat,x,y,0,0 ,255 ,255);
+                if (y != 0) {
+                    if (getPixelValue(ImgDat,x,y-1,"R") !== 0) {
+                        setPixel(ImgDat,x,y-1,0,0,0,255)
+                    }
+                }
                 
             } 
             
@@ -240,8 +250,21 @@ function blurCanvas(offscreenCanvas, blurAmount) {
     const blurredData = applyKernel(data, width, height, weights, kernelSize);
     ctx.putImageData(new ImageData(blurredData, width, height), 0, 0);
 }
-
-
+function getPixelValue(imageData, x, y, channel) {
+    const index = (y * imageData.width + x) * 4;
+    switch (channel) {
+        case 'R':
+            return imageData.data[index];
+        case 'G':
+            return imageData.data[index + 1];
+        case 'B':
+            return imageData.data[index + 2];
+        case 'A':
+            return imageData.data[index + 3];
+        default:
+            throw new Error('Invalid channel. Use "R", "G", "B", or "A".');
+    }
+}
 // Function to write to a specific pixel on the canvas
 function writePixel(x, y, r, g, b, a) {
     
@@ -275,6 +298,7 @@ function dist(x,y,x2,y2){
         return Math.sqrt(dx * dx + dy * dy);
 }
 
+
 function drawScreen() {
    
     if (!setup) return;
@@ -286,6 +310,7 @@ function drawScreen() {
     FramesRenderd +=1;
     ctx.clearRect(0, 0, cw, ch);
     CreateBacroundImg(); // genreat backround img
+    blurCanvas(Backround,2)
     blurCanvas(Backround,2)
     drawScaledImg(Backround,-250,-25,BackWidth*(4/Scale) ,BackHight*(4/Scale))// draw it
     
