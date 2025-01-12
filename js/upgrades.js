@@ -1,7 +1,7 @@
 export const upgradeData = {
 	names: []= ["Upgrade 1","Upgrade 2" ],
 	//the name of each upgrade
-	costs: new Uint8Array([666]),
+	costs: new Uint32Array([32, 64]),
 	//the inital cost of each upgrade
 	descriptions: [],
 	//a description of each upgrade
