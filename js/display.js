@@ -30,6 +30,9 @@ let   CloudX = [120,4,64]
 let   CloudY = [12,98,55]
 let   CloudSpeed = [1,1,1]
 const Backround = new OffscreenCanvas(BackWidth,BackHight)
+let ZenithAng = [];
+let SR = [];
+
 
 
 function canvasSetup(w, h) {
@@ -144,6 +147,7 @@ function factoryAt(x, y) {
 
 ///NOT CURSED CODE LAND I SWEAR
 
+
 function CreateBacroundImg(){
     
     while (CloudX.length < 100) {
@@ -159,31 +163,43 @@ function CreateBacroundImg(){
             CloudSpeed[i] = (Math.random()* .5) +.5
         }
     }
+    AvgSpeeds();
     let d =0;
     const ImgDat = Backround.getContext('2d').createImageData(BackWidth,BackHight);
     const Range = (.52 * BackWidth * (1/CloudX.length));
+    let XReadTime = FramesRenderd % 128
     for (let x = 0; x < BackWidth; x++) {
         for (let y = 0; y < BackHight; y++) {
+            
             d = AvgDist(x,y);
             Rd = Math.round(Math.log10(((.3* d) +1))* 2 * 255)
             if (Rd > 255) {Rd = 255;}
             if (d >  Range) {
-                
+                // clouds and stuff
                 setPixel(ImgDat,x,y,235,235,235,255);
                 if( Math.round(d -.1) ==2){
                     setPixel(ImgDat,x,y,235 -(Rd*.25),235 -(Rd*.25),235-(Rd*.25),255);
                 }
                 if (y != 0) {
-                    if (getPixelValue(ImgDat,x,y-1,"B") == 255) {
-                        setPixel(ImgDat,x,y-1,255,255,254,255)
+                    if (getPixelValue(ImgDat,x,y-1,"A") == 254) {
+                        setPixel(ImgDat,x,y,255,255,254,255)
                     }
                 }
             }
             else{
-                setPixel(ImgDat,x,y,0, 1.25* Rd ,255 ,255);
+                //set blue sky
+                XReadTime = Math.round(Math.abs((.5 *Math.sin((FramesRenderd +y/50) *(3.14/180))+.5) * 127));
+                SR= [
+                (getPixelValue(ZenithAng,XReadTime,0,"R")),
+                (getPixelValue(ZenithAng,XReadTime ,0,"G")),
+                (getPixelValue(ZenithAng,XReadTime,0,"B"))
+                ]
+                
+                
+                setPixel(ImgDat,x,y,SR[0],SR[1] ,SR[2] ,254);
                 if (y != 0) {
-                    if (getPixelValue(ImgDat,x,y-1,"R") !== 0) {
-                        setPixel(ImgDat,x,y-1,0,0,0,255)
+                    if (getPixelValue(ImgDat,x,y-1,"A") == 255) {
+                        setPixel(ImgDat,x,y-1,0,0,0,254)
                     }
                 }
                 
@@ -194,6 +210,15 @@ function CreateBacroundImg(){
     Backround.getContext('2d').putImageData(ImgDat,0,0);
 
 }
+function ZenithImgCreation (){
+    const TempCanvas = new OffscreenCanvas(128,4);
+    const TempCtx = TempCanvas.getContext('2d');
+    TempCtx.drawImage(img.SunZenith_Gradient,0,0,128,4);
+    ZenithAng = TempCanvas.getContext('2d').getImageData(0,0,128,4);
+    //console.log(ZenithAng.data)
+    
+}
+
 function blurCanvas(offscreenCanvas, blurAmount) {
     const ctx = offscreenCanvas.getContext('2d');
     const width = offscreenCanvas.width;
@@ -254,7 +279,7 @@ function blurCanvas(offscreenCanvas, blurAmount) {
     ctx.putImageData(new ImageData(blurredData, width, height), 0, 0);
 }
 function getPixelValue(imageData, x, y, channel) {
-    const index = (y * imageData.width + x) * 4;
+    const index = ((y * imageData.width) + x) * 4;
     switch (channel) {
         case 'R':
             return imageData.data[index];
@@ -268,17 +293,19 @@ function getPixelValue(imageData, x, y, channel) {
             throw new Error('Invalid channel. Use "R", "G", "B", or "A".');
     }
 }
-// Function to write to a specific pixel on the canvas
-function writePixel(x, y, r, g, b, a) {
-    
-    const imageData = ctx.createImageData(1, 1);
-    imageData.data[0] = r; // Red
-    imageData.data[1] = g; // Green
-    imageData.data[2] = b; // Blue
-    imageData.data[3] = a; // Alpha
-    Backround.getContext('2d').putImageData(imageData, x, y);
-    
+function AvgSpeeds(){
+    for (let i = 0; i < CloudSpeed.length; i++) {
+        for (let j = 0; j < CloudSpeed.length; j++) {
+            if (i != j) {
+                CloudSpeed[i]= (CloudSpeed[i])+ ((CloudSpeed[j]-CloudSpeed[i]) * 1/(dist(CloudX[i],CloudY[i],CloudX[j],CloudY[j])+1))
+            }
+            
+            
+        }  
+    }
+
 }
+// Function to write to a specific pixel on the canvas
 function setPixel(imageData, x, y, r, g, b, a) {
     const index = (y * imageData.width + x) * 4;
     imageData.data[index] = r;
@@ -312,6 +339,7 @@ function drawScreen() {
     rendering = true;
     FramesRenderd +=1;
     ctx.clearRect(0, 0, cw, ch);
+    ZenithImgCreation();
     CreateBacroundImg(); // genreat backround img
     blurCanvas(Backround,2)
     blurCanvas(Backround,2)
@@ -324,6 +352,7 @@ function drawScreen() {
                 64 * i + 32 * ((7 - j) - i), 16 * (i - (7 - j)) + 250, 64, 64);
         }
     }
+    
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
             if(factoryMouseOver === (i << 3) + j)
