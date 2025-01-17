@@ -36,9 +36,16 @@ for (let i = 0; i < 5; i++) {
     CreateStatUI("name",IntToPlaceValue(100000) + "")
     
 }
-
-
+setInterval(gameLogicTick,1000)
+//Game VARS
+const gameState = {
+    funds: 10000,//how much money the player has
+    hour: 8,//the current in-game hour (24 hour format)
+    day: 0,//the current in-game day
+}
+//END OF GAME VARS
 let loadedNum = 0;
+
 
 //images
 
@@ -81,6 +88,11 @@ display.onmessage = (e) => {
     captureY = e.data[1];
     captureW = e.data[2];
     captureH = e.data[3];
+}
+function UpdateUI(){
+    
+    document.getElementById("MoneyText").textContent ="Money:$" + gameState.funds;
+    document.getElementById("FactoryCountText").textContent = "Factorys:"+ factories.length;
 }
 
 function canvasSetup() {
@@ -201,11 +213,7 @@ function IntToPlaceValue(int){
 //GAME LOGIC
 
 //stores the game state in the gamestate object
-const gameState = {
-    funds: 10000,//how much money the player has
-    hour: 0,//the current in-game hour (24 hour format)
-    day: 0,//the current in-game day
-}
+
 
 const factoryLinks = [];
 const upgradeNumbers = new Uint8Array(factories.upgradeData.names.length << 6);
@@ -217,7 +225,7 @@ function upgradeFactory(position, upgradeNum){
         (position << 6) + upgradenum
     ]);
     if(cost > gameState.funds)return;
-    gamestate.funds -= cost;
+    gameState.funds -= cost;
     upgradeNumbers[(position << 6) + upgradeNum]++;
     
     for(let i = 0; i < 10; i++){
@@ -281,6 +289,8 @@ function gameLogicTick() {
 
         factories.setWorkerUnrest(i, factoryUnrest(i));//updates unrest
     }
+    display.postMessage([8]);
+    UpdateUI();
 }
 
 function factoryNetProfit(index) {//calculates the net profit eaxh factory generates

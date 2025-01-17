@@ -33,6 +33,8 @@ const Backround = new OffscreenCanvas(BackWidth,BackHight)
 let ZenithAng = [];
 let SR = [];
 
+let RenderBack;
+
 
 
 function canvasSetup(w, h) {
@@ -150,27 +152,32 @@ function factoryAt(x, y) {
 
 function CreateBacroundImg(){
     
-    while (CloudX.length < 100) {
-        CloudX.push(Math.round(Math.random()* BackWidth +100) - 50);
-        CloudY.push(Math.round(Math.random()* BackHight));
-        CloudSpeed.push((Math.random() *.5)+ .5);
-    }
-    for (let i = 0; i < CloudX.length; i++) {
-        CloudX[i] -= CloudSpeed[i] * ((((CloudY[i]+1)/BackHight)*.5) +.5)
-        if (CloudX[i] <= -50) {
-            CloudX[i] = BackWidth +50;
-            CloudY[i] = Math.round(Math.random()* BackHight);
-            CloudSpeed[i] = (Math.random()* .5) +.5
+    if (RenderBack == true) {
+        while (CloudX.length < 100) {
+            CloudX.push(Math.round(Math.random()* BackWidth +100) - 50);
+            CloudY.push(Math.round(Math.random()* BackHight));
+            CloudSpeed.push((Math.random() *.5)+ .5);
         }
+        for (let i = 0; i < CloudX.length; i++) {
+            CloudX[i] -= CloudSpeed[i] * ((((CloudY[i]+1)/BackHight)*.5) +.5)
+            if (CloudX[i] <= -50) {
+                CloudX[i] = BackWidth +50;
+                CloudY[i] = Math.round(Math.random()* BackHight);
+                CloudSpeed[i] = (Math.random()* .5) +.5
+            }
+        } 
     }
+   
     AvgSpeeds();
     let d =0;
     const ImgDat = Backround.getContext('2d').createImageData(BackWidth,BackHight);
     const Range = (.52 * BackWidth * (1/CloudX.length));
     let XReadTime = FramesRenderd % 128
+    let Yrand = 0;
     for (let x = 0; x < BackWidth; x++) {
         for (let y = 0; y < BackHight; y++) {
-            
+            XReadTime = Math.round(Math.abs((.5 *Math.sin((FramesRenderd +y/50) *(3.14/180))+.5) * 127));
+            Yrand += Math.round(Math.random() *.5);
             d = AvgDist(x,y);
             Rd = Math.round(Math.log10(((.3* d) +1))* 2 * 255)
             if (Rd > 255) {Rd = 255;}
@@ -188,11 +195,12 @@ function CreateBacroundImg(){
             }
             else{
                 //set blue sky
-                XReadTime = Math.round(Math.abs((.5 *Math.sin((FramesRenderd +y/50) *(3.14/180))+.5) * 127));
+                
+                
                 SR= [
-                (getPixelValue(ZenithAng,XReadTime,0,"R")),
-                (getPixelValue(ZenithAng,XReadTime ,0,"G")),
-                (getPixelValue(ZenithAng,XReadTime,0,"B"))
+                (getPixelValue(ZenithAng,XReadTime,Yrand % 4,"R")),
+                (getPixelValue(ZenithAng,XReadTime,Yrand % 4,"G")),
+                (getPixelValue(ZenithAng,XReadTime,Yrand % 4,"B"))
                 ]
                 
                 
@@ -207,6 +215,7 @@ function CreateBacroundImg(){
             
         }
     }
+    RenderBack = false;
     Backround.getContext('2d').putImageData(ImgDat,0,0);
 
 }
@@ -337,7 +346,7 @@ function drawScreen() {
         return;
     }
     rendering = true;
-    FramesRenderd +=1;
+    
     ctx.clearRect(0, 0, cw, ch);
     ZenithImgCreation();
     CreateBacroundImg(); // genreat backround img
@@ -416,11 +425,17 @@ onmessage = (e) => {
                 drawScreen();
             }
             break;
-	case 7:
+	    case 7:
             imgArr[e.data[1]] = img["" + e.data[2]];
             drawScreen();
             break;
         default:
             break;
+        case 8:
+            FramesRenderd +=1;
+            RenderBack = true;
+            drawScreen();
+
+        break;
     }
 }
