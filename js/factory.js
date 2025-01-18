@@ -16,11 +16,11 @@ export const factories = {
             CompositeArray.uint8,//hourlyPay - 7
             CompositeArray.uint8,//hoursWorked - 8
             CompositeArray.float32,//workerUnrest - 9
-	    CompositeArray.uint16//targetWorkerAmount - 10
+	        CompositeArray.uint16//targetWorkerAmount - 10
         ],
         64//the max amount of factories
     ),
-        NamesOfData: ["production","cost","safety","happiness","workers","minWorkers","maxworkers","hourlyPay","hoursWorked","workerUnrest"]
+        NamesOfData: ["production","cost","safety","happiness","workers","minWorkers","maxworkers","hourlyPay","hoursWorked","workerUnrest","targetWorkerAmount"]
     ,
 
     //dar code

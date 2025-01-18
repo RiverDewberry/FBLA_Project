@@ -171,7 +171,7 @@ function CreateBacroundImg(){
     AvgSpeeds();
     let d =0;
     const ImgDat = Backround.getContext('2d').createImageData(BackWidth,BackHight);
-    const Range = (.52 * BackWidth * (1/CloudX.length));
+    const Range = (.7 * BackWidth * (1/CloudX.length));
     let XReadTime = FramesRenderd % 128
     let Yrand = 0;
     for (let x = 0; x < BackWidth; x++) {
@@ -207,7 +207,7 @@ function CreateBacroundImg(){
                 setPixel(ImgDat,x,y,SR[0],SR[1] ,SR[2] ,254);
                 if (y != 0) {
                     if (getPixelValue(ImgDat,x,y-1,"A") == 255) {
-                        setPixel(ImgDat,x,y-1,0,0,0,254)
+                        //setPixel(ImgDat,x,y-1,0,0,0,254)
                     }
                 }
                 
@@ -326,7 +326,7 @@ function AvgDist (x,y){
     let avg = 0; 
     const L = CloudX.length;
     for (let i = 1; i < L; i++) {
-        let Zratio =(BackHight * 1.5)/(((CloudY[i]+1)/BackHight)+BackHight)
+        let Zratio =(BackHight * 1.5)/(((CloudY[i]+1))+BackHight)
         avg += 1/(dist(x,y,CloudX[i],CloudY[i]*Zratio)+1);  
     }
     return avg;

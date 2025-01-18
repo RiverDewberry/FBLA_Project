@@ -1,11 +1,13 @@
 import { factories } from "./factory.js";
 import { upgradeData } from "./upgrades.js";
+import { NewsReal } from "./newReal.js";
 
 let captureX, captureY, captureW, captureH, overzoom;
 const PUICount = (1 +1)
-const VarsToChange = [4,7]
+const VarsToChange = [10,7]
 let SellectedFactory = -1;
 let SellectedFactoryPos = -1;
+let indent = 0;
 const StatUICount = (5 +1);
 function factoryAt(x, y) {
     x = Math.round(x * captureW / canvas.width + captureX);
@@ -32,7 +34,7 @@ let displayCtx = canvas.getContext("bitmaprenderer");
 const display = new Worker("../js/display.js");
 display.postMessage([0, canvas.width, canvas.height]);
 canvasSetup();
-
+NewsRealSetUp();
 for (let i = 0; i < upgradeData.names.length; i++) {
     CreateUpgradeUI(upgradeData.names[i],IntToRomanNumeral(21),upgradeData.costs)
     
@@ -45,6 +47,7 @@ for (let i = 1; i < PUICount; i++) {
     CreatePolicyUI(i);
     
 }
+setInterval(ScrollText,1)
 setInterval(gameLogicTick,1000)
 //Game VARS
 const gameState = {
@@ -98,6 +101,20 @@ display.onmessage = (e) => {
     captureW = e.data[2];
     captureH = e.data[3];
 }
+function NewsRealSetUp(){
+    let Comb = "";
+    for (let i = 0; i < NewsReal.Headlines.length; i++) {
+        Comb = Comb +"________" + NewsReal.Headlines[i];        
+    }
+    document.getElementById("NewsReal").textContent = Comb;
+    indent = Comb.length * 10;
+}
+function ScrollText(){
+    const Text = document.getElementById("NewsReal");
+    indent -= 1.5;
+    //Text.textContent = NewsReal.Headlines[0];
+    Text.style.textIndent = indent+"px";
+}
 function UpdateUI(){
     document.getElementById("DelButon").addEventListener("click",delCurFac)
     document.getElementById("MoneyText").textContent ="Money:$" + gameState.funds;
@@ -133,6 +150,7 @@ function UpdateUI(){
     }
     
 }
+
 function delCurFac(){
     console.log("stuff");
     removeFactory(SellectedFactoryPos);
