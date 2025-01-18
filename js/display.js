@@ -180,6 +180,8 @@ function CreateBacroundImg(){
             Yrand += Math.round(Math.random() *.5);
             d = AvgDist(x,y);
             Rd = Math.round(Math.log10(((.3* d) +1))* 2 * 255)
+
+
             if (Rd > 255) {Rd = 255;}
             if (d >  Range) {
                 // clouds and stuff
@@ -193,16 +195,14 @@ function CreateBacroundImg(){
                     }
                 }
             }
+
             else{
                 //set blue sky
-                
-                
                 SR= [
                 (getPixelValue(ZenithAng,XReadTime,Yrand % 4,"R")),
                 (getPixelValue(ZenithAng,XReadTime,Yrand % 4,"G")),
                 (getPixelValue(ZenithAng,XReadTime,Yrand % 4,"B"))
-                ]
-                
+                ]                
                 
                 setPixel(ImgDat,x,y,SR[0],SR[1] ,SR[2] ,254);
                 if (y != 0) {
@@ -337,9 +337,7 @@ function dist(x,y,x2,y2){
         return Math.sqrt(dx * dx + dy * dy);
 }
 
-
 function drawScreen() {
-   
     if (!setup) return;
     if (rendering) { // if not rending dont do anything else
         renderRequest = true;
@@ -350,9 +348,8 @@ function drawScreen() {
     ctx.clearRect(0, 0, cw, ch);
     ZenithImgCreation();
     CreateBacroundImg(); // genreat backround img
-    blurCanvas(Backround,2)
-    blurCanvas(Backround,2)
-    drawScaledImg(Backround,-250,-25,BackWidth*(4/Scale) ,BackHight*(4/Scale))// draw it
+    blurCanvas(Backround,4)
+    drawScaledImg(Backround,-255,-25,BackWidth*(4/Scale) ,BackHight*(4/Scale))// draw it
     
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
@@ -366,12 +363,21 @@ function drawScreen() {
         for (let j = 0; j < 8; j++) {
             if(factoryMouseOver === (i << 3) + j)
                 drawScaledImg(img.boxBack,
-                64 * i + 32 * ((7 - j) - i), 16 * (i - (7 - j)) + 250, 64, 64);
+                64 * i + 32 * ((7 - j) - i), 
+                16 * (i - (7 - j)) + 250, 
+                64, 
+                64);
             drawScaledImg(imgArr[(i << 3) | j],
-                64 * i + 32 * ((7 - j) - i), 16 * (i - (7 - j)) + 250, 64, 64);
+                64 * i + 32 * ((7 - j) - i), 
+                16 * (i - (7 - j)) + 250, 
+                64, 
+                64);
             if(factoryMouseOver === (i << 3) + j)
                 drawScaledImg(img.boxFront,
-                64 * i + 32 * ((7 - j) - i), 16 * (i - (7 - j)) + 250, 64, 64);
+                64 * i + 32 * ((7 - j) - i), 
+                16 * (i - (7 - j)) + 250, 
+                64, 
+                64);
         }
     }
     let resultBitmap = offscreen.transferToImageBitmap();

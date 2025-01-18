@@ -19,6 +19,8 @@ export const factories = {
         ],
         64//the max amount of factories
     ),
+        NamesOfData: ["production","cost","safety","happiness","workers","minWorkers","maxworkers","hourlyPay","hoursWorked","workerUnrest"]
+    ,
 
     //dar code
     //not anymore :3

@@ -2,6 +2,11 @@ import { factories } from "./factory.js";
 import { upgradeData } from "./upgrades.js";
 
 let captureX, captureY, captureW, captureH, overzoom;
+const PUICount = (1 +1)
+const VarsToChange = [4,7]
+let SellectedFactory = -1;
+let SellectedFactoryPos = -1;
+const StatUICount = (5 +1);
 function factoryAt(x, y) {
     x = Math.round(x * captureW / canvas.width + captureX);
     y = Math.round(y * captureH / canvas.height + captureY);
@@ -32,8 +37,12 @@ for (let i = 0; i < upgradeData.names.length; i++) {
     CreateUpgradeUI(upgradeData.names[i],IntToRomanNumeral(21),upgradeData.costs)
     
 }
-for (let i = 0; i < 5; i++) {
-    CreateStatUI("name",IntToPlaceValue(100000) + "")
+for (let i = 1; i < StatUICount; i++) {
+    CreateStatUI(factories.NamesOfData[i],IntToPlaceValue(100000) + "", i)
+    
+}
+for (let i = 1; i < PUICount; i++) {
+    CreatePolicyUI(i);
     
 }
 setInterval(gameLogicTick,1000)
@@ -90,9 +99,53 @@ display.onmessage = (e) => {
     captureH = e.data[3];
 }
 function UpdateUI(){
-    
+    document.getElementById("DelButon").addEventListener("click",delCurFac)
     document.getElementById("MoneyText").textContent ="Money:$" + gameState.funds;
     document.getElementById("FactoryCountText").textContent = "Factorys:"+ factories.length;
+    
+    let Cur;
+    if (SellectedFactory !== -1) {
+        
+        
+        for (let i = 0; i < PUICount; i++) {
+            Cur = document.getElementById("PolicyHolder " + i);
+            Cur.style.display = 'flex';
+            Cur.children[0].textContent = factories.NamesOfData[VarsToChange[i]]
+            Cur.children[1].children[0].id = VarsToChange[i];
+            Cur.children[1].children[0].addEventListener("click",subTofacValue);
+            Cur.children[1].children[1].textContent = factories.factoryArray.getVal(SellectedFactory,VarsToChange[i]);
+            Cur.children[1].children[2].id = VarsToChange[i];
+            Cur.children[1].children[2].addEventListener("click",addTofacValue);
+        }
+    }
+    else{
+        for (let i = 0; i < PUICount; i++) {
+            Cur = document.getElementById("PolicyHolder " + i);
+            Cur.style.display = 'none';
+        }
+    }
+    let Cur2;
+    for (let i = 0; i < StatUICount; i++) {
+        Cur2 = document.getElementById("StatsRef " + i)
+        Cur2.children[0].children[0].textContent = factories.NamesOfData[i];
+        Cur2.children[1].children[0].textContent = factories.factoryArray.getVal(SellectedFactory,i);
+        
+    }
+    
+}
+function delCurFac(){
+    console.log("stuff");
+    removeFactory(SellectedFactoryPos);
+    SellectedFactory = -1;
+    SellectedFactoryPos =-1;
+}
+function addTofacValue(item){
+    factories.factoryArray.setVal(SellectedFactory,this.id,factories.factoryArray.getVal(SellectedFactory,this.id) +1);
+    UpdateUI();
+}
+function subTofacValue(){
+    factories.factoryArray.setVal(SellectedFactory,this.id,factories.factoryArray.getVal(SellectedFactory,this.id) -1);
+    UpdateUI();
 }
 
 function canvasSetup() {
@@ -148,16 +201,24 @@ function CreateUpgradeUI(UName,UpgradeLvl,Price,) {
     UpgradeHolder.appendChild(clone);
     
 }  
-function CreateStatUI(SName,Stat) {
+function CreateStatUI(SName,Stat,ind) {
     const UpgradeHolder = document.getElementById("StatsBox");
-    const UpG = document.getElementById("StatsRef");
+    const UpG = document.getElementById("StatsRef 0");
     let clone = UpG.cloneNode(true);
 
-    clone.id = SName;
+    clone.id = "StatsRef " + ind;
     clone.children[0].children[0].textContent = SName + "";
     clone.children[1].children[0].textContent = Stat + "";
     UpgradeHolder.appendChild(clone);
     
+}
+ function CreatePolicyUI(count) {
+    const PolicyHolder = document.getElementById("SideBarLeft");
+    const PolicyClone = document.getElementById("PolicyHolder 0");
+    let clone = PolicyClone.cloneNode(true);
+    clone.id = "PolicyHolder " + count
+
+    PolicyHolder.appendChild(clone);
 }
 function IntToRomanNumeral (int){
     let output = ""
@@ -238,37 +299,44 @@ function upgradeFactory(position, upgradeNum){
 function buyFactory(position, factory){
     if(position < 0 || position > 63) return;
     if(factoryLinks.includes(position)) {
-        removeFactory(position);   
+        SellectedFactory = factoryLinks.indexOf(position);
+        SellectedFactoryPos =position;
+        console.log(SellectedFactory);
         return;
     }
     if(factories.presetCosts[factory] > gameState.funds)return;
     gameState.funds -= factories.presetCosts[factory];
     factoryLinks.push(position);
-
     factories.makePresetFactory(factory);
     display.postMessage([7, position, "factory" + factory]);
+    SellectedFactory ==  factories.length;
+    SellectedFactoryPos = position;
 }
 
 function removeFactory(position) {
     if(position < 0 || position > 63)return;
+    
     if(factoryLinks.includes(position) === false)return;
     let index = factoryLinks.indexOf(position);
     factoryLinks.splice(index, 1);
     display.postMessage([7, position, "grass" + Math.floor(Math.random() * 5 + 1)]);
     factories.removeFactory(index);
+    
+    
 }
 
 function gameLogicTick() {
 
     gameState.hour++;//increases time by 1
-
+    display.postMessage([8]);
+    UpdateUI();
     if (gameState.hour === 24) {
         //increases gameState.day by 1 and sets gameState.hour to 0 when 24 hours pass
         gameState.hour = 0;
         gameState.day++;
     }
 
-    if (gameState.hour < 8) return;//all factories start working at 8
+    if (gameState.hour < 8 & gameState.hour < 20) return;//all factories start working at 8 and end at 20
 
     for (let i = 0; i < factories.length; i++) {
 
@@ -289,8 +357,7 @@ function gameLogicTick() {
 
         factories.setWorkerUnrest(i, factoryUnrest(i));//updates unrest
     }
-    display.postMessage([8]);
-    UpdateUI();
+    
 }
 
 function factoryNetProfit(index) {//calculates the net profit eaxh factory generates

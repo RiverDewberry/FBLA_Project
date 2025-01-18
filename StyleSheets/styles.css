@@ -150,4 +150,37 @@ label{
     width: 100%; 
     text-align: center;
 }
+.Policy{
+    height: 4.5%;
+    color: white;
+    background-color: #0047cc;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    text-align: center;
+}
+.ChangePolicy{
+    display: flex;
+    width: 60%;
+    height: 100%;
+    text-align: right;
+    flex-wrap: nowrap;
+
+}
+.PolicyChange{
+    width: 40%;
+    border-radius: 10px;
+}
+.Inc{
+    background: url('/sprites/IncArrow.png');
+    background-color: white;
+    background-size:contain;
+    background-repeat:no-repeat ;
+}
+.Dec{
+    background: url('/sprites/DecArrow.png');
+    background-color: white;
+    background-size:contain;
+    background-repeat:no-repeat ;
+}
 
