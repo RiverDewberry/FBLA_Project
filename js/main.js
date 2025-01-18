@@ -103,8 +103,16 @@ display.onmessage = (e) => {
 }
 function NewsRealSetUp(){
     let Comb = "";
+    let temp =[];
+    let R;
     for (let i = 0; i < NewsReal.Headlines.length; i++) {
-        Comb = Comb +"________" + NewsReal.Headlines[i];        
+        temp.push(i);
+        
+    }
+    for (let i = 0; i < NewsReal.Headlines.length; i++) {
+        R = Math.round(Math.random() * (temp.length -1))
+        Comb = Comb +"________" + NewsReal.Headlines[temp[R]];   
+        temp.splice(R,1); 
     }
     document.getElementById("NewsReal").textContent = Comb;
     indent = Comb.length * 10;
