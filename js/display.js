@@ -178,7 +178,7 @@ function CreateBacroundImg(){
         for (let y = 0; y < BackHight; y++) {
             XReadTime = Math.round(Math.abs((.5 *Math.sin((FramesRenderd +y/50) *(3.14/180))+.5) * 127));
             Yrand += Math.round(Math.random() *.5);
-            d = AvgDist(x,y);
+            d = AvgDist(x,y * 2);
             Rd = Math.round(Math.log10(((.3* d) +1))* 2 * 255)
 
 
