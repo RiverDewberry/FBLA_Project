@@ -256,6 +256,9 @@ function removeFactory(position) {
     factoryLinks.splice(index, 1);
     display.postMessage([7, position, "grass" + Math.floor(Math.random() * 5 + 1)]);
     factories.removeFactory(index);
+    for(let i = 0; i < factories.upgradeData.names.length; i++) {
+        upgradeNumbers[(position << 6) + i] = 0;
+    }
 }
 
 function gameLogicTick() {
