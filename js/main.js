@@ -268,6 +268,8 @@ function gameLogicTick() {
         gameState.day++;
     }
 
+    display.postMessage([8]);
+
     if (gameState.hour < 8) return;//all factories start working at 8
 
     for (let i = 0; i < factories.length; i++) {
@@ -289,7 +291,7 @@ function gameLogicTick() {
 
         factories.setWorkerUnrest(i, factoryUnrest(i));//updates unrest
     }
-    display.postMessage([8]);
+
     UpdateUI();
 }
 
