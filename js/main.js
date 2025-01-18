@@ -321,8 +321,9 @@ function removeFactory(position) {
     factoryLinks.splice(index, 1);
     display.postMessage([7, position, "grass" + Math.floor(Math.random() * 5 + 1)]);
     factories.removeFactory(index);
-    
-    
+    for(let i = 0; i < factories.upgradeData.names.length; i++) {
+        upgradeNumbers[(position << 6) + i] = 0;
+    }
 }
 
 function gameLogicTick() {
@@ -335,6 +336,10 @@ function gameLogicTick() {
         gameState.hour = 0;
         gameState.day++;
     }
+
+    
+    UpdateUI();
+    display.postMessage([8]);
 
     if (gameState.hour < 8 & gameState.hour < 20) return;//all factories start working at 8 and end at 20
 
@@ -357,7 +362,8 @@ function gameLogicTick() {
 
         factories.setWorkerUnrest(i, factoryUnrest(i));//updates unrest
     }
-    
+
+    UpdateUI();
 }
 
 function factoryNetProfit(index) {//calculates the net profit eaxh factory generates
