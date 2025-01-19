@@ -350,7 +350,9 @@ function drawScreen() {
     CreateBacroundImg(); // genreat backround img
     blurCanvas(Backround,4)
     drawScaledImg(Backround,-255,-25,BackWidth*(4/Scale) ,BackHight*(4/Scale))// draw it
-    
+   
+    drawScaledImg(img.ground, -64, 137, 640, 512);
+
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
             
