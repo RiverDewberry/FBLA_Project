@@ -151,6 +151,8 @@ function UpdateUI(){
     document.getElementById("DelButon").addEventListener("click",delCurFac)
     document.getElementById("MoneyText").textContent ="Money:$" + gameState.funds;
     document.getElementById("FactoryCountText").textContent = "Factorys:"+ factories.length;
+    document.getElementById("DebtDisplay").textContent = "Debt:"+ gameState.Debt;
+    document.getElementById("GoodsDisplay").textContent = "UnSoldGoods:" + gameState.goods;
     if (gameState.hour % 24 < 12) {
         document.getElementById("TimeDisplay").textContent = (((gameState.hour -1) % 12) +1) + " AM"
     }
