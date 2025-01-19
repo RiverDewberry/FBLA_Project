@@ -54,6 +54,8 @@ const gameState = {
     funds: 10000,//how much money the player has
     hour: 8,//the current in-game hour (24 hour format)
     day: 0,//the current in-game day
+    inflation: 1,//the amount of inflation, this effects all prices 
+    goods: 0//the amount of goods the player has, which they can sell for money
 }
 //END OF GAME VARS
 let loadedNum = 0;
@@ -316,8 +318,8 @@ function upgradeFactory(position, upgradeNum){
     let cost = factories.upgradeData.costs[upgradeNum] * (1.15 ** upgradeNumbers[
         (position << 6) + upgradenum
     ]);
-    if(cost > gameState.funds)return;
-    gameState.funds -= cost;
+    if((cost * gameState.inflation) > gameState.funds)return;
+    gameState.funds -= cost * gameState.inflation;
     upgradeNumbers[(position << 6) + upgradeNum]++;
     
     for(let i = 0; i < 10; i++){
@@ -331,12 +333,12 @@ function buyFactory(position, factory){
     if(position < 0 || position > 63) return;
     if(factoryLinks.includes(position)) {
         SellectedFactory = factoryLinks.indexOf(position);
-        SellectedFactoryPos =position;
+        SellectedFactoryPos = position;
         console.log(SellectedFactory);
         return;
     }
-    if(factories.presetCosts[factory] > gameState.funds)return;
-    gameState.funds -= factories.presetCosts[factory];
+    if((factories.presetCosts[factory] * gameState.inflation) > gameState.funds)return;
+    gameState.funds -= factories.presetCosts[factory] * gameState.inflation;
     factoryLinks.push(position);
     factories.makePresetFactory(factory);
     display.postMessage([7, position, "factory" + factory]);
@@ -382,8 +384,8 @@ function gameLogicTick() {
         if (factories.getWorkers(i) < factories.getMinWorkers(i)) continue;
         //if there isn't enough workers, the factory doesn't generate profit or have any cost
 
-        gameState.funds += factoryNetProfit(i);
-        //adds funds from net profit
+        gameState.goods += factoryNetProfit(i);
+        //the production from each factory is added to the current amount of goods
 
         if ((factories.getHappiness(i) < 0.5) && (Math.random() > 0.75))
             factories.setWorkers(i, factories.getWorkers(i) - 1);
@@ -420,7 +422,7 @@ function factoryNetProfit(index) {//calculates the net profit eaxh factory gener
 function factoryHappiness(index) {
     return (
         (factories.getHappiness(index) * 8) +
-        (-0.5 + factories.getHourlyPay(index) * 0.1) +
+        (-0.5 + (factories.getHourlyPay(index) / gameState.inflation) * 0.1) +
         (1.8 - factories.getHoursWorked(index) * 0.1)
     ) * 0.1;
 }//calculates the happiness of each factory
