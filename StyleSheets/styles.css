@@ -179,16 +179,34 @@ label{
 }
 .Dec{
     background: url('/sprites/DecArrow.png');
-    background-color: white;
+    white-space:nowrap;
     background-size:contain;
     background-repeat:no-repeat ;
    
 }
 .NewsReal{
     line-height: 100px;
+    white-space:nowrap;
     color: #ffffff;
     width: 50;
     font-size: 50px;
-   
+
+}
+.InfoDisplay{
+    display: flex;
+    flex-direction: row;
+    width: 25%;
+    height: 50%;
+    font-size: 120%;
+    text-align: center;
+}
+.InfoImg{
+    aspect-ratio: 1 / 1;
+    height: 100%;
+    width: auto;
+    background-size:contain;
+}
+.InfoText{
+    color: white;
 }
 
