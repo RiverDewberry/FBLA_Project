@@ -8,6 +8,7 @@ const VarsToChange = [10,7]
 let SellectedFactory = -1;
 let SellectedFactoryPos = -1;
 let indent = 0;
+
 const StatUICount = (5 +1);
 function factoryAt(x, y) {
     x = Math.round(x * captureW / canvas.width + captureX);
@@ -49,14 +50,30 @@ for (let i = 1; i < PUICount; i++) {
 }
 setInterval(ScrollText,1)
 setInterval(gameLogicTick,1000)
+
 //Game VARS
 const gameState = {
     funds: 10000,//how much money the player has
+    Debt: -10000,
+    Goodsheld: 0,
+    CostPerGood: 1,// how much each good is sold for
+    Marketablity: .00001, //precent of people who will buy ur product
     hour: 8,//the current in-game hour (24 hour format)
     day: 0,//the current in-game day
     inflation: 1,//the amount of inflation, this effects all prices 
     goods: 0//the amount of goods the player has, which they can sell for money
 }
+const EconomyVars ={
+    InflationRate: .03,
+    ValueOfDollar: 1,
+    DebtInfaltionRate: .05,
+    living: 8.5, //Cost of livving calulated form ((avg monthly cost)/(avg days in month))/(hours in day)
+                                                        //(6k/30.437)/24
+    MinimumWage: 7,
+    population:(331.9 * 1000000),//us population
+    DailyPopInc: 19,
+}
+UpdateUI();
 //END OF GAME VARS
 let loadedNum = 0;
 
@@ -134,8 +151,15 @@ function UpdateUI(){
     document.getElementById("DelButon").addEventListener("click",delCurFac)
     document.getElementById("MoneyText").textContent ="Money:$" + gameState.funds;
     document.getElementById("FactoryCountText").textContent = "Factorys:"+ factories.length;
+    if (gameState.hour % 24 < 12) {
+        document.getElementById("TimeDisplay").textContent = (((gameState.hour -1) % 12) +1) + " AM"
+    }
+    else{
+        document.getElementById("TimeDisplay").textContent = (((gameState.hour-1) % 12) +1) + " PM"
+    }
     
     let Cur;
+    let Cur2;
     if (SellectedFactory !== -1) {
         
         
@@ -149,6 +173,12 @@ function UpdateUI(){
             Cur.children[1].children[2].id = VarsToChange[i];
             Cur.children[1].children[2].addEventListener("click",addTofacValue);
         }
+        for (let i = 0; i < StatUICount; i++) {
+            Cur2 = document.getElementById("StatsRef " + i)
+            Cur2.children[0].children[0].textContent = factories.NamesOfData[i];
+            Cur2.children[1].children[0].textContent = factories.factoryArray.getVal(SellectedFactory,i);
+            
+        }
     }
     else{
         for (let i = 0; i < PUICount; i++) {
@@ -156,13 +186,8 @@ function UpdateUI(){
             Cur.style.display = 'none';
         }
     }
-    let Cur2;
-    for (let i = 0; i < StatUICount; i++) {
-        Cur2 = document.getElementById("StatsRef " + i)
-        Cur2.children[0].children[0].textContent = factories.NamesOfData[i];
-        Cur2.children[1].children[0].textContent = factories.factoryArray.getVal(SellectedFactory,i);
-        
-    }
+    
+    
     
 }
 
@@ -335,6 +360,7 @@ function buyFactory(position, factory){
         SellectedFactory = factoryLinks.indexOf(position);
         SellectedFactoryPos = position;
         console.log(SellectedFactory);
+        UpdateUI();
         return;
     }
     if((factories.presetCosts[factory] * gameState.inflation) > gameState.funds)return;
@@ -342,8 +368,9 @@ function buyFactory(position, factory){
     factoryLinks.push(position);
     factories.makePresetFactory(factory);
     display.postMessage([7, position, "factory" + factory]);
-    SellectedFactory ==  factories.length;
+    SellectedFactory =  (factories.length -1);
     SellectedFactoryPos = position;
+    UpdateUI();
 }
 
 function removeFactory(position) {
@@ -368,6 +395,9 @@ function gameLogicTick() {
         //increases gameState.day by 1 and sets gameState.hour to 0 when 24 hours pass
         gameState.hour = 0;
         gameState.day++;
+
+        //Daily stat update
+        EconomyVars.population += EconomyVars.DailyPopInc;
     }
 
     
