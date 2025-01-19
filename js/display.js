@@ -172,11 +172,13 @@ function CreateBacroundImg(){
     let d =0;
     const ImgDat = Backround.getContext('2d').createImageData(BackWidth,BackHight);
     const Range = (.7 * BackWidth * (1/CloudX.length));
-    let XReadTime = FramesRenderd % 128
+    const TSpeed = 12
+    let XReadTime = 0;
     let Yrand = 0;
     for (let x = 0; x < BackWidth; x++) {
         for (let y = 0; y < BackHight; y++) {
-            XReadTime = Math.round(Math.abs((.5 *Math.sin((FramesRenderd +y/50) *(3.14/180))+.5) * 127));
+            
+            XReadTime = Math.round(120*((-.5 * Math.cos((3.141/24) * (FramesRenderd ))) + .5)) + Math.round(y/32) ;
             Yrand += Math.round(Math.random() *.5);
             d = AvgDist(x,y * 2);
             Rd = Math.round(Math.log10(((.3* d) +1))* 2 * 255)
@@ -349,9 +351,10 @@ function drawScreen() {
     ZenithImgCreation();
     CreateBacroundImg(); // genreat backround img
     blurCanvas(Backround,4)
-    drawScaledImg(Backround,-255,-25,BackWidth*(4/Scale) ,BackHight*(4/Scale))// draw it
+    
    
-    drawScaledImg(img.ground, -64, 137, 640, 512);
+    drawScaledImg(img.Road, -62, 81, 630, 630);
+    //drawScaledImg(img.ground, -64, 137, 640, 512);
 
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
@@ -382,9 +385,21 @@ function drawScreen() {
                 64);
         }
     }
+
+    DrawOver((FramesRenderd % 12)/48);
+    ctx.globalCompositeOperation = "destination-over";
+    drawScaledImg(Backround,-255,-25,BackWidth*(4/Scale) ,BackHight*(4/Scale))// draw it
+    ctx.globalCompositeOperation = "source-over";
+
     let resultBitmap = offscreen.transferToImageBitmap();
     postMessage(resultBitmap, [resultBitmap]);
     postMessage([captureX, captureY, captureW, captureH]);
+}
+function DrawOver(amount){
+    ctx.globalCompositeOperation = "source-atop";
+    ctx.fillStyle = "rgba(0, 0, 0,"+(amount)+")";
+    ctx.fillRect(0, 0,offscreen.width , offscreen.height);
+    ctx.globalCompositeOperation = "source-over";
 }
 
 function drawScaledImg(img, x, y, w, h) {

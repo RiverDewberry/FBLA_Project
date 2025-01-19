@@ -67,7 +67,7 @@ const imgs = [];
 const imgbmps = [];
 const srcs = [
     "grass1", "grass2", "grass3", "grass4", "grass5", "boxFront", "boxBack", "factory1",
-    "border","SunZenith_Gradient","ViewZenith_Gradient",
+    "border","SunZenith_Gradient","ViewZenith_Gradient","ground","Road",
 ];
 
 for(let i = 0; i < srcs.length; i++){
@@ -109,17 +109,22 @@ function NewsRealSetUp(){
         temp.push(i);
         
     }
+    let Gap  = "";
+    for (let i = 0; i < 10; i++) {
+        Gap += " " ;
+        
+    }
     for (let i = 0; i < NewsReal.Headlines.length; i++) {
         R = Math.round(Math.random() * (temp.length -1))
-        Comb = Comb +"________" + NewsReal.Headlines[temp[R]];   
+        Comb = Comb+Gap +"BREAKING:" + NewsReal.Headlines[temp[R]];   
         temp.splice(R,1); 
     }
     document.getElementById("NewsReal").textContent = Comb;
-    indent = Comb.length * 10;
+    indent = 1000;
 }
 function ScrollText(){
     const Text = document.getElementById("NewsReal");
-    indent -= 1.5;
+    indent -= 1;
     //Text.textContent = NewsReal.Headlines[0];
     Text.style.textIndent = indent+"px";
 }

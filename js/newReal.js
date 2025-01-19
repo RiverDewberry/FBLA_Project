@@ -7,8 +7,10 @@ export const NewsReal = {
     "boulder the size of large boulder removed after blocking highway 21",
     "AI uprising not eminent says chat GPT",
     "Archaeological Dig Uncovers Ancient Race Of Skeleton People",
-    "man with 3 foot tall chicken sews genie for refund",
+    "Man with 3 foot tall chicken suing genie for refund",
     "kid with dyslexia says he cant\"red\"",
+    "Frog gayness is up 7% from the last 6 months",
+    "President disliked by opposing party say witty news anchor"
     ]
 
 }

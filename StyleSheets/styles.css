@@ -172,12 +172,14 @@ label{
     border-radius: 10px;
 }
 .Inc{
+    aspect-ratio: 1 / 1;
     background: url('/sprites/IncArrow.png');
     background-color: white;
     background-size:contain;
     background-repeat:no-repeat ;
 }
 .Dec{
+    aspect-ratio: 1 / 1;
     background: url('/sprites/DecArrow.png');
     white-space:nowrap;
     background-size:contain;
@@ -185,7 +187,7 @@ label{
    
 }
 .NewsReal{
-    line-height: 100px;
+    line-height: 0px;
     white-space:nowrap;
     color: #ffffff;
     width: 50;
@@ -207,6 +209,8 @@ label{
     background-size:contain;
 }
 .InfoText{
+    width: auto;
+    font-size: 150%;
     color: white;
 }
 
