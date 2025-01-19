@@ -79,6 +79,9 @@
 }
 #TopUI{
     display: flex;
+    flex-direction:row;
+    flex-wrap: wrap;
+
     top: 0px;
     left: 0px;
     width: 100%;
@@ -197,10 +200,12 @@ label{
 .InfoDisplay{
     display: flex;
     flex-direction: row;
-    width: 25%;
-    height: 50%;
+    flex-wrap: nowrap;
+    width: 24.9%;
+    height: 49%;
     font-size: 120%;
     text-align: center;
+    
 }
 .InfoImg{
     aspect-ratio: 1 / 1;
@@ -209,7 +214,9 @@ label{
     background-size:contain;
 }
 .InfoText{
-    width: auto;
+    line-height: 0px;
+    width:fit-content;
+    margin: auto;
     font-size: 150%;
     color: white;
 }

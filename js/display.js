@@ -21,7 +21,7 @@ let factoryMouseOver = -1;//the factory that the mouse is over
 
 let rendering = false;
 let renderRequest = false;
-let FramesRenderd = 0;
+let FramesRenderd = 9;
 
 const Scale = 1;
 const BackWidth =256 *Scale;
@@ -65,7 +65,7 @@ function zoom(deltaY) {//zooms the capture area
     captureSize += 3 * Math.sign(deltaY);//adjusts the capture size when the player zooms in or out
 
     if (captureSize < 63) captureSize = 64;//lower bound for capture size
-    if (captureSize > 1023) captureSize = 1024;//upper bound for capture size
+    if (captureSize > 959) captureSize = 960;//upper bound for capture size
 
     //resizes capture area
     captureW = Math.round(captureSize);
@@ -178,9 +178,9 @@ function CreateBacroundImg(){
     for (let x = 0; x < BackWidth; x++) {
         for (let y = 0; y < BackHight; y++) {
             
-            XReadTime = Math.round(120*((-.5 * Math.cos((3.141/24) * (FramesRenderd ))) + .5)) + Math.round(y/32) ;
+            XReadTime = Math.round(120*((-.5 * Math.cos((3.141/24) * (FramesRenderd ))) + .5)) + Math.round(Math.abs(y-BackHight)/24) ;
             Yrand += Math.round(Math.random() *.5);
-            d = AvgDist(x,y * 2);
+            d = AvgDist(x,y * 1.5);
             Rd = Math.round(Math.log10(((.3* d) +1))* 2 * 255)
 
 
@@ -209,7 +209,7 @@ function CreateBacroundImg(){
                 setPixel(ImgDat,x,y,SR[0],SR[1] ,SR[2] ,254);
                 if (y != 0) {
                     if (getPixelValue(ImgDat,x,y-1,"A") == 255) {
-                        //setPixel(ImgDat,x,y-1,0,0,0,254)
+                        setPixel(ImgDat,x,y-1,100,100,100,254)
                     }
                 }
                 
@@ -386,9 +386,9 @@ function drawScreen() {
         }
     }
 
-    DrawOver( .25 * ( (.5 * Math.cos((3.14/24)* FramesRenderd))  + .5)    );
+    DrawOver( .5 * ( (.5 * Math.cos((3.14/24)* FramesRenderd))  + .5)    );
     ctx.globalCompositeOperation = "destination-over";
-    drawScaledImg(Backround,-255,-25,BackWidth*(4/Scale) ,BackHight*(4/Scale))// draw it
+    drawScaledImg(Backround,-255,-15,BackWidth*(4/Scale) ,BackHight*(4/Scale))// draw it
     ctx.globalCompositeOperation = "source-over";
 
     let resultBitmap = offscreen.transferToImageBitmap();
