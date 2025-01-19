@@ -386,7 +386,7 @@ function drawScreen() {
         }
     }
 
-    DrawOver((FramesRenderd % 12)/48);
+    DrawOver( .25 * ( (.5 * Math.cos((3.14/24)* FramesRenderd))  + .5)    );
     ctx.globalCompositeOperation = "destination-over";
     drawScaledImg(Backround,-255,-25,BackWidth*(4/Scale) ,BackHight*(4/Scale))// draw it
     ctx.globalCompositeOperation = "source-over";
