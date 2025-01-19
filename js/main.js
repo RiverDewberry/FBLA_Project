@@ -59,7 +59,7 @@ const gameState = {
     CostPerGood: 1,// how much each good is sold for
     Marketablity: .00001, //precent of people who will buy ur product
     hour: 8,//the current in-game hour (24 hour format)
-    day: 0,//the current in-game day
+    day: 1,//the current in-game day
 }
 const EconomyVars ={
     InflationRate: .03,
@@ -344,6 +344,7 @@ function upgradeFactory(position, upgradeNum){
     if(cost > gameState.funds)return;
     gameState.funds -= cost;
     upgradeNumbers[(position << 6) + upgradeNum]++;
+
     
     for(let i = 0; i < 10; i++){
         factories.factoryArray.setVal(
@@ -394,8 +395,14 @@ function gameLogicTick() {
         gameState.hour = 0;
         gameState.day++;
 
+        
         //Daily stat update
         EconomyVars.population += EconomyVars.DailyPopInc;
+        if ((Days % 90) == 0) {
+            EconomyVars.ValueOfDollar = EconomyVars.ValueOfDollar * (EconomyVars.InflationRate *.25);
+            EconomyVars.MinimumWage = EconomyVars.MinimumWage * (1 +(EconomyVars.InflationRate *.25));
+        }
+
     }
 
     
