@@ -423,6 +423,8 @@ function gameLogicTick() {
         if (factories.getWorkers(i) < factories.getMinWorkers(i)) continue;
         //if there isn't enough workers, the factory doesn't generate profit or have any cost
 
+        gameState.funds -= (factories.getHourlyPay(i) * factories.getWorkers(i))//pays workers
+
         gameState.goods += factoryNetProfit(i);
         //the production from each factory is added to the current amount of goods
 
@@ -442,7 +444,7 @@ function factoryNetProfit(index) {//calculates the net profit eaxh factory gener
     return (
         factories.getProduction(index) * (factories.getHappiness(index) > 1.25 ? 1.1 : 1)
     ) - factories.getCost(index) - //base cost and profit with happiness modifier
-        (factories.getHourlyPay(index) * factories.getWorkers(index)) +
+        +
         //since this runs each hour, the hourly pay is a cost
         Math.round(
             Math.sqrt(
