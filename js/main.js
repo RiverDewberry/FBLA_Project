@@ -57,7 +57,7 @@ const gameState = {
     Debt: -10000,
     Goodsheld: 0,
     CostPerGood: 1,// how much each good is sold for
-    Marketablity: .00001, //precent of people who will buy ur product
+    Marketablity: .000001, //precent of people who will buy ur product
     hour: 8,//the current in-game hour (24 hour format)
     day: 1,//the current in-game day
     inflation: 1,//the amount of inflation, this effects all prices 
@@ -394,12 +394,13 @@ function gameLogicTick() {
     gameState.hour++;//increases time by 1
     display.postMessage([8]);
     UpdateUI();
-    if (gameState.hour === 24) {
+    if (gameState.hour === 24) { //day end
         //increases gameState.day by 1 and sets gameState.hour to 0 when 24 hours pass
         gameState.hour = 0;
         gameState.day++;
 
-        
+        gameState.funds +=  Math.round(ClampMax(EconomyVars.population * gameState.Marketablity,gameState.goods) * gameState.CostPerGood);
+        gameState.goods -=  Math.round(ClampMax(EconomyVars.population * gameState.Marketablity,gameState.goods));
         //Daily stat update
         EconomyVars.population += EconomyVars.DailyPopInc;
         if ((Days % 90) == 0) {
@@ -408,7 +409,14 @@ function gameLogicTick() {
         }
 
     }
-
+    function ClampMax(input,max){
+        if (input > max) {
+            return max;
+        }
+        else{
+            return input;
+        }
+    }
     
     UpdateUI();
     display.postMessage([8]);
@@ -419,6 +427,13 @@ function gameLogicTick() {
 
         if (gameState.hour > (7 + factories.getHoursWorked(i))) continue;
         //if it is past working hours, the factory doesn't generate profit or have any cost
+        if (factories.getTargetWorkerAmount(i) > factories.getWorkers(i)) {
+            if (factories.getHourlyPay(i) >= EconomyVars.MinimumWage){
+                if (factories.getHourlyPay(i) >= EconomyVars.living ) {
+                    factories.setWorkers(i,factories.getWorkers(i)+1)
+                }
+            }
+        }
 
         if (factories.getWorkers(i) < factories.getMinWorkers(i)) continue;
         //if there isn't enough workers, the factory doesn't generate profit or have any cost

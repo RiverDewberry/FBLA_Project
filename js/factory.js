@@ -32,7 +32,7 @@ export const factories = {
 
         //see lines 7 - 16 for what value each index represents
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [100, 10, 1, 1, 2, 1, 3, 9, 13, 0, 0],//first factory
+        [100, 10, 1, 1, 2, 1, 3, 9, 13, 0, 5],//first factory
     ],
     
     presetCosts: [

@@ -177,7 +177,8 @@ label{
 .Inc{
     aspect-ratio: 1 / 1;
     background: url('/sprites/IncArrow.png');
-    background-color: white;
+    background-color: transparent;
+    border: transparent;
     background-size:contain;
     background-repeat:no-repeat ;
 }
@@ -185,6 +186,7 @@ label{
     aspect-ratio: 1 / 1;
     background: url('/sprites/DecArrow.png');
     white-space:nowrap;
+    border: transparent;
     background-size:contain;
     background-repeat:no-repeat ;
    
