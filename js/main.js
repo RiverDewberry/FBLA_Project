@@ -443,7 +443,7 @@ function gameLogicTick() {
 function factoryNetProfit(index) {//calculates the net profit eaxh factory generates
     return (
         factories.getProduction(index) * (factories.getHappiness(index) > 1.25 ? 1.1 : 1)
-    ) - factories.getCost(index) - //base cost and profit with happiness modifier
+    ) - factories.getCost(index) //base cost and profit with happiness modifier
         +
         //since this runs each hour, the hourly pay is a cost
         Math.round(
