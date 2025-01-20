@@ -59,7 +59,7 @@ setInterval(gameLogicTick,1000)
 //Game VARS
 const gameState = {
     funds: 10000,//how much money the player has
-    Debt: -10000,
+    Debt: -1000000,
     Goodsheld: 0,
     CostPerGood: 1,// how much each good is sold for
     Marketablity: .000005, //precent of people who will buy ur product
@@ -189,7 +189,7 @@ function ScrollText(){
 }
 function UpdateUI(){
     document.getElementById("DelButon").addEventListener("click",delCurFac)
-    document.getElementById("MoneyText").textContent ="Money:$" + gameState.funds;
+    document.getElementById("MoneyText").textContent ="Money:$" + IntToPlaceValue(gameState.funds);
     document.getElementById("FactoryCountText").textContent = "Factorys:"+ factories.length;
     document.getElementById("DebtDisplay").textContent = "Debt:"+ gameState.Debt;
     document.getElementById("GoodsDisplay").textContent = "UnSold Goods:" + gameState.goods;
@@ -345,7 +345,7 @@ function IntToPlaceValue(int){
     let Abriv =  ["T","B","M","K"]
     for (let i = 0; i < places.length; i++) {
         if (int >= Math.pow(10,places[i])) {
-            return (int/Math.pow(10,places[i]))+ Abriv[i];
+            return (Math.round(10 * (int/Math.pow(10,places[i])))/10)+ Abriv[i];
         } 
     }
     return int;

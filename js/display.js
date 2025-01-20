@@ -41,6 +41,7 @@ function canvasSetup(w, h) {
     cw = w;
     ch = h;
     setup = true;
+    RenderBack = true;
     //this creates a new context when each 
     offscreen = new OffscreenCanvas(w, h);
     ctx = offscreen.getContext("2d");
@@ -179,7 +180,7 @@ function CreateBacroundImg(){
         for (let y = 0; y < BackHight; y++) {
             
             //XReadTime = Math.round(120*((-.5 * Math.cos((3.141/24) * (FramesRenderd ))) + .5)) + Math.round(Math.abs(y-BackHight)/24) ;
-            XReadTime = Math.round(127 * HoursSinFuntion(FramesRenderd))
+            XReadTime = Math.round(120 * HoursSinFuntion(FramesRenderd)) +  Math.round(Math.abs(y-BackHight)/24)
             Yrand += Math.round(Math.random() *.5);
             d = AvgDist(x,y * 1.5);
             Rd = Math.round(Math.log10(((.3* d) +1))* 2 * 255)
@@ -189,8 +190,8 @@ function CreateBacroundImg(){
             if (d >  Range) {
                 // clouds and stuff
                 setPixel(ImgDat,x,y,235,235,235,255);
-                if( Math.round(d -.1) ==2){
-                    setPixel(ImgDat,x,y,235 -(Rd*.25),235 -(Rd*.25),235-(Rd*.25),255);
+                if( Math.round(d ) ==3){
+                    setPixel(ImgDat,x,y,235 -(Rd*.2),235 -(Rd*.2),235-(Rd*.2),255);
                 }
                 if (y != 0) {
                     if (getPixelValue(ImgDat,x,y-1,"A") == 254) {
