@@ -36,8 +36,10 @@ const display = new Worker("../js/display.js");
 display.postMessage([0, canvas.width, canvas.height]);
 canvasSetup();
 NewsRealSetUp();
+
+//Set up Html ellements
 for (let i = 0; i < upgradeData.names.length; i++) {
-    CreateUpgradeUI(upgradeData.names[i],IntToRomanNumeral(21),upgradeData.costs)
+    CreateUpgradeUI(upgradeData.names[i],IntToRomanNumeral(4),upgradeData.costs)
     
 }
 for (let i = 1; i < StatUICount; i++) {
@@ -45,9 +47,12 @@ for (let i = 1; i < StatUICount; i++) {
     
 }
 for (let i = 1; i < PUICount; i++) {
-    CreatePolicyUI(i);
+    CreatePolicyUI(i,false);
     
 }
+CreatePolicyUI(PUICount,true);
+//End of set up
+
 setInterval(ScrollText,1)
 setInterval(gameLogicTick,1000)
 
@@ -120,6 +125,40 @@ display.onmessage = (e) => {
     captureW = e.data[2];
     captureH = e.data[3];
 }
+
+//events
+let mouseDownX = 0;
+let mouseDownY = 0;
+canvas.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    display.postMessage([2, e.deltaY]);
+});
+canvas.addEventListener("mousemove", (e) => {
+    display.postMessage([4, e.offsetX, e.offsetY]);
+}
+);
+canvas.addEventListener("mousedown", (e) => {
+    display.postMessage([3, true]);
+    mouseDownX = e.offsetX;
+    mouseDownY = e.offsetY;
+});
+canvas.addEventListener("mouseup", (e) => {
+    display.postMessage([3, false]);
+    if(mouseDownX === e.offsetX && mouseDownY === e.offsetY){
+	if(factoryAt(e.offsetX, e.offsetY) === -1)return;
+        buyFactory(factoryAt(e.offsetX, e.offsetY), 1);
+    }
+});
+window.addEventListener("resize", (e) => {
+    canvasSetup();
+    display.postMessage([1]);
+});
+//Game DISPLAY END
+
+
+
+//UI DisplayStart
+//
 function NewsRealSetUp(){
     let Comb = "";
     let temp =[];
@@ -160,21 +199,16 @@ function UpdateUI(){
         document.getElementById("TimeDisplay").textContent = (((gameState.hour-1) % 12) +1) + " PM"
     }
     
-    let Cur;
+    
     let Cur2;
     if (SellectedFactory !== -1) {
         
         
         for (let i = 0; i < PUICount; i++) {
-            Cur = document.getElementById("PolicyHolder " + i);
-            Cur.style.display = 'flex';
-            Cur.children[0].textContent = factories.NamesOfData[VarsToChange[i]]
-            Cur.children[1].children[0].id = VarsToChange[i];
-            Cur.children[1].children[0].addEventListener("click",subTofacValue);
-            Cur.children[1].children[1].textContent = factories.factoryArray.getVal(SellectedFactory,VarsToChange[i]);
-            Cur.children[1].children[2].id = VarsToChange[i];
-            Cur.children[1].children[2].addEventListener("click",addTofacValue);
+            UpdatePolicyUI(i,factories.NamesOfData[VarsToChange[i]],factories.factoryArray.getVal(SellectedFactory,VarsToChange[i]),true);  
         }
+        UpdatePolicyUI(PUICount,"Cost of goods",gameState.CostPerGood + "",false);
+
         for (let i = 0; i < StatUICount; i++) {
             Cur2 = document.getElementById("StatsRef " + i)
             Cur2.children[0].children[0].textContent = factories.NamesOfData[i];
@@ -183,13 +217,31 @@ function UpdateUI(){
         }
     }
     else{
-        for (let i = 0; i < PUICount; i++) {
+        let Cur;
+        for (let i = 0; i < PUICount + 1; i++) {
             Cur = document.getElementById("PolicyHolder " + i);
             Cur.style.display = 'none';
         }
     }
-    
-    
+}
+function UpdatePolicyUI (ind,LabelName,CurValue,IsFactory){
+    let Cur = document.getElementById("PolicyHolder " + ind);
+    Cur.style.display = 'flex';
+    Cur.children[0].textContent = LabelName
+    Cur.children[1].children[1].textContent = CurValue;
+
+    if (IsFactory) {
+        Cur.children[1].children[0].id = VarsToChange[ind];
+        Cur.children[1].children[0].addEventListener("click",subTofacValue);
+        Cur.children[1].children[2].id = VarsToChange[ind];
+        Cur.children[1].children[2].addEventListener("click",addTofacValue);
+    }
+    else{
+        
+        Cur.children[1].children[0].addEventListener("click",SubToGame);
+        Cur.children[1].children[2].addEventListener("click",AddToGame);
+    }
+
     
 }
 
@@ -199,7 +251,15 @@ function delCurFac(){
     SellectedFactory = -1;
     SellectedFactoryPos =-1;
 }
-function addTofacValue(item){
+function AddToGame(){
+    gameState.CostPerGood =  gameState.CostPerGood + 1;
+    UpdateUI();
+}
+function SubToGame(){
+    gameState.CostPerGood =  gameState.CostPerGood - 1;
+    UpdateUI();
+}
+function addTofacValue(){
     factories.factoryArray.setVal(SellectedFactory,this.id,factories.factoryArray.getVal(SellectedFactory,this.id) +1);
     UpdateUI();
 }
@@ -217,38 +277,6 @@ function canvasSetup() {
     
 }
 
-//events
-let mouseDownX = 0;
-let mouseDownY = 0;
-canvas.addEventListener("wheel", (e) => {
-    e.preventDefault();
-    display.postMessage([2, e.deltaY]);
-});
-canvas.addEventListener("mousemove", (e) => {
-    display.postMessage([4, e.offsetX, e.offsetY]);
-}
-);
-canvas.addEventListener("mousedown", (e) => {
-    display.postMessage([3, true]);
-    mouseDownX = e.offsetX;
-    mouseDownY = e.offsetY;
-});
-canvas.addEventListener("mouseup", (e) => {
-    display.postMessage([3, false]);
-    if(mouseDownX === e.offsetX && mouseDownY === e.offsetY){
-	if(factoryAt(e.offsetX, e.offsetY) === -1)return;
-        buyFactory(factoryAt(e.offsetX, e.offsetY), 1);
-    }
-});
-window.addEventListener("resize", (e) => {
-    canvasSetup();
-    display.postMessage([1]);
-});
-//Game DISPLAY END
-
-
-
-//UI DisplayStart
 function CreateUpgradeUI(UName,UpgradeLvl,Price,) {
     const UpgradeHolder = document.getElementById("UpgradesBox");
     const UpG = document.getElementById("UpgradeRef");
@@ -272,8 +300,14 @@ function CreateStatUI(SName,Stat,ind) {
     UpgradeHolder.appendChild(clone);
     
 }
- function CreatePolicyUI(count) {
-    const PolicyHolder = document.getElementById("SideBarLeft");
+ function CreatePolicyUI(count,IsGlobal) {
+    let PolicyHolder = document.getElementById("PolicyBoxHolder");
+    if (IsGlobal) {
+       PolicyHolder = document.getElementById("GolabalPolicyBoxHolder");
+    }
+   
+    
+
     const PolicyClone = document.getElementById("PolicyHolder 0");
     let clone = PolicyClone.cloneNode(true);
     clone.id = "PolicyHolder " + count
@@ -284,36 +318,24 @@ function IntToRomanNumeral (int){
     let output = ""
     let num = int;
     let temp = int;
-    for (let i = 0; i < Math.floor(temp/500); i++) {
-        output += "D" ;
-        num -=500;  
-    }
-    temp = num;
-    for (let i = 0; i < Math.floor(temp/100); i++) {
-        output += "C" ;
-        num -=100;  
-    }
-    temp = num;
-    for (let i = 0; i < Math.floor(temp/50); i++) {
-        output += "L" ;
-        num -=50;  
-    }
-    temp = num;
-    for (let i = 0; i < Math.floor(temp/10); i++) {
-        output += "X" ;
-        num -=10;  
-    }
-    temp = num;
-    for (let i = 0; i < Math.floor(temp/5); i++) {
-        output += "V" ;
-        num -=5;  
-    }
-    temp = num;
-    for (let i = 0; i < Math.floor(temp/1); i++) {
-        output += "I" ;
-        num -=1;  
-    }
-    temp = num
+    const Chars = ["D" ,"C","L","X","V",'I']
+    const Values = [500,100,50 ,10 ,5  ,1]
+        for (let i = 0; i < Values.length; i++) {
+            for (let j = 0; j <  Math.floor(temp/Values[i]); j++) {
+                output += (Chars[i] + "")
+                num -= Values[i];
+            }
+            if (Values[i] != 1) {
+                if (Values[i]/Values[i+1] == 5) {
+                    if ((((-num % -Values[i+1]) + num)/Values[i+1]) ) {
+                       num -= Values[i] - Values[i+1];
+                       output += Chars[i+1] +""+ Chars[i];
+                    }
+                }
+            }
+            
+            temp = num;
+        }
     return (output);
 }
 function IntToPlaceValue(int){
@@ -403,7 +425,7 @@ function gameLogicTick() {
         gameState.goods -=  Math.round(ClampMax(EconomyVars.population * gameState.Marketablity,gameState.goods));
         //Daily stat update
         EconomyVars.population += EconomyVars.DailyPopInc;
-        if ((Days % 90) == 0) {
+        if ((gameState.day % 90) == 0) {
             EconomyVars.ValueOfDollar = EconomyVars.ValueOfDollar * (EconomyVars.InflationRate *.25);
             EconomyVars.MinimumWage = EconomyVars.MinimumWage * (1 +(EconomyVars.InflationRate *.25));
         }

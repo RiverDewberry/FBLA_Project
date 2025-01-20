@@ -62,11 +62,11 @@
     text-align:center;
     flex-direction:column;
 }
-.TwoWay{
-    display: flex;
-    width: 50%;
-    height: 100%;
-    text-align:center;
+.TwoWay{ 
+    display:         flex;
+    width:            50%;
+    height:          100%;
+    text-align:    center;
     flex-direction:column;
 }
 #TopUI{
@@ -140,8 +140,12 @@ label{
     width: 100%; 
     text-align: center;
 }
+.PolicyBoxHolder{
+    height: 50%;
+
+}
 .Policy{
-    height: 4.5%;
+    height: 10%;
     color: white;
     background-color: #0047cc;
     display: flex;
