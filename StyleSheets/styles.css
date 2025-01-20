@@ -1,9 +1,12 @@
+@font-face { font-family: RETROTECH; src: url('/StyleSheets/RETROTECH.ttf') format("truetype"); }
 :root{
     --MainGameColor: #000000;
     --SecondaryGameColor: #b60000;
     --TertiaryGameColor:  #0047cc;
     --transpar: #00000000;
     --DarkModeMain: #00000000;
+    font-family: 'RETROTECH', monospace;
+    letter-spacing: .1rem;
 }
 .DarkBack{
     background-color: var(--DarkModeMain);

@@ -358,8 +358,8 @@ function drawScreen() {
     blurCanvas(Backround,4)
     
    
-    drawScaledImg(img.Road, -62, 81, 630, 630);
-    //drawScaledImg(img.ground, -64, 137, 640, 512);
+    //drawScaledImg(img.Road, -62, 81, 630, 630);
+    drawScaledImg(img.ground, -64, 137, 640, 512);
 
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {

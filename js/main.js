@@ -9,7 +9,7 @@ let SellectedFactory = -1;
 let SellectedFactoryPos = -1;
 let indent = 0;
 
-const StatUICount = (5 +1);
+const StatUICount = (6 +1);
 function factoryAt(x, y) {
     x = Math.round(x * captureW / canvas.width + captureX);
     y = Math.round(y * captureH / canvas.height + captureY);
@@ -444,13 +444,16 @@ function gameLogicTick() {
 
         if (gameState.hour > (7 + factories.getHoursWorked(i))) continue;
         //if it is past working hours, the factory doesn't generate profit or have any cost
-        if (factories.getTargetWorkerAmount(i) > factories.getWorkers(i)) {
-            if (factories.getHourlyPay(i) >= EconomyVars.MinimumWage){
-                if (factories.getHourlyPay(i) >= EconomyVars.living ) {
-                    factories.setWorkers(i,factories.getWorkers(i)+1)
+        if (factories.getMaxWorkers(i) > factories.getWorkers(i)) {
+            if (factories.getTargetWorkerAmount(i) > factories.getWorkers(i)) {
+                if (factories.getHourlyPay(i) >= EconomyVars.MinimumWage){
+                    if (factories.getHourlyPay(i) >= EconomyVars.living ) {
+                        factories.setWorkers(i,factories.getWorkers(i)+1)
+                    }
                 }
-            }
+            } 
         }
+        
 
         if (factories.getWorkers(i) < factories.getMinWorkers(i)) continue;
         //if there isn't enough workers, the factory doesn't generate profit or have any cost
