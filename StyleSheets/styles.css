@@ -47,12 +47,12 @@
 }
 .UiBasic{
     position: absolute;
-    background-color: #b6000044;
+    background-color: #b6000010;
     width: 100px;
     height: 100px;
     border-color: #ffffff44;
     border-width: 2px;
-    border-style: solid ;
+    border-style:none ;
     z-index: 1;
 }
 .ThreeWay{

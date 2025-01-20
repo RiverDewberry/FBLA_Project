@@ -21,7 +21,7 @@ let factoryMouseOver = -1;//the factory that the mouse is over
 
 let rendering = false;
 let renderRequest = false;
-let FramesRenderd = 9;
+let FramesRenderd = 8;
 
 const Scale = 1;
 const BackWidth =256 *Scale;
@@ -178,7 +178,8 @@ function CreateBacroundImg(){
     for (let x = 0; x < BackWidth; x++) {
         for (let y = 0; y < BackHight; y++) {
             
-            XReadTime = Math.round(120*((-.5 * Math.cos((3.141/24) * (FramesRenderd ))) + .5)) + Math.round(Math.abs(y-BackHight)/24) ;
+            //XReadTime = Math.round(120*((-.5 * Math.cos((3.141/24) * (FramesRenderd ))) + .5)) + Math.round(Math.abs(y-BackHight)/24) ;
+            XReadTime = Math.round(127 * HoursSinFuntion(FramesRenderd))
             Yrand += Math.round(Math.random() *.5);
             d = AvgDist(x,y * 1.5);
             Rd = Math.round(Math.log10(((.3* d) +1))* 2 * 255)
@@ -338,6 +339,9 @@ function dist(x,y,x2,y2){
         const dy = y - y2;
         return Math.sqrt(dx * dx + dy * dy);
 }
+function HoursSinFuntion(input){
+    return (-.5 * Math.cos(.261799387799 * input)) +.5
+}
 
 function drawScreen() {
     if (!setup) return;
@@ -386,7 +390,7 @@ function drawScreen() {
         }
     }
 
-    DrawOver( .5 * ( (.5 * Math.cos((3.14/24)* FramesRenderd))  + .5)    );
+    DrawOver( .5 * HoursSinFuntion(FramesRenderd + 12));
     ctx.globalCompositeOperation = "destination-over";
     drawScaledImg(Backround,-255,-15,BackWidth*(4/Scale) ,BackHight*(4/Scale))// draw it
     ctx.globalCompositeOperation = "source-over";
@@ -455,7 +459,8 @@ onmessage = (e) => {
         default:
             break;
         case 8:
-            FramesRenderd +=1;
+            FramesRenderd = FramesRenderd +1 ;
+            console.log(FramesRenderd)
             RenderBack = true;
             drawScreen();
 

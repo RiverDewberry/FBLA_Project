@@ -66,7 +66,8 @@ const gameState = {
     hour: 8,//the current in-game hour (24 hour format)
     day: 1,//the current in-game day
     inflation: 1,//the amount of inflation, this effects all prices 
-    goods: 0//the amount of goods the player has, which they can sell for money
+    goods: 0,//the amount of goods the player has, which they can sell for money
+    HourlyProduction:0 //DOOOOO NOT USE THIS FOR CALCULATIONS THIS IS FOR UI OLNLY
 }
 const EconomyVars ={
     InflationRate: .03,
@@ -192,6 +193,7 @@ function UpdateUI(){
     document.getElementById("FactoryCountText").textContent = "Factorys:"+ factories.length;
     document.getElementById("DebtDisplay").textContent = "Debt:"+ gameState.Debt;
     document.getElementById("GoodsDisplay").textContent = "UnSold Goods:" + gameState.goods;
+    document.getElementById("ProductionDisplay").textContent = "Production:" + gameState.HourlyProduction;
     if (gameState.hour % 24 < 12) {
         document.getElementById("TimeDisplay").textContent = (((gameState.hour -1) % 12) +1) + " AM"
     }
@@ -414,6 +416,7 @@ function removeFactory(position) {
 function gameLogicTick() {
 
     gameState.hour++;//increases time by 1
+    console.log(gameState.hour);
     display.postMessage([8]);
     UpdateUI();
     if (gameState.hour === 24) { //day end
@@ -431,20 +434,12 @@ function gameLogicTick() {
         }
 
     }
-    function ClampMax(input,max){
-        if (input > max) {
-            return max;
-        }
-        else{
-            return input;
-        }
-    }
-    
+
     UpdateUI();
-    display.postMessage([8]);
+    
 
     if (gameState.hour < 8 & gameState.hour < 20) return;//all factories start working at 8 and end at 20
-
+    const PrevGoods = gameState.goods;
     for (let i = 0; i < factories.length; i++) {
 
         if (gameState.hour > (7 + factories.getHoursWorked(i))) continue;
@@ -473,8 +468,16 @@ function gameLogicTick() {
 
         factories.setWorkerUnrest(i, factoryUnrest(i));//updates unrest
     }
-
+    gameState.HourlyProduction = (gameState.goods -PrevGoods);
     UpdateUI();
+}
+function ClampMax(input,max){
+    if (input > max) {
+        return max;
+    }
+    else{
+        return input;
+    }
 }
 
 function factoryNetProfit(index) {//calculates the net profit eaxh factory generates
