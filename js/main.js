@@ -57,7 +57,7 @@ const gameState = {
     Debt: -10000,
     Goodsheld: 0,
     CostPerGood: 1,// how much each good is sold for
-    Marketablity: .000001, //precent of people who will buy ur product
+    Marketablity: .000005, //precent of people who will buy ur product
     hour: 8,//the current in-game hour (24 hour format)
     day: 1,//the current in-game day
     inflation: 1,//the amount of inflation, this effects all prices 
@@ -152,7 +152,7 @@ function UpdateUI(){
     document.getElementById("MoneyText").textContent ="Money:$" + gameState.funds;
     document.getElementById("FactoryCountText").textContent = "Factorys:"+ factories.length;
     document.getElementById("DebtDisplay").textContent = "Debt:"+ gameState.Debt;
-    document.getElementById("GoodsDisplay").textContent = "UnSoldGoods:" + gameState.goods;
+    document.getElementById("GoodsDisplay").textContent = "UnSold Goods:" + gameState.goods;
     if (gameState.hour % 24 < 12) {
         document.getElementById("TimeDisplay").textContent = (((gameState.hour -1) % 12) +1) + " AM"
     }
