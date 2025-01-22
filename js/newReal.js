@@ -11,7 +11,7 @@ export const NewsReal = {
     "kid with dyslexia says he cant\"red\"",
     "Frog gayness is up 7% from the last 6 months",
     "President disliked by opposing party says witty news anchor",
-    "3rd politician convicted of embezzlement this week but that might be to politically charged"
+    "3rd politician convicted of embezzlement this week"
     ]
 
 }

@@ -209,7 +209,7 @@ function UpdateUI(){
         for (let i = 0; i < PUICount; i++) {
             UpdatePolicyUI(i,factories.NamesOfData[VarsToChange[i]],factories.factoryArray.getVal(SellectedFactory,VarsToChange[i]),true);  
         }
-        UpdatePolicyUI(PUICount,"Cost of goods",gameState.CostPerGood + "",false);
+        UpdatePolicyUI(PUICount,"Goods Price",gameState.CostPerGood + "",false);
 
         for (let i = 0; i < StatUICount; i++) {
             Cur2 = document.getElementById("StatsRef " + i)
