@@ -16,7 +16,8 @@ export const factories = {
             CompositeArray.uint8,//hourlyPay - 7
             CompositeArray.uint8,//hoursWorked - 8
             CompositeArray.float32,//workerUnrest - 9
-	        CompositeArray.uint16//targetWorkerAmount - 10
+	        CompositeArray.uint16,//targetWorkerAmount - 10
+            CompositeArray.uint8//factoryType - 11
         ],
         64//the max amount of factories
     ),
@@ -31,13 +32,13 @@ export const factories = {
         //method of using the getters and setters for each different type of factory
 
         //see lines 7 - 16 for what value each index represents
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [100, 10, 1, 1, 2, 1, 3, 9, 13, 0, 5],//first factory
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [100, 10, 1, 1, 2, 1, 3, 9, 13, 0, 5, 1],//first factory
     ],
     
     presetCosts: [
-	0,
-	5000
+	    0,
+	    10000
     ],
 
     setPresetFactoryValues: function (index, type) { //should zero out data before hand
@@ -98,6 +99,7 @@ export const factories = {
             case 8: return "HoursWorked";
             case 9: return "WorkerUnrest";
             case 10: return "targetWorkerAmount";
+            case 11: return "factoryType";
 
         }
     },
@@ -176,12 +178,12 @@ export const factories = {
 
     makeFactory: function (//allows for the creation of a factory
         production, cost, safety, happiness, workers,
-        minWorkers, maxWorkers, hourlyPay, hoursWorked, workerUnrest, targetWorkerAmount
+        minWorkers, maxWorkers, hourlyPay, hoursWorked, workerUnrest, targetWorkerAmount, type
     ) {
         return this.factoryArray.addInstance(
             [
                 production, cost, safety, happiness, workers,
-                minWorkers, maxWorkers, hourlyPay, hoursWorked, workerUnrest, targetWorkerAmount
+                minWorkers, maxWorkers, hourlyPay, hoursWorked, workerUnrest, targetWorkerAmount, type
             ]
         );//this value is returned so it can be checked if it succeeds when called
     },
