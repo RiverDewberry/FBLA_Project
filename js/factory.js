@@ -139,6 +139,9 @@ export const factories = {
     setTargetWorkerAmount: function (index, val) {
         this.factoryArray.setVal(index, 10, val);
     },//sets TargetWorkerAmount at a specified index    
+    setFactoryType: function (index, val) {
+        return this.factoryArray.setVal(index, 11, val);
+    },//sets factoryType at a specified index
 
     //Func for geting fac values
     getProduction: function (index) {
@@ -174,6 +177,9 @@ export const factories = {
     getTargetWorkerAmount: function (index) {
         return this.factoryArray.getVal(index, 10);
     },//gets TargetWorkerAmount at a specified index
+    getFactoryType: function (index) {
+        return this.factoryArray.getVal(index, 11);
+    },//gets factoryType at a specified index
 
 
     makeFactory: function (//allows for the creation of a factory
