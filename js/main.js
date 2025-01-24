@@ -424,8 +424,8 @@ function gameLogicTick() {
         gameState.hour = 0;
         gameState.day++;
 
-        gameState.funds +=  Math.round(ClampMax(EconomyVars.population * gameState.Marketablity,gameState.goods) * gameState.CostPerGood);
-        gameState.goods -=  Math.round(ClampMax(EconomyVars.population * gameState.Marketablity,gameState.goods));
+        gameState.funds +=  Math.round(ClampMax(PeopleWhoPurcahse(EconomyVars.population * gameState.Marketablity),gameState.goods) * gameState.CostPerGood);
+        gameState.goods -=  Math.round(ClampMax(PeopleWhoPurcahse(EconomyVars.population * gameState.Marketablity),gameState.goods));
         //Daily stat update
         EconomyVars.population += EconomyVars.DailyPopInc;
         if ((gameState.day % 90) == 0) {
@@ -447,7 +447,7 @@ function gameLogicTick() {
         if (factories.getMaxWorkers(i) > factories.getWorkers(i)) {
             if (factories.getTargetWorkerAmount(i) > factories.getWorkers(i)) {
                 if (factories.getHourlyPay(i) >= EconomyVars.MinimumWage){
-                    if (factories.getHourlyPay(i) >= EconomyVars.living ) {
+                    if ((factories.getHourlyPay(i) *factories.getHoursWorked(i)) >= (EconomyVars.living *24) ) {
                         factories.setWorkers(i,factories.getWorkers(i)+1)
                     }
                 }
@@ -481,6 +481,11 @@ function ClampMax(input,max){
     else{
         return input;
     }
+}
+function PeopleWhoPurcahse (Price,MaxPeopleWhoPurchase,PrecevedValue){
+    const v = (PrecevedValue/(2* Price))
+    return (MaxPeopleWhoPurchase * v)/ ((Price * Price) +v)
+
 }
 
 function factoryNetProfit(index) {//calculates the net profit eaxh factory generates
