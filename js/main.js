@@ -3,8 +3,8 @@ import { upgradeData } from "./upgrades.js";
 import { NewsReal } from "./newReal.js";
 
 let captureX, captureY, captureW, captureH, overzoom;
-const PUICount = (1 +1)
-const VarsToChange = [10,7]
+const PUICount = (2 +1)
+const VarsToChange = [10,7,8]
 let SellectedFactory = -1;
 let SellectedFactoryPos = -1;
 let indent = 0;
