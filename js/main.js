@@ -7,6 +7,7 @@ const PUICount = (1 +1)
 const VarsToChange = [10,7]
 let SellectedFactory = -1;
 let SellectedFactoryPos = -1;
+let SelctedBuyType = 1;
 let indent = 0;
 
 const StatUICount = (6 +1);
@@ -92,7 +93,7 @@ const imgs = [];
 const imgbmps = [];
 const srcs = [
     "grass1", "grass2", "grass3", "grass4", "grass5", "boxFront", "boxBack", "factory1",
-    "border","SunZenith_Gradient","ViewZenith_Gradient","ground","Road",
+    "border","SunZenith_Gradient","ViewZenith_Gradient","ground","Road","Marketing",
 ];
 
 for(let i = 0; i < srcs.length; i++){
@@ -146,9 +147,19 @@ canvas.addEventListener("mousedown", (e) => {
 canvas.addEventListener("mouseup", (e) => {
     display.postMessage([3, false]);
     if(mouseDownX === e.offsetX && mouseDownY === e.offsetY){
-	if(factoryAt(e.offsetX, e.offsetY) === -1)return;
-        buyFactory(factoryAt(e.offsetX, e.offsetY), 1);
+	    if(factoryAt(e.offsetX, e.offsetY) === -1)return; // exit ealy 
+        
+        buyFactory(factoryAt(e.offsetX, e.offsetY), SelctedBuyType);
     }
+});
+document.addEventListener("keydown", (e) => {
+    for(let i = 1; i < 3; i++){
+        if(e.key === i + ""){
+            SelctedBuyType = i;
+            return;
+        }
+    }
+    
 });
 window.addEventListener("resize", (e) => {
     canvasSetup();
@@ -381,7 +392,7 @@ function upgradeFactory(position, upgradeNum){
     }
 }
 
-function buyFactory(position, factory){
+function buyFactory(position, factoryPreset){
     if(position < 0 || position > 63) return;
     if(factoryLinks.includes(position)) {
         SellectedFactory = factoryLinks.indexOf(position);
@@ -390,11 +401,18 @@ function buyFactory(position, factory){
         UpdateUI();
         return;
     }
-    if((factories.presetCosts[factory] * gameState.inflation) > gameState.funds)return;
-    gameState.funds -= factories.presetCosts[factory] * gameState.inflation;
+    if((factories.presetCosts[factoryPreset] * gameState.inflation) > gameState.funds)return;
+    gameState.funds -= factories.presetCosts[factoryPreset] * gameState.inflation;
     factoryLinks.push(position);
-    factories.makePresetFactory(factory);
-    display.postMessage([7, position, "factory" + factory]);
+    factories.makePresetFactory(factoryPreset);
+    if (factoryPreset == 1) {
+        display.postMessage([7, position, "factory" + factoryPreset]);
+    }
+    if (factoryPreset == 2) {
+        display.postMessage([7, position, "Marketing"]);
+        
+    }
+    
     SellectedFactory =  (factories.length -1);
     SellectedFactoryPos = position;
     UpdateUI();
@@ -460,8 +478,14 @@ function gameLogicTick() {
 
         gameState.funds -= (factories.getHourlyPay(i) * factories.getWorkers(i))//pays workers
 
-        gameState.goods += factoryNetProfit(i);
-        //the production from each factory is added to the current amount of goods
+        if (factories.getFactoryType(i) == 1) {
+            gameState.goods += factoryNetProfit(i);
+            //the production from each factory is added to the current amount of goods
+        }
+        if (factories.getFactoryType(i) == 2) {
+            gameState.Marketablity += MarketingAdd(i);
+        }
+            
 
         if ((factories.getHappiness(i) < 0.5) && (Math.random() > 0.75))
             factories.setWorkers(i, factories.getWorkers(i) - 1);
@@ -482,10 +506,16 @@ function ClampMax(input,max){
         return input;
     }
 }
+function MarketingAdd (index){
+   
+   
+   
+    return factories.getProduction(index) * HapeinesMultipire(index) * .0000001;
+}
 
 function factoryNetProfit(index) {//calculates the net profit eaxh factory generates
     return (
-        factories.getProduction(index) * (factories.getHappiness(index) > 1.25 ? 1.1 : 1)
+        factories.getProduction(index) * HapeinesMultipire(index)
     ) - factories.getCost(index) //base cost and profit with happiness modifier
         +
         //since this runs each hour, the hourly pay is a cost
@@ -502,7 +532,9 @@ function factoryNetProfit(index) {//calculates the net profit eaxh factory gener
             factories.getProduction(index) * (factories.getHappiness(index) > 1.25 ? 1.1 : 1)
         );
 }
-
+function HapeinesMultipire (index){
+ return (factories.getHappiness(index) > 1.25 ? 1.1 : 1);
+}
 function factoryHappiness(index) {
     return (
         (factories.getHappiness(index) * 8) +

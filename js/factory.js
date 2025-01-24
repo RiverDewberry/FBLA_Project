@@ -34,11 +34,14 @@ export const factories = {
         //see lines 7 - 16 for what value each index represents
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [100, 10, 1, 1, 2, 1, 3, 9, 13, 0, 5, 1],//first factory
+        [10, 10, 1, 1, 2, 1, 3, 9, 13, 0, 5, 2],//second factory
+
     ],
     
     presetCosts: [
 	    0,
-	    10000
+	    10000,
+        15000,
     ],
 
     setPresetFactoryValues: function (index, type) { //should zero out data before hand
