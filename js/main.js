@@ -424,8 +424,8 @@ function gameLogicTick() {
         gameState.hour = 0;
         gameState.day++;
 
-        gameState.funds +=  Math.round(ClampMax(PeopleWhoPurcahse(EconomyVars.population * gameState.Marketablity),gameState.goods) * gameState.CostPerGood);
-        gameState.goods -=  Math.round(ClampMax(PeopleWhoPurcahse(EconomyVars.population * gameState.Marketablity),gameState.goods));
+        gameState.funds +=  Math.round(ClampMax(PeopleWhoPurcahse(gameState.CostPerGood,EconomyVars.population * gameState.Marketablity,2),gameState.goods) * gameState.CostPerGood);
+        gameState.goods -=  Math.round(ClampMax(PeopleWhoPurcahse(gameState.CostPerGood,EconomyVars.population * gameState.Marketablity,2),gameState.goods));
         //Daily stat update
         EconomyVars.population += EconomyVars.DailyPopInc;
         if ((gameState.day % 90) == 0) {
