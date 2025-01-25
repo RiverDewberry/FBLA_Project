@@ -50,7 +50,7 @@
 }
 .UiBasic{
     position: absolute;
-    background-color: #b6000010;
+    background-color: #0e0e0eff;
     width: 100px;
     height: 100px;
     border-color: #ffffff44;
@@ -119,7 +119,7 @@
     overflow: auto;
     height: 45%;
     width: 100%;
-    background-color: blue;
+    background-color: #1d1a19;
 }
 
 .StatsBoxHolder{
@@ -150,7 +150,7 @@ label{
 .Policy{
     height: 10%;
     color: white;
-    background-color: #0047cc;
+    background-color: #1d1a19;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
