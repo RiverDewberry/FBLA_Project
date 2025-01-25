@@ -28,6 +28,8 @@ function factoryAt(x, y) {
     return -1;
 };
 
+const factoryLinks = [];
+const upgradeNumbers = new Uint8Array(factories.upgradeData.names.length << 6); // creates an array of 0s for num of factorys * 64
 //DISPLAY
 //creating and setting up canvas
 const canvas = document.getElementById("canvas")
@@ -40,7 +42,7 @@ NewsRealSetUp();
 
 //Set up Html ellements
 for (let i = 0; i < upgradeData.names.length; i++) {
-    CreateUpgradeUI(upgradeData.names[i],IntToRomanNumeral(4),upgradeData.costs)
+    CreateUpgradeUI(i,upgradeData.names[i],IntToRomanNumeral(1),upgradeData.costs[i])
     
 }
 for (let i = 1; i < StatUICount; i++) {
@@ -63,7 +65,7 @@ const gameState = {
     Debt: -1000000,
     Goodsheld: 0,
     CostPerGood: 1,// how much each good is sold for
-    Marketablity: .000005, //precent of people who will buy ur product
+    Marketablity: .00001, //precent of people who will buy ur product
     hour: 8,//the current in-game hour (24 hour format)
     day: 1,//the current in-game day
     inflation: 1,//the amount of inflation, this effects all prices 
@@ -79,6 +81,7 @@ const EconomyVars ={
     MinimumWage: 7,
     population:(331.9 * 1000000),//us population
     DailyPopInc: 19,
+    PreferdHours: 8,
 }
 UpdateUI();
 //END OF GAME VARS
@@ -202,9 +205,9 @@ function UpdateUI(){
     document.getElementById("DelButon").addEventListener("click",delCurFac)
     document.getElementById("MoneyText").textContent ="Money:$" + IntToPlaceValue(gameState.funds);
     document.getElementById("FactoryCountText").textContent = "Factorys:"+ factories.length;
-    document.getElementById("DebtDisplay").textContent = "Debt:"+ gameState.Debt;
-    document.getElementById("GoodsDisplay").textContent = "UnSold Goods:" + gameState.goods;
-    document.getElementById("ProductionDisplay").textContent = "Production:" + gameState.HourlyProduction;
+    document.getElementById("DebtDisplay").textContent = "Debt:"+ IntToPlaceValue(gameState.Debt);
+    document.getElementById("GoodsDisplay").textContent = "UnSold Goods:" + IntToPlaceValue(gameState.goods);
+    document.getElementById("ProductionDisplay").textContent = "Production:" + gameState.HourlyProduction +" per hour";
     if (gameState.hour % 24 < 12) {
         document.getElementById("TimeDisplay").textContent = (((gameState.hour -1) % 12) +1) + " AM"
     }
@@ -214,6 +217,7 @@ function UpdateUI(){
     
     
     let Cur2;
+    let holder;
     if (SellectedFactory !== -1) {
         
         
@@ -227,6 +231,14 @@ function UpdateUI(){
             Cur2.children[0].children[0].textContent = factories.NamesOfData[i];
             Cur2.children[1].children[0].textContent = factories.factoryArray.getVal(SellectedFactory,i);
             
+        }
+        for (let i = 0; i < upgradeData.names.length; i++) {
+            holder = document.getElementById("UpgradeRef " + i);
+            holder.children[1].children[0].textContent = (IntToRomanNumeral(upgradeNumbers[SellectedFactory + i] +1) + "");
+            //console.log(upgradeNumbers[SellectedFactory + i]);
+            holder.children[2].textContent = "$"+ IntToPlaceValue(GetUpgradeCost(SellectedFactory,i)) + "";
+            holder.children[2].name = i + "";
+            holder.children[2].addEventListener("click",BULLLLL);
         }
     }
     else{
@@ -257,9 +269,12 @@ function UpdatePolicyUI (ind,LabelName,CurValue,IsFactory){
 
     
 }
+function BULLLLL(){
+    upgradeFactory(SellectedFactoryPos,this.name - 0);
+}
 
 function delCurFac(){
-    console.log("stuff");
+    
     removeFactory(SellectedFactoryPos);
     SellectedFactory = -1;
     SellectedFactoryPos =-1;
@@ -290,12 +305,15 @@ function canvasSetup() {
     
 }
 
-function CreateUpgradeUI(UName,UpgradeLvl,Price,) {
+function CreateUpgradeUI(ind,UName,UpgradeLvl,Price,) {
     const UpgradeHolder = document.getElementById("UpgradesBox");
-    const UpG = document.getElementById("UpgradeRef");
-    let clone = UpG.cloneNode(true);
+    const UpG = document.getElementById("UpgradeRef 0");
+    let clone = UpG;
+    if (ind != 0) {
+        clone = UpG.cloneNode(true);
+    }
 
-    clone.id = UName;
+    clone.id = "UpgradeRef " + ind;
     clone.children[0].children[0].textContent = UName + "";
     clone.children[1].children[0].textContent = UpgradeLvl + "";
     clone.children[2].textContent = "$"+ Price + "";
@@ -340,7 +358,7 @@ function IntToRomanNumeral (int){
             }
             if (Values[i] != 1) {
                 if (Values[i]/Values[i+1] == 5) {
-                    if ((((-num % -Values[i+1]) + num)/Values[i+1]) ) {
+                    if ((((-num % -Values[i+1]) + num)/Values[i+1]) ==4 ) {
                        num -= Values[i] - Values[i+1];
                        output += Chars[i+1] +""+ Chars[i];
                     }
@@ -355,7 +373,7 @@ function IntToPlaceValue(int){
     let places = [12,9,6,3]
     let Abriv =  ["T","B","M","K"]
     for (let i = 0; i < places.length; i++) {
-        if (int >= Math.pow(10,places[i])) {
+        if (Math.abs(int) >= Math.pow(10,places[i])) {
             return (Math.round(10 * (int/Math.pow(10,places[i])))/10)+ Abriv[i];
         } 
     }
@@ -371,27 +389,39 @@ function IntToPlaceValue(int){
 //stores the game state in the gamestate object
 
 
-const factoryLinks = [];
-const upgradeNumbers = new Uint8Array(factories.upgradeData.names.length << 6);
+
 
 function upgradeFactory(position, upgradeNum){
     let index = factoryLinks.indexOf(position);
     if(index === -1)return;
-    let cost = factories.upgradeData.costs[upgradeNum] * (1.15 ** upgradeNumbers[
-        (position << 6) + upgradenum
-    ]);
-    if((cost * gameState.inflation) > gameState.funds)return;
-    gameState.funds -= cost * gameState.inflation;
+    let cost = Math.round(GetUpgradeCost(index, upgradeNum)) * (1/gameState.inflation);
+    if((cost) > gameState.funds){
+        return;
+    }
+    if (cost+ "" === "NaN") {
+        console.error("Upgrade cost is NaN");
+        return;
+    }
+    console.log(cost);
+    gameState.funds =  gameState.funds -(cost);
     upgradeNumbers[(position << 6) + upgradeNum]++;
 
     
-    for(let i = 0; i < 10; i++){
-        factories.factoryArray.setVal(
-            index, 1, factories.upgradeData.effects[upgradeNum][i]
-	);
-    }
+    
+    
 }
+function GetUpgradeCost(position, upgradeNum){
+    if (factories.upgradeData.costs[upgradeNum] +"" === "NaN") {
+        console.error("Upgrade cost is NaN  :" + upgradeNum + " :");
 
+        return
+    }
+    if (upgradeNumbers[(position << 6) + upgradeNum] +"" === "NaN") {
+        console.error("positon retuns NaN");
+        
+    }
+   return factories.upgradeData.costs[upgradeNum] * Math.pow(1.15 ,(upgradeNumbers[(position << 6) + upgradeNum] +1))
+}
 function buyFactory(position, factoryPreset){
     if(position < 0 || position > 63) return;
     if(factoryLinks.includes(position)) {
@@ -441,9 +471,11 @@ function gameLogicTick() {
         //increases gameState.day by 1 and sets gameState.hour to 0 when 24 hours pass
         gameState.hour = 0;
         gameState.day++;
-
-        gameState.funds +=  Math.round(ClampMax(PeopleWhoPurcahse(gameState.CostPerGood,EconomyVars.population * gameState.Marketablity,2),gameState.goods) * gameState.CostPerGood);
-        gameState.goods -=  Math.round(ClampMax(PeopleWhoPurcahse(gameState.CostPerGood,EconomyVars.population * gameState.Marketablity,2),gameState.goods));
+        let GoodsSold  = Math.round(ClampMax(PeopleWhoPurcahse(gameState.CostPerGood,EconomyVars.population * gameState.Marketablity,2),gameState.goods));
+        gameState.funds += GoodsSold  * gameState.CostPerGood;
+        gameState.goods -=  GoodsSold;
+        EconomyVars.ValueOfDollar = Math.pow((1- EconomyVars.InflationRate),1/365);
+        
         //Daily stat update
         EconomyVars.population += EconomyVars.DailyPopInc;
         if ((gameState.day % 90) == 0) {
@@ -465,7 +497,7 @@ function gameLogicTick() {
         if (factories.getMaxWorkers(i) > factories.getWorkers(i)) {
             if (factories.getTargetWorkerAmount(i) > factories.getWorkers(i)) {
                 if (factories.getHourlyPay(i) >= EconomyVars.MinimumWage){
-                    if ((factories.getHourlyPay(i) *factories.getHoursWorked(i)) >= (EconomyVars.living *24) ) {
+                    if (liveableWage(i) >= 1) {
                         factories.setWorkers(i,factories.getWorkers(i)+1)
                     }
                 }
@@ -541,11 +573,16 @@ function HapeinesMultipire (index){
  return (factories.getHappiness(index) > 1.25 ? 1.1 : 1);
 }
 function factoryHappiness(index) {
-    return (
-        (factories.getHappiness(index) * 8) +
-        (-0.5 + (factories.getHourlyPay(index) / gameState.inflation) * 0.1) +
-        (1.8 - factories.getHoursWorked(index) * 0.1)
-    ) * 0.1;
+    
+    const Liveibalwage = Clamp01(liveableWage(index));
+    return Clamp01(Liveibalwage *((2*EconomyVars.PreferdHours/(factories.getHoursWorked(index) + EconomyVars.PreferdHours))))
+    
+    //old function
+    //return (
+    //    (factories.getHappiness(index) * 8) +
+    //    (-0.5 + (factories.getHourlyPay(index) / gameState.inflation) * 0.1) +
+    //    (1.8 - factories.getHoursWorked(index) * 0.1)
+    //) * 0.1;
 }//calculates the happiness of each factory
 
 function factoryUnrest(index) {
@@ -553,8 +590,20 @@ function factoryUnrest(index) {
         (factories.getWorkerUnrest(index) * 0.999) +
         (factories.getHoursWorked(index) > 12 ? 0.01 : 0) +
         (factories.getHappiness(index) < 0.75 ? 0.01 : 0) +
-        (factories.getHourlyPay(index) < 10 ? 0.01 : 0)
+        (liveableWage(index) < .5 ? 0.01 : 0)
     )
 }//calculates the unrest in each factory
+function Clamp01(input){
+    if (input > 1) {
+        return 1;
+    }
+    if (input < 0) {
+        return 0;
+    }
+    return input;
+}
+function liveableWage (index){
+   return(   (factories.getHourlyPay(index)* factories.getHoursWorked(index))/(EconomyVars.living *24)* (1/EconomyVars.ValueOfDollar))
+}
 
 //GAME LOGIC END
