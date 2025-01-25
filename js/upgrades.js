@@ -15,7 +15,7 @@ export const upgradeData = {
 
 function makeUpgrade (upgrade) {
 	//takes a format for upgrades and turns it into something that 
-	//can be easily used to change the vlaues of factories
+	//can be easily used to change the values of factories
 	
 	let retval = [];
 	//the return value
