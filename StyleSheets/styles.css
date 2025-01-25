@@ -178,8 +178,8 @@ label{
 }
 .PolicyLable{
     width: 40%;
-    font-size: ;
-    line-height: 0;
+    font-size: 100% ;
+    line-height:normal;
 }
 .Inc{
     height: 100%;
@@ -228,7 +228,7 @@ label{
     background-size:contain;
 }
 .InfoText{
-    line-height: 0px;
+    line-height:0;
     width:fit-content;
     word-wrap: unset;
     margin: auto;

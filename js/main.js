@@ -96,7 +96,7 @@ const imgs = [];
 const imgbmps = [];
 const srcs = [
     "grass1", "grass2", "grass3", "grass4", "grass5", "boxFront", "boxBack", "factory1",
-    "border","SunZenith_Gradient","ViewZenith_Gradient","ground","Road","Marketing",
+    "border","SunZenith_Gradient","ViewZenith_Gradient","ground","Road","Marketing","Gradiant",
 ];
 
 for(let i = 0; i < srcs.length; i++){

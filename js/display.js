@@ -34,6 +34,7 @@ let ZenithAng = [];
 let SR = [];
 
 let RenderBack;
+const LookUpTexture = new OffscreenCanvas(255 * 255,255);
 
 
 
@@ -47,6 +48,7 @@ function canvasSetup(w, h) {
     ctx = offscreen.getContext("2d");
     ctx.imageSmoothingEnabled = false;
     ctx.fillStyle = "#FF0000";
+
 
     //controlls the area of the game that is captured by the onscreen display
     ratio = h / w;//the aspect ratio (h/w)
@@ -149,7 +151,15 @@ function factoryAt(x, y) {
 
 
 ///NOT CURSED CODE LAND I SWEAR
-
+function CreatLookUpTexture(){
+    const ImgData = LookUpTexture.getContext('2d').createImageData(255,255);
+    for (let x = 0; x < 255; x++) {
+        for (let y = 0; y < 255; y++) {
+            setPixel(ImgData,x,y,x,Math.floor(x/255),y,255);
+        }
+    }
+    LookUpTexture.getContext('2d').putImageData(ImgData,0,0);
+}
 
 function CreateBacroundImg(){
     
@@ -231,7 +241,6 @@ function ZenithImgCreation (){
     //console.log(ZenithAng.data)
     
 }
-
 function blurCanvas(offscreenCanvas, blurAmount) {
     const ctx = offscreenCanvas.getContext('2d');
     const width = offscreenCanvas.width;
