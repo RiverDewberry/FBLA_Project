@@ -407,7 +407,11 @@ function upgradeFactory(position, upgradeNum){
     upgradeNumbers[(position << 6) + upgradeNum]++;
 
     
-    
+    for (let i = 0; i < (upgradeData.effects[upgradeNum].length /2); i++) {
+        let ThingToSet = upgradeData.effects[upgradeNum][i];
+        factories.factoryArray.setVal(index, ThingToSet, factories.factoryArray.getVal(index,ThingToSet) + factories.upgradeData.effects[upgradeNum][i+1]);
+        i++
+    }
     
 }
 function GetUpgradeCost(position, upgradeNum){
