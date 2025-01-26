@@ -393,7 +393,8 @@ function drawScreen() {
     
     ctx.clearRect(0, 0, cw, ch);
     if(FramesRenderd == 8){
-        CreatLookUpTexture();
+ //       CreatLookUpTexture();
+         ImgToData();
     }
     ZenithImgCreation();
    
@@ -438,24 +439,39 @@ function drawScreen() {
     ctx.globalCompositeOperation = "destination-over";
     drawScaledImg(Backround,-255,-15,BackWidth*(4/Scale) ,BackHight*(4/Scale))// draw it
     ctx.globalCompositeOperation = "source-over";
-    DoGradiant();
+//    DoGradiant();
+    doGradient();
 
     let resultBitmap = offscreen.transferToImageBitmap();
     postMessage(resultBitmap, [resultBitmap]);
     postMessage([captureX, captureY, captureW, captureH]);
 }
-function DoGradiant(){
+
+let paletteIOMap = [];//arrays in javascript are actually hash maps, so the way that is used isn't actually that cursed
+function doGradient(){
+    const PalateData = LutData.data;
     const BigData = ctx.getImageData(0,0,offscreen.width,offscreen.height);
-    const BigLut = LookUpTextureCtx.getImageData(0,0,LookUpWidth,255);
     let CurData = [0,0,0,0];
     for (let x = 0; x < offscreen.width; x++) {
         for (let y = 0; y < offscreen.height; y++) {
 
-            CurData =getPixelValue(BigData,x,y);
+            curData = getPixelValue(BigData,x,y);
+            let besti = paletteIOMap[(((curData[2] << 8) + curData[1]) << 8) + curData[0]];
+	    if(besti === undefined){
+                besti = 0;
+		let BestDist = 10000000000;
+                for (let i = 0; i < 50; i++) {
+                    let d = ColorDist(curData[0],curData[1],curData[2],PalateData[4*i],PalateData[(i*4)+1],PalateData[(i*4)+2]);
+                    if (d <= BestDist) {
+                        BestDist = d;
+                        besti = i;
+                    }
+                }
+		paletteIOMap[(((curData[2] << 8) + curData[1]) << 8) + curData[0]] = besti;
+	    }
+	    
+	    setPixel(BigData, x, y, PalateData[4*besti], PalateData[(besti*4)+1], PalateData[(besti*4)+2], curData[3]);
 
-            CurData = GetLutvalue(BigLut,CurData[0],CurData[1],CurData[2]);
-            setPixel(BigData,x,y,CurData[0],CurData[1],CurData[2],CurData[3]);
-            
         }
     }
     ctx.putImageData(BigData,0,0);
