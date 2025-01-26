@@ -34,7 +34,10 @@ let ZenithAng = [];
 let SR = [];
 
 let RenderBack;
-const LookUpTexture = new OffscreenCanvas(255 * 255,255);
+const LookUpWidth =(256 * 256);
+const LookUpTexture = new OffscreenCanvas(LookUpWidth,255);
+const LookUpTextureCtx = LookUpTexture.getContext('2d');
+let LutData = [];
 
 
 
@@ -48,7 +51,7 @@ function canvasSetup(w, h) {
     ctx = offscreen.getContext("2d");
     ctx.imageSmoothingEnabled = false;
     ctx.fillStyle = "#FF0000";
-
+    
 
     //controlls the area of the game that is captured by the onscreen display
     ratio = h / w;//the aspect ratio (h/w)
@@ -152,15 +155,41 @@ function factoryAt(x, y) {
 
 ///NOT CURSED CODE LAND I SWEAR
 function CreatLookUpTexture(){
-    const ImgData = LookUpTexture.getContext('2d').createImageData(255,255);
-    for (let x = 0; x < 255; x++) {
-        for (let y = 0; y < 255; y++) {
-            setPixel(ImgData,x,y,x,Math.floor(x/255),y,255);
+    ImgToData();
+    const ImgData = LookUpTextureCtx.createImageData(LookUpWidth,255);
+    const PalateData = LutData.data;
+    for (let x = 0; x < (LookUpWidth); x++) {
+        for (let y = 0; y < 256; y++) {
+            let curColor = [x % 255,Math.floor(x/255),y,255];
+            
+            let BestDist = 10000000000;
+            let besti = 0;
+           for (let i = 0; i < 50; i++) {
+                let d = ColorDist(curColor[0],curColor[1],curColor[2],PalateData[4*i],PalateData[(i*4)+1],PalateData[(i*4)+2]);
+                if (d <= BestDist) {
+                    BestDist = d;
+                    besti = i;
+                }
+           }
+            setPixel(ImgData,x,y,PalateData[besti*4],PalateData[(besti*4)+1],PalateData[(besti*4)+2],255);
+            
         }
     }
     LookUpTexture.getContext('2d').putImageData(ImgData,0,0);
+    
 }
+function ColorDist(R1,G1,B1,R2,G2,B2){
+    return Math.sqrt(Math.pow(R1-R2,2)+Math.pow(G1-G2,2)+Math.pow(B1-B2,2))
 
+}
+function ImgToData(){
+    const width =50;
+    const TempCanvas2 = new OffscreenCanvas(width,1);
+    const TempCtx2 = TempCanvas2.getContext('2d');
+    TempCtx2.drawImage(img.Gradiant,0,0,width,1);
+    LutData = TempCanvas2.getContext('2d').getImageData(0,0,width,1);
+    
+}
 function CreateBacroundImg(){
     
     if (RenderBack == true) {
@@ -237,10 +266,9 @@ function ZenithImgCreation (){
     const TempCanvas = new OffscreenCanvas(128,4);
     const TempCtx = TempCanvas.getContext('2d');
     TempCtx.drawImage(img.SunZenith_Gradient,0,0,128,4);
-    ZenithAng = TempCanvas.getContext('2d').getImageData(0,0,128,4);
-    //console.log(ZenithAng.data)
-    
+    ZenithAng = TempCanvas.getContext('2d').getImageData(0,0,128,4); 
 }
+
 function blurCanvas(offscreenCanvas, blurAmount) {
     const ctx = offscreenCanvas.getContext('2d');
     const width = offscreenCanvas.width;
@@ -315,6 +343,10 @@ function getPixelValue(imageData, x, y, channel) {
             throw new Error('Invalid channel. Use "R", "G", "B", or "A".');
     }
 }
+function getPixelValue(imgDat,x,y){
+    const index = ((y * imgDat.width) + x) * 4;
+    return [imgDat.data[index],imgDat.data[index + 1],imgDat.data[index + 2],imgDat.data[index + 3]];
+}
 function AvgSpeeds(){
     for (let i = 0; i < CloudSpeed.length; i++) {
         for (let j = 0; j < CloudSpeed.length; j++) {
@@ -362,9 +394,11 @@ function drawScreen() {
     rendering = true;
     
     ctx.clearRect(0, 0, cw, ch);
+    if(FramesRenderd == 8){CreatLookUpTexture();}
     ZenithImgCreation();
+   
     CreateBacroundImg(); // genreat backround img
-    blurCanvas(Backround,4)
+    blurCanvas(Backround,4);
     
    
     //drawScaledImg(img.Road, -62, 81, 630, 630);
@@ -404,11 +438,34 @@ function drawScreen() {
     ctx.globalCompositeOperation = "destination-over";
     drawScaledImg(Backround,-255,-15,BackWidth*(4/Scale) ,BackHight*(4/Scale))// draw it
     ctx.globalCompositeOperation = "source-over";
+    DoGradiant();
 
     let resultBitmap = offscreen.transferToImageBitmap();
     postMessage(resultBitmap, [resultBitmap]);
     postMessage([captureX, captureY, captureW, captureH]);
 }
+function DoGradiant(){
+    const BigData = ctx.getImageData(0,0,offscreen.width,offscreen.height);
+    const BigLut = LookUpTextureCtx.getImageData(0,0,LookUpWidth,255);
+    let CurData = [0,0,0,0];
+    for (let x = 0; x < offscreen.width; x++) {
+        for (let y = 0; y < offscreen.height; y++) {
+
+            CurData =getPixelValue(BigData,x,y);
+
+            CurData = GetLutvalue(BigLut,CurData[0],CurData[1],CurData[2]);
+            setPixel(BigData,x,y,CurData[0],CurData[1],CurData[2],CurData[3]);
+            
+        }
+    }
+    ctx.putImageData(BigData,0,0);
+}
+function GetLutvalue(Dat,R,G,B){
+    const x = R + (G * 255);
+    const y = B
+    return getPixelValue(Dat,x,y);
+}
+
 function DrawOver(amount){
     ctx.globalCompositeOperation = "source-atop";
     ctx.fillStyle = "rgba(0, 0, 0,"+(amount)+")";
@@ -430,6 +487,7 @@ onmessage = (e) => {
     switch (e.data[0]) {
         case 0:
             canvasSetup(e.data[1], e.data[2]);
+            
             break;
         case 1:
             drawScreen();
@@ -453,7 +511,7 @@ onmessage = (e) => {
 
             for(let i = 0; i < 64; i++) {
                 imgArr[i] = img["grass" + (1 + Math.floor(Math.random() * 5))];
-	    }
+	        }
             break;
         case 6:
             rendering = false;
