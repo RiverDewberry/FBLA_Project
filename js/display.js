@@ -241,11 +241,8 @@ function CreateBacroundImg(){
 
             else{
                 //set blue sky
-                SR= [
-                (getPixelValue(ZenithAng,XReadTime,Yrand % 4,"R")),
-                (getPixelValue(ZenithAng,XReadTime,Yrand % 4,"G")),
-                (getPixelValue(ZenithAng,XReadTime,Yrand % 4,"B"))
-                ]                
+                SR= getPixelValue(ZenithAng,XReadTime,Yrand % 4);
+                              
                 
                 setPixel(ImgDat,x,y,SR[0],SR[1] ,SR[2] ,254);
                 if (y != 0) {
@@ -267,6 +264,7 @@ function ZenithImgCreation (){
     const TempCtx = TempCanvas.getContext('2d');
     TempCtx.drawImage(img.SunZenith_Gradient,0,0,128,4);
     ZenithAng = TempCanvas.getContext('2d').getImageData(0,0,128,4); 
+    
 }
 
 function blurCanvas(offscreenCanvas, blurAmount) {
@@ -394,7 +392,9 @@ function drawScreen() {
     rendering = true;
     
     ctx.clearRect(0, 0, cw, ch);
-    if(FramesRenderd == 8){CreatLookUpTexture();}
+    if(FramesRenderd == 8){
+        CreatLookUpTexture();
+    }
     ZenithImgCreation();
    
     CreateBacroundImg(); // genreat backround img
