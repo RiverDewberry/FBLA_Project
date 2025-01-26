@@ -183,10 +183,10 @@ function ColorDist(R1,G1,B1,R2,G2,B2){
 
 }
 function ImgToData(){
-    const width =50;
+    const width =128;
     const TempCanvas2 = new OffscreenCanvas(width,1);
     const TempCtx2 = TempCanvas2.getContext('2d');
-    TempCtx2.drawImage(img.Gradiant,0,0,width,1);
+    TempCtx2.drawImage(img.splendor128,0,0,width,1);
     LutData = TempCanvas2.getContext('2d').getImageData(0,0,width,1);
     
 }
@@ -439,7 +439,7 @@ function drawScreen() {
     ctx.globalCompositeOperation = "destination-over";
     drawScaledImg(Backround,-255,-15,BackWidth*(4/Scale) ,BackHight*(4/Scale))// draw it
     ctx.globalCompositeOperation = "source-over";
-    //DoGradiant();
+    
     doGradient();
 
     let resultBitmap = offscreen.transferToImageBitmap();
@@ -457,9 +457,9 @@ function doGradient(){
 
             curData = getPixelValue(BigData,x,y);
             let besti = paletteIOMap[(((curData[2] << 8) + curData[1]) << 8) + curData[0]];
-	    if(besti === undefined){
+	            if(besti === undefined){
                 besti = 0;
-		let BestDist = 10000000000;
+		        let BestDist = 10000000000;
                 for (let i = 0; i < 50; i++) {
                     let d = ColorDist(curData[0],curData[1],curData[2],PalateData[4*i],PalateData[(i*4)+1],PalateData[(i*4)+2]);
                     if (d <= BestDist) {
@@ -467,8 +467,8 @@ function doGradient(){
                         besti = i;
                     }
                 }
-		paletteIOMap[(((curData[2] << 8) + curData[1]) << 8) + curData[0]] = besti;
-	    }
+		        paletteIOMap[(((curData[2] << 8) + curData[1]) << 8) + curData[0]] = besti;
+	    }       
 	    
 	    setPixel(BigData, x, y, PalateData[4*besti], PalateData[(besti*4)+1], PalateData[(besti*4)+2], curData[3]);
 
