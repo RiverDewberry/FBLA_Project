@@ -17,11 +17,12 @@ export const factories = {
             CompositeArray.uint8,//hoursWorked - 8
             CompositeArray.float32,//workerUnrest - 9
 	        CompositeArray.uint16,//targetWorkerAmount - 10
-            CompositeArray.uint8//factoryType - 11
+            CompositeArray.uint8,//factoryType - 11
+            CompositeArray.uint8//Safty Checks perHour - 12
         ],
         64//the max amount of factories
     ),
-        NamesOfData: ["production","cost","safety","happiness","workers","min Workers","max workers","hourly Pay","hours Worked","worker Unrest","T Workers",]
+        NamesOfData: ["production","cost","safety","happiness","workers","min Workers","max workers","hourly Pay","hours Worked","worker Unrest","T Workers","Type","Safty Checks perHour",]
     ,
 
     //dar code
@@ -32,9 +33,9 @@ export const factories = {
         //method of using the getters and setters for each different type of factory
 
         //see lines 7 - 16 for what value each index represents
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [100, 10, 1, 1, 2, 1, 3, 9, 13, 0, 5, 1],//first factory
-        [10, 10, 1, 1, 2, 1, 3, 9, 13, 0, 5, 2],//second factory
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0],
+        [100, 10, 1, 1, 2, 1, 3, 9, 13, 0, 5, 1,1],//first factory
+        [10, 10, 1, 1, 2, 1, 3, 9, 13, 0, 5, 2,0],//second factory
 
     ],
     
@@ -103,6 +104,7 @@ export const factories = {
             case 9: return "WorkerUnrest";
             case 10: return "targetWorkerAmount";
             case 11: return "factoryType";
+            case 12: return "Safety Checks PerHour";
 
         }
     },
@@ -145,6 +147,9 @@ export const factories = {
     setFactoryType: function (index, val) {
         return this.factoryArray.setVal(index, 11, val);
     },//sets factoryType at a specified index
+    setSafetyChecksPerHour: function (index, val) {
+        return this.factoryArray.setVal(index, 12, val);
+    },//sets factoryType at a specified
 
     //Func for geting fac values
     getProduction: function (index) {
@@ -183,16 +188,18 @@ export const factories = {
     getFactoryType: function (index) {
         return this.factoryArray.getVal(index, 11);
     },//gets factoryType at a specified index
-
+    getSafetyChecksPerHour: function (index) {
+        return this.factoryArray.getVal(index, 12);
+    },//gets factoryType at a specified
 
     makeFactory: function (//allows for the creation of a factory
         production, cost, safety, happiness, workers,
-        minWorkers, maxWorkers, hourlyPay, hoursWorked, workerUnrest, targetWorkerAmount, type
+        minWorkers, maxWorkers, hourlyPay, hoursWorked, workerUnrest, targetWorkerAmount, type,safetyChecksPerHour
     ) {
         return this.factoryArray.addInstance(
             [
                 production, cost, safety, happiness, workers,
-                minWorkers, maxWorkers, hourlyPay, hoursWorked, workerUnrest, targetWorkerAmount, type
+                minWorkers, maxWorkers, hourlyPay, hoursWorked, workerUnrest, targetWorkerAmount, type,safetyChecksPerHour
             ]
         );//this value is returned so it can be checked if it succeeds when called
     },

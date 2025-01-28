@@ -5,8 +5,8 @@ import {Shaders} from "./Shaders.js";
 
 
 let captureX, captureY, captureW, captureH, overzoom;
-const PUICount = (2 +1)
-const VarsToChange = [10,7,8]
+const PUICount = (3 +1)
+const VarsToChange = [10,7,8,12]
 let SellectedFactory = -1;
 let SellectedFactoryPos = -1;
 let SelctedBuyType = 1;
@@ -63,7 +63,7 @@ setInterval(gameLogicTick,1000)
 
 //Game VARS
 const gameState = {
-    funds: 10000,//how much money the player has
+    funds: 10500,//how much money the player has
     Debt: -1000000,
     Goodsheld: 0,
     CostPerGood: 1,// how much each good is sold for
@@ -276,7 +276,7 @@ function UpdateUI(){
 function UpdatePolicyUI (ind,LabelName,CurValue,IsFactory){
     let Cur = document.getElementById("PolicyHolder " + ind);
     Cur.style.display = 'flex';
-    Cur.children[0].textContent = LabelName
+    Cur.children[0].textContent = LabelName + "";
     Cur.children[1].children[1].textContent = CurValue;
 
     if (IsFactory) {
