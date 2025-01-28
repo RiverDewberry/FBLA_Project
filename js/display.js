@@ -394,7 +394,7 @@ function drawScreen() {
     ctx.clearRect(0, 0, cw, ch);
     if(FramesRenderd == 8){
  //       CreatLookUpTexture();
-         ImgToData();
+         //ImgToData();
     }
     ZenithImgCreation();
    
@@ -440,7 +440,7 @@ function drawScreen() {
     drawScaledImg(Backround,-255,-15,BackWidth*(4/Scale) ,BackHight*(4/Scale))// draw it
     ctx.globalCompositeOperation = "source-over";
     
-    doGradient();
+    //doGradient();
 
     let resultBitmap = offscreen.transferToImageBitmap();
     postMessage(resultBitmap, [resultBitmap]);

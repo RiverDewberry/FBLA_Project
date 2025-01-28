@@ -6,11 +6,11 @@
     <link rel="stylesheet" href="StyleSheets/styles.css">
     
     <title>Game</title>
-    <h1 class="TitleText">SKIBIDi TOILET FACTORY SIM</h1>
+    <h1 class="TitleText">Factory Simualtion</h1>
     <h2 class="TitleText">THE GREATIST THING SINCE SLICED BREAD</h2>
 </head>
-<body class="DarkBack" style="background-image: url(sprites/Gif.gif); background-size: 100%;" >
-    <script src="js/main.js" type="module"></script>
+<body class="DarkBack" style="background-image: url(sprites/Back.gif); background-size: 100%;" >
+    
     
     
     <div  class="HomeMain" >
@@ -24,42 +24,76 @@
 </body>
 <script>
     const d = new Date();
-    let Dist = 0
-    let slope = 0
-    let CenterX = 0
-
-    let CenterY = 0
-    let RealX =0
-    let Xpos = 0
-    let s = 0
-    let tx =0
+    let D = 0;
+    let slope = 0;
+    let CenterX = 0;
+    let CenterY = 0;
+    let RealX = 0;
+    let Xpos = 0;
+    let Ypos = 0;
+    let s = 0;
+    let tx = 0;
     let Time = d.getTime();
     let B = document.getElementById("PlayButton"); 
     B.style.position = "absolute";
-    window.addEventListener("mousemove", Name);
+    
+    // Throttle function to limit the rate at which Name is called
+    function throttle(func, limit) {
+        let lastFunc;
+        let lastRan;
+        return function() {
+            const context = this;
+            const args = arguments;
+            if (!lastRan) {
+                func.apply(context, args);
+                lastRan = Date.now();
+            } else {
+                clearTimeout(lastFunc);
+                lastFunc = setTimeout(function() {
+                    if ((Date.now() - lastRan) >= limit) {
+                        func.apply(context, args);
+                        lastRan = Date.now();
+                    }
+                }, limit - (Date.now() - lastRan));
+            }
+        }
+    }
+
+    window.addEventListener("mousemove", throttle(Name, 50)); // Adjust the limit as needed
 
     function Name(e) {
-        CenterY = window.innerHeight *.5;
-        CenterX = window.innerWidth *.5;
-        Xpos =(e.offsetX - CenterX);
-        Ypos =((e.offsetY +scrollY) - CenterY);
-        slope = Ypos/(Xpos);
+        // Ignore the event if the mouse is over the button
+        if (e.target === B) {
+            return;
+        }
+
+        CenterY = window.innerHeight * 0.5;
+        CenterX = window.innerWidth * 0.5;
+        Xpos = (e.pageX - CenterX);
+        Ypos = ((e.pageY + scrollY) - CenterY);
+        slope = Ypos / Xpos;
         
-        Dist = Math.sqrt(Math.pow(((e.offsetY - CenterY)),2) + Math.pow(((e.offsetX -CenterX)) -.5,2))
-        Dist = 250/(Dist +250) + .1;
-        RealX =lerp(CenterX,e.offsetX,Dist)
+        D = Dist(CenterX, CenterY, e.offsetX, e.offsetY);
+        D = 250 / (D + 250) + 0.1;
+
+        // Add a minimum distance threshold
+        if (D < 0.2) {
+            D = 0.2;
+        }
+
+        RealX = lerp(CenterX, e.offsetX, D);
         B.style.left = RealX - 150 + 'px';
-        console.log(slope);
-        B.style.top = Line(slope,CenterX,CenterY,RealX) + 'px';
-        
+        B.style.top = Line(slope, CenterX, CenterY, RealX) + 'px';
+    }
+    function Dist (x1,y1,x2,y2){
+        return Math.sqrt(Math.pow((y2 - y1), 2) + Math.pow((x2 - x1), 2));
     }
     function lerp(x1, x2, t) {
-    return x1 + (x2 - x1) * t;
+        return x1 + (x2 - x1) * t;
     }
-    function Line (slope,XP,YP,EvalAt){
-        return (slope*(EvalAt - XP) + YP)
 
+    function Line(slope, XP, YP, EvalAt) {
+        return (slope * (EvalAt - XP) + YP);
     }
-   
 </script>
 </html>

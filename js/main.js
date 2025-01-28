@@ -1,6 +1,8 @@
 import { factories } from "./factory.js";
 import { upgradeData } from "./upgrades.js";
 import { NewsReal } from "./newReal.js";
+import {Shaders} from "./Shaders.js";
+
 
 let captureX, captureY, captureW, captureH, overzoom;
 const PUICount = (2 +1)
@@ -120,8 +122,12 @@ function sendSpriteBitmaps() {
 }
 
 display.onmessage = (e) => {
+    //RENDING CODE
+
     if(e.data.length === undefined){
+        //console.log(e.data);
         displayCtx.transferFromImageBitmap(e.data);
+        //displayCtx.transferFromImageBitmap(Shaders.RunShader(e.data));
         display.postMessage([6]);
         return;
     }
@@ -161,6 +167,24 @@ document.addEventListener("keydown", (e) => {
             SelctedBuyType = i;
             return;
         }
+    }
+    if(e.key === "Escape"){
+        const canvas = document.querySelector("canvas");
+        const allElements = document.body.children;
+    
+        for (let element of allElements) {
+            if (element !== canvas) {
+                if (element.style.display === "none") {
+                    element.style.display = "inherit";
+                    
+                }
+                else{
+                    element.style.display = "none";
+                }
+                
+            }
+        }
+        
     }
     
 });
