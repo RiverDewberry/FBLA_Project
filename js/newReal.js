@@ -13,6 +13,7 @@ export const NewsReal = {
     "President disliked by opposing party says witty news anchor",
     "3rd politician convicted of embezzlement this week",
     "Disturbing discovery as mass villiger work camp was found benith a players base",
+    "Ten Percent Of U.S. High School Students Graduating Without Basic Object Permanence Skills"
     ]
 
 }
