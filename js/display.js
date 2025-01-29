@@ -392,10 +392,10 @@ function drawScreen() {
     rendering = true;
     
     ctx.clearRect(0, 0, cw, ch);
-    if(FramesRenderd == 8){
+ //   if(FramesRenderd == 8){
  //       CreatLookUpTexture();
-         //ImgToData();
-    }
+ //        ImgToData();
+ //   }
     ZenithImgCreation();
    
     CreateBacroundImg(); // genreat backround img
@@ -456,21 +456,23 @@ function doGradient(){
         for (let y = 0; y < offscreen.height; y++) {
 
             curData = getPixelValue(BigData,x,y);
-            let besti = paletteIOMap[(((curData[2] << 8) + curData[1]) << 8) + curData[0]];
-	            if(besti === undefined){
-                besti = 0;
-		        let BestDist = 10000000000;
-                for (let i = 0; i < 50; i++) {
-                    let d = ColorDist(curData[0],curData[1],curData[2],PalateData[4*i],PalateData[(i*4)+1],PalateData[(i*4)+2]);
-                    if (d <= BestDist) {
-                        BestDist = d;
-                        besti = i;
-                    }
-                }
-		        paletteIOMap[(((curData[2] << 8) + curData[1]) << 8) + curData[0]] = besti;
+            let colorVal = paletteIOMap[(((curData[2] << 8) + curData[1]) << 8) + curData[0]];
+	        if(colorVal === undefined){
+                
+                    colorVal = 
+			(((curData[0] >> 4) * 0x11) << 16) + (((curData[1] >> 4) * 0x11) << 8) + ((curData[2] >> 4) * 0x11);
+			//8-bit shader
+	
+	            paletteIOMap[(((curData[2] << 8) + curData[1]) << 8) + curData[0]] = colorVal;
 	    }       
 	    
-	    setPixel(BigData, x, y, PalateData[4*besti], PalateData[(besti*4)+1], PalateData[(besti*4)+2], curData[3]);
+	    setPixel(
+		BigData, x, y, 
+		(colorVal & 0xff0000) >> 16,
+		(colorVal & 0x00ff00) >> 8,
+		(colorVal & 0x0000ff),
+		 curData[3]
+	    );
 
         }
     }
