@@ -24,7 +24,13 @@ js - all .js files
     factory.js - has the factories object in it
     compositeArray.js - has the compositeArray class
     display.js - renders the canvas
+    upgrades.js - stores info about upgrades
+    Shaders.js - stores shaders
+    newReal.js - stores the scrolling text at the bottom of the screen
 
-StyleSheet - all .css files
-    
+StyleSheet - all .css files and font files
+
+    RETROTECH.ttf - a font file used for some of the ui
     styles.css - the main stylesheet
+
+Sprites - all of the images that this priject uses
