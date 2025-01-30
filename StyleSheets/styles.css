@@ -111,6 +111,15 @@
     width: 100%;
     height: 10%;
 }
+#EventDisplay{
+    width: 25%;
+    height: 10%;
+    top: 45%;
+    left: 37.5%;
+    color: var(--Textcolor);
+    background-color: var(--DarkModeMain);
+    border-color: var(--SecondaryGameColor);
+}
 .GameHolder{
     margin:0px;
     padding:0px;
