@@ -7,6 +7,8 @@ captureX = 0;
 captureY = 512 - captureH;
 let cw, ch;
 
+let offscreenS, ctxS;
+
 //mouse tracking
 let mouseIsDown = false;
 let oldMouseX;
@@ -39,7 +41,9 @@ const LookUpTexture = new OffscreenCanvas(LookUpWidth,255);
 const LookUpTextureCtx = LookUpTexture.getContext('2d');
 let LutData = [];
 
-
+offscreen = new OffscreenCanvas(1024, 1024);
+ctx = offscreen.getContext("2d");
+ctx.imageSmoothingEnabled = false;
 
 function canvasSetup(w, h) {
     cw = w;
@@ -47,11 +51,9 @@ function canvasSetup(w, h) {
     setup = true;
     RenderBack = true;
     //this creates a new context when each 
-    offscreen = new OffscreenCanvas(w, h);
-    ctx = offscreen.getContext("2d");
-    ctx.imageSmoothingEnabled = false;
-    ctx.fillStyle = "#FF0000";
-    
+    offscreenS = new OffscreenCanvas(w, h);
+    ctxS = offscreenS.getContext("2d");
+    ctxS.imageSmoothingEnabled = false;
 
     //controlls the area of the game that is captured by the onscreen display
     ratio = h / w;//the aspect ratio (h/w)
@@ -443,6 +445,17 @@ function drawScreen() {
     //doGradient();
 
     let resultBitmap = offscreen.transferToImageBitmap();
+   
+    ctxS.drawImage(
+        resultBitmap,
+        (-256 - captureX) * captureScale,
+        (-256 - captureY) * captureScale,
+        1024 * captureScale,
+        1024 * captureScale
+    );
+
+    resultBitmap = offscreenS.transferToImageBitmap();
+    
     postMessage(resultBitmap, [resultBitmap]);
     postMessage([captureX, captureY, captureW, captureH]);
 }
@@ -494,10 +507,10 @@ function DrawOver(amount){
 function drawScaledImg(img, x, y, w, h) {
     ctx.drawImage(
         img,
-        (x - captureX) * captureScale,
-        (y - captureY) * captureScale,
-        w * captureScale,
-        h * captureScale
+        (x + 256),
+        (y + 256),
+        w,
+        h
     );
 }//draws a properly scaled image
 
