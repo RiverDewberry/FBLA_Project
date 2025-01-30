@@ -33,9 +33,9 @@ export const factories = {
         //method of using the getters and setters for each different type of factory
 
         //see lines 7 - 16 for what value each index represents
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0],
-        [100, 10, .5, 1, 2, 1, 3, 9, 13, 0, 5, 1,1],//first factory
-        [10, 10, .5, 1, 2, 1, 3, 9, 13, 0, 5, 2,0],//second factory
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [100, 10, .5, 1, 2, 1, 3, 9, 13, 0, 5, 1, 1],//first factory
+        [10, 10, .5, 1, 2, 1, 3, 9, 13, 0, 5, 2, 0],//second factory
 
     ],
     
@@ -43,6 +43,44 @@ export const factories = {
 	    0,
 	    10000,
         15000,
+    ],
+
+    presetNames: [
+	    "null and void",
+	    "Electronics factory",
+        "Marketing Department",
+        "Automobile Factory",
+        "Steel Parts factory",
+        "Factory Farm",
+        "Cookie Factory",
+        "Chemical Manufacturing Plant",
+        "Prison Industries",
+        "Pear Inc. Production Plant",
+        "Mind Control Department",
+        "Eternal Fire Inc.",
+        "The Void",
+        "Textile Mill",
+        "Mockheed Lartin Production Facility",
+        "Factory Factory"
+    ],
+
+    presetDescriptions: [
+	    "you shouldn't be seeing this one",
+	    "This basic factory produces consumer electronics.",
+        "Not really a factory, but it does drive up demand.",
+        "This factory produces automobiles, fortunately most of the work can be automated.",
+        "This factory makes various things out of steel.",
+        "They\'re called HUMAN rights for a reason.",
+        "This factory employs local grandmothers to bake cookies, what could go wrong?",
+        "Who cares that it could be damaging to the environment, it\'s profitable!",
+        "Why so few workers? Simple: legally, we only have to pay the overseers.",
+        "This factory makes the latest Pear Inc. technology such as the aPhone, aPad, and the aMac.",
+        "These days, normal marketing is inefficient, something more is needed.",
+        "The Demons\' Union is on strike, so The Devil needs someone else to torture souls.",
+        "I have no idea what this does. All I know is that we send people in there and sometimes they don\'t come back. It is very profitable though.",
+        "No children work here, their small hands are not better at fixing the intricate machinery. There have been no accidents here, those clothes were just accidentally dyed red. A child has never gone missing here. Ignore the rumors.",
+        "This game is a work of fiction, any resemblance to real people or events is purely coincidental.",
+        "This factory produces smaller factories that are sold to other people like you who buy factories."
     ],
 
     setPresetFactoryValues: function (index, type) { //should zero out data before hand
