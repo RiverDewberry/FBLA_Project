@@ -273,6 +273,16 @@ function UpdateUI(){
         }
     }
 }
+function DisplayMesage (tital,subtital){
+    const MsgD = document.getElementById("EventDisplay");
+    MsgD.style.display = "inherit";
+    MsgD.children[0].children[0].textContent = tital +"";
+    MsgD.children[1].children[0].textContent = subtital +"";
+    MsgD.children[2].children[0].addEventListener("click,")
+}
+function HideDisp(){
+    document.getElementById("EventDisplay").style.display = "none";
+}
 function UpdatePolicyUI (ind,LabelName,CurValue,IsFactory){
     let Cur = document.getElementById("PolicyHolder " + ind);
     Cur.style.display = 'flex';
@@ -511,6 +521,13 @@ function gameLogicTick() {
             EconomyVars.MinimumWage = EconomyVars.MinimumWage * (1 +(EconomyVars.InflationRate *.25));
         }
 
+    }
+
+    if (gameState.funds <= 0) {
+        DisplayMesage("Bankrupcy","You lost")
+    }
+    if (gameState.Debt <= 0) {
+        DisplayMesage("YOU WIN","Debt Gone !")
     }
 
     UpdateUI();
