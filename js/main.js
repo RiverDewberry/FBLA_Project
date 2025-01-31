@@ -57,7 +57,7 @@ for (let i = 1; i < PUICount; i++) {
 }
 CreatePolicyUI(PUICount,true);
 //End of set up
-
+DisplayMesage("Welcome to Factory sim","Place a factory by clicking on a space")
 setInterval(ScrollText,1)
 setInterval(gameLogicTick,1000)
 
@@ -261,7 +261,7 @@ function UpdateUI(){
             holder = document.getElementById("UpgradeRef " + i);
             holder.children[1].children[0].textContent = (IntToRomanNumeral(upgradeNumbers[SellectedFactory + i] +1) + "");
             //console.log(upgradeNumbers[SellectedFactory + i]);
-            holder.children[2].textContent = "$"+ IntToPlaceValue(GetUpgradeCost(SellectedFactory,i)) + "";
+            holder.children[2].textContent = "$"+ IntToPlaceValue(GetUpgradeCost(SellectedFactoryPos,i)) + "";
             holder.children[2].name = i + "";
             holder.children[2].addEventListener("click",BULLLLL);
         }
@@ -457,7 +457,7 @@ function GetUpgradeCost(position, upgradeNum){
     }
     if (upgradeNumbers[(position << 6) + upgradeNum] +"" === "NaN") {
         console.error("positon retuns NaN");
-        
+        return
     }
    return factories.upgradeData.costs[upgradeNum] * Math.pow(1.15 ,(upgradeNumbers[(position << 6) + upgradeNum] +1))
 }
@@ -502,6 +502,7 @@ function removeFactory(position) {
 
 function gameLogicTick() {
 
+    
     gameState.hour++;//increases time by 1
     console.log(gameState.hour);
     display.postMessage([8]);
@@ -510,13 +511,15 @@ function gameLogicTick() {
         //increases gameState.day by 1 and sets gameState.hour to 0 when 24 hours pass
         gameState.hour = 0;
         gameState.day++;
+
+
         let GoodsSold  = Math.round(ClampMax(PeopleWhoPurcahse(gameState.CostPerGood,EconomyVars.population * gameState.Marketablity,2),gameState.goods));
         gameState.funds += GoodsSold  * gameState.CostPerGood;
         gameState.goods -=  GoodsSold;
         if (gameState.funds <= 0) {
             DisplayMesage("Bankrupcy","You lost")
         }
-        EconomyVars.ValueOfDollar = Math.pow((1- EconomyVars.InflationRate),1/365);
+        EconomyVars.ValueOfDollar = Math.pow((1- EconomyVars.InflationRate),gameState.day/365);
         
         //Daily stat update
         EconomyVars.population += EconomyVars.DailyPopInc;
@@ -551,18 +554,25 @@ function gameLogicTick() {
             } 
         }
 
-        if (Math.random() <= .5) {
+       
             if (gameState.hour % factories.getSafetyChecksPerHour(i) === 0) {
-                factories.setSafety(i,factories.getSafety(i) - .01)
-            }
-            else{
                 factories.setSafety(i,factories.getSafety(i) + .01)
+                gameState.funds = (gameState.funds - 25)
+            }       
+            else{
+                if (Math.random() <= .5) {
+                factories.setSafety(i,factories.getSafety(i) - .01)
+                }
+                else{
+
+                }
+
             }
-        }
+        
         let cost = factories.getSafety(i) * Math.random();
         if (cost <= .75) {
             cost = cost * EconomyVars.sewcost;
-            DisplayMesage("YOU KILLED somone","you pay" + cost)
+            DisplayMesage("YOU KILLED somone","you pay $" + cost)
             gameState.funds -= cost
         }
         
