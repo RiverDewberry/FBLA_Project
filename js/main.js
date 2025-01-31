@@ -513,6 +513,9 @@ function gameLogicTick() {
         let GoodsSold  = Math.round(ClampMax(PeopleWhoPurcahse(gameState.CostPerGood,EconomyVars.population * gameState.Marketablity,2),gameState.goods));
         gameState.funds += GoodsSold  * gameState.CostPerGood;
         gameState.goods -=  GoodsSold;
+        if (gameState.funds <= 0) {
+            DisplayMesage("Bankrupcy","You lost")
+        }
         EconomyVars.ValueOfDollar = Math.pow((1- EconomyVars.InflationRate),1/365);
         
         //Daily stat update
@@ -524,9 +527,7 @@ function gameLogicTick() {
 
     }
 
-    if (gameState.funds <= 0) {
-        DisplayMesage("Bankrupcy","You lost")
-    }
+    
     if (gameState.Debt <= 0) {
         DisplayMesage("YOU WIN","Debt Gone !")
     }
@@ -551,7 +552,7 @@ function gameLogicTick() {
         }
 
         if (Math.random() <= .5) {
-            if (gameState.hour % factories.getSafetyChecksPerHour(i) <= 1) {
+            if (gameState.hour % factories.getSafetyChecksPerHour(i) === 0) {
                 factories.setSafety(i,factories.getSafety(i) - .01)
             }
             else{
