@@ -9,9 +9,13 @@
     font-family: 'RETROTECH', monospace;
     letter-spacing: .1rem;
 }
+button{
+    text-align: center;
+}
 .DarkBack{
     background-color: var(--DarkModeMain);
 }
+
 .HomeMain{
     background-color: var(--transpar);
     width: 100%;
@@ -113,8 +117,8 @@
 }
 #EventDisplay{
     width: 25%;
-    height: 10%;
-    top: 45%;
+    height: 25%;
+    top: 37.5%;
     left: 37.5%;
     color: var(--Textcolor);
     background-color: var(--DarkModeMain);

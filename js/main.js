@@ -279,7 +279,7 @@ function DisplayMesage (tital,subtital){
     MsgD.style.display = "inherit";
     MsgD.children[0].children[0].textContent = tital +"";
     MsgD.children[1].children[0].textContent = subtital +"";
-    MsgD.children[2].children[0].addEventListener("click,")
+    MsgD.children[2].children[0].addEventListener("click",HideDisp)
 }
 function HideDisp(){
     document.getElementById("EventDisplay").style.display = "none";
@@ -531,7 +531,7 @@ function gameLogicTick() {
     }
 
     
-    if (gameState.Debt <= 0) {
+    if (gameState.Debt >= 0) {
         DisplayMesage("YOU WIN","Debt Gone !")
     }
 
@@ -555,22 +555,17 @@ function gameLogicTick() {
         }
 
        
-            if (gameState.hour % factories.getSafetyChecksPerHour(i) === 0) {
+            if ((gameState.hour % factories.getSafetyChecksPerHour(i)) === 0) {
                 factories.setSafety(i,factories.getSafety(i) + .01)
                 gameState.funds = (gameState.funds - 25)
             }       
             else{
-                if (Math.random() <= .5) {
                 factories.setSafety(i,factories.getSafety(i) - .01)
-                }
-                else{
-
-                }
 
             }
-        
-        let cost = factories.getSafety(i) * Math.random();
-        if (cost <= .75) {
+        factories.setSafety(i,Clamp01(factories.getSafety(i)))
+        let cost = factories.getSafety(i) * (.9  + (Math.random() *.2));
+        if (cost <= .65) {
             cost = cost * EconomyVars.sewcost;
             DisplayMesage("YOU KILLED somone","you pay $" + cost)
             gameState.funds -= cost
