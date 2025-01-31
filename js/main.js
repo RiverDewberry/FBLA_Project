@@ -84,6 +84,7 @@ const EconomyVars ={
     population:(331.9 * 1000000),//us population
     DailyPopInc: 19,
     PreferdHours: 8,
+    sewcost: 10000,
 }
 UpdateUI();
 //END OF GAME VARS
@@ -547,6 +548,21 @@ function gameLogicTick() {
                     }
                 }
             } 
+        }
+
+        if (Math.random() <= .5) {
+            if (gameState.hour % factories.getSafetyChecksPerHour(i) <= 1) {
+                factories.setSafety(i,factories.getSafety(i) - .01)
+            }
+            else{
+                factories.setSafety(i,factories.getSafety(i) + .01)
+            }
+        }
+        let cost = factories.getSafety(i) * Math.random();
+        if (cost <= .75) {
+            cost = cost * EconomyVars.sewcost;
+            DisplayMesage("YOU KILLED somone","you pay" + cost)
+            gameState.funds -= cost
         }
         
 
