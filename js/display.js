@@ -230,9 +230,9 @@ function CreateBacroundImg(){
             if (Rd > 255) {Rd = 255;}
             if (d >  Range) {
                 // clouds and stuff
-                setPixel(ImgDat,x,y,235,235,235,255);
+                setPixel(ImgDat,x,y,150+(105 * HoursSinFuntion(FramesRenderd)),150+(105 * HoursSinFuntion(FramesRenderd)),150+(105 * HoursSinFuntion(FramesRenderd)),255);
                 if( Math.round(d ) ==3){
-                    setPixel(ImgDat,x,y,235 -(Rd*.2),235 -(Rd*.2),235-(Rd*.2),255);
+                    setPixel(ImgDat,x,y,100+(100 * HoursSinFuntion(FramesRenderd)),100+(100 * HoursSinFuntion(FramesRenderd)),100+(100 * HoursSinFuntion(FramesRenderd)),255);
                 }
                 if (y != 0) {
                     if (getPixelValue(ImgDat,x,y-1,"A") == 254) {

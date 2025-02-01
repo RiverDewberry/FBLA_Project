@@ -14,7 +14,8 @@ button{
     background-color: var(--TertiaryGameColor);
     border-style:solid ;
     border-radius:5px ;
-    font-size: 100%;
+    font-size: 150%;
+    font-family: 'RETROTECH', monospace;
 }
 .DarkBack{
     background-color: var(--DarkModeMain);
