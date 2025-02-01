@@ -98,8 +98,10 @@ let loadedNum = 0;
 const imgs = [];
 const imgbmps = [];
 const srcs = [
-    "grass1", "grass2", "grass3", "grass4", "grass5", "boxFront", "boxBack", "factory1",
-    "border","SunZenith_Gradient","ViewZenith_Gradient","ground","Road","Marketing","Gradiant","splendor128",
+    "grass1", "grass2", "grass3", "grass4", "grass5", "boxFront", "boxBack", "factory1", "factory2",
+    "factory3", "factory4", "factory5", "factory6", "factory7", "factory8", "factory9", "factory10",
+    "factory11", "factory12", "factory13", "factory14", "factory15", "border","SunZenith_Gradient",
+    "ViewZenith_Gradient", "ground","Road", "Marketing", "Gradiant", "splendor128",
 ];
 
 for(let i = 0; i < srcs.length; i++){
@@ -479,13 +481,7 @@ function buyFactory(position, factoryPreset){
     gameState.funds -= factories.presetCosts[factoryPreset] * gameState.inflation;
     factoryLinks.push(position);
     factories.makePresetFactory(factoryPreset);
-    if (factoryPreset == 1) {
-        display.postMessage([7, position, "factory" + factoryPreset]);
-    }
-    if (factoryPreset == 2) {
-        display.postMessage([7, position, "Marketing"]);
-        
-    }
+    display.postMessage([7, position, "factory" + factoryPreset]);
     
     SellectedFactory =  (factories.length -1);
     SellectedFactoryPos = position;
