@@ -440,7 +440,7 @@ function upgradeFactory(position, upgradeNum){
     }
     console.log(cost);
     gameState.funds =  gameState.funds -(cost);
-    upgradeNumbers[(position << 6) + upgradeNum] = upgradeNumbers[(position << 6) + upgradeNum] +1;
+    upgradeNumbers[(index * factories.upgradeData.names.length) + upgradeNum]++;
 
     
     for (let i = 0; i < (upgradeData.effects[upgradeNum].length /2); i++) {
@@ -463,9 +463,6 @@ function GetUpgradeCost(position, upgradeNum){
         console.log(upgradeNumbers.length + "FUCKYOU");
         console.error("positon retuns NaN");
         return
-    }
-    if (condition) {
-        
     }
    return factories.upgradeData.costs[upgradeNum] * (1.15 **(upgradeNumbers[(position * factories.upgradeData.names.length) + upgradeNum]))
 }
