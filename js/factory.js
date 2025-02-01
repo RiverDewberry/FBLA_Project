@@ -34,8 +34,8 @@ export const factories = {
 
         //see lines 7 - 16 for what value each index represents
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [100, 10, .9, 1, 2, 1, 3, 9, 13, 0, 5, 1, 1],//first factory
-        [10, 10, .9, 1, 2, 1, 3, 9, 13, 0, 5, 2, 0],//second factory
+        [100, 10, .9, 1, 2, 1, 3, 9, 13, 0, 5, 1, 2],//first factory
+        [10, 10, .9, 1, 2, 1, 3, 9, 13, 0, 5, 2, 2],//second factory
 
     ],
     

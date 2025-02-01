@@ -569,6 +569,7 @@ function gameLogicTick() {
 
             }
         factories.setSafety(i,Clamp01(factories.getSafety(i)))
+        
         let cost = factories.getSafety(i) * (.9  + (Math.random() *.2));
         if (cost <= .65) {
             cost = cost * EconomyVars.sewcost;
