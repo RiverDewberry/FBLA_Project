@@ -230,7 +230,7 @@ function CreateBacroundImg(){
             if (Rd > 255) {Rd = 255;}
             if (d >  Range) {
                 // clouds and stuff
-                setPixel(ImgDat,x,y,150+(105 * HoursSinFuntion(FramesRenderd)),150+(105 * HoursSinFuntion(FramesRenderd)),150+(105 * HoursSinFuntion(FramesRenderd)),255);
+                setPixel(ImgDat,x,y,100+(155 * HoursSinFuntion(FramesRenderd)),100+(155 * HoursSinFuntion(FramesRenderd)),100+(155 * HoursSinFuntion(FramesRenderd)),255);
                 if( Math.round(d ) ==3){
                     setPixel(ImgDat,x,y,100+(100 * HoursSinFuntion(FramesRenderd)),100+(100 * HoursSinFuntion(FramesRenderd)),100+(100 * HoursSinFuntion(FramesRenderd)),255);
                 }
@@ -442,7 +442,7 @@ function drawScreen() {
     drawScaledImg(Backround,-255,-15,BackWidth*(4/Scale) ,BackHight*(4/Scale))// draw it
     ctx.globalCompositeOperation = "source-over";
     
-    //doGradient();
+    doGradient();
 
     let resultBitmap = offscreen.transferToImageBitmap();
    

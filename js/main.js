@@ -59,11 +59,11 @@ CreatePolicyUI(PUICount,true);
 //End of set up
 DisplayMesage("Welcome to Factory sim","Place a factory by clicking on a space")
 setInterval(ScrollText,1)
-setInterval(gameLogicTick,1000)
+setInterval(gameLogicTick,200)
 
 //Game VARS
 const gameState = {
-    funds: 10500 * 10,//how much money the player has
+    funds: 10500,//how much money the player has
     Debt: -1000000,
     Goodsheld: 0,
     CostPerGood: 1,// how much each good is sold for
@@ -233,6 +233,7 @@ function UpdateUI(){
     document.getElementById("DebtDisplay").textContent = "Debt:"+ IntToPlaceValue(gameState.Debt);
     document.getElementById("GoodsDisplay").textContent = "UnSold Goods:" + IntToPlaceValue(gameState.goods);
     document.getElementById("ProductionDisplay").textContent = "Production:" + gameState.HourlyProduction +" per hour";
+    document.getElementById("FactoryName").children[0].textContent = factories.presetNames[factories.getFactoryType(SellectedFactory)];
     if (gameState.hour % 24 < 12) {
         document.getElementById("TimeDisplay").textContent = (((gameState.hour -1) % 12) +1) + " AM"
     }
