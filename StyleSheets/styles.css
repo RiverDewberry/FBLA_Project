@@ -2,7 +2,7 @@
 :root{
     --MainGameColor: #ffffff44;
     --SecondaryGameColor: #b60000;
-    --TertiaryGameColor:  #0047cc;
+    --TertiaryGameColor:  #6bd600;
     --Textcolor: #ffffff;
     --transpar: #00000000;
     --DarkModeMain: #0e0e0eff;
@@ -11,6 +11,10 @@
 }
 button{
     text-align: center;
+    background-color: var(--TertiaryGameColor);
+    border-style:solid ;
+    border-radius:5px ;
+    font-size: 100%;
 }
 .DarkBack{
     background-color: var(--DarkModeMain);

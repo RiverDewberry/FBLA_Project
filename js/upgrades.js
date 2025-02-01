@@ -4,7 +4,7 @@ const factoryVals = 12;
 export const upgradeData = {
 	names: ["Increase production","Worker count"],
 	//the name of each upgrade
-	costs: new Uint32Array([100, 150, 128, 256, 512, 1024, 2048, 4096, 8192]),
+	costs: new Uint32Array([100, 150,]),
 	//the inital cost of each upgrade
 	descriptions: [],
 	//a description of each upgrade

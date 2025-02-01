@@ -63,7 +63,7 @@ setInterval(gameLogicTick,1000)
 
 //Game VARS
 const gameState = {
-    funds: 10500,//how much money the player has
+    funds: 10500 * 10,//how much money the player has
     Debt: -1000000,
     Goodsheld: 0,
     CostPerGood: 1,// how much each good is sold for
@@ -261,7 +261,7 @@ function UpdateUI(){
             holder = document.getElementById("UpgradeRef " + i);
             holder.children[1].children[0].textContent = (IntToRomanNumeral(upgradeNumbers[SellectedFactory + i] +1) + "");
             //console.log(upgradeNumbers[SellectedFactory + i]);
-            holder.children[2].textContent = "$"+ IntToPlaceValue(GetUpgradeCost(SellectedFactoryPos,i)) + "";
+            holder.children[2].textContent = "$"+ IntToPlaceValue(GetUpgradeCost(SellectedFactory,i)) + "";
             holder.children[2].name = i + "";
             holder.children[2].addEventListener("click",BULLLLL);
         }
@@ -429,17 +429,18 @@ function IntToPlaceValue(int){
 function upgradeFactory(position, upgradeNum){
     let index = factoryLinks.indexOf(position);
     if(index === -1)return;
-    let cost = Math.round(GetUpgradeCost(index, upgradeNum)) * (1/gameState.inflation);
+    let cost = Math.round(GetUpgradeCost(index, upgradeNum) * (1/gameState.inflation)) ;
     if((cost) > gameState.funds){
         return;
     }
-    if (cost+ "" === "NaN") {
-        console.error("Upgrade cost is NaN");
+    if (cost + "" === "NaN") {
+        console.error("Upgrade cost is NaN" );
+
         return;
     }
     console.log(cost);
     gameState.funds =  gameState.funds -(cost);
-    upgradeNumbers[(position << 6) + upgradeNum]++;
+    upgradeNumbers[(position << 6) + upgradeNum] = upgradeNumbers[(position << 6) + upgradeNum] +1;
 
     
     for (let i = 0; i < (upgradeData.effects[upgradeNum].length /2); i++) {
@@ -450,16 +451,21 @@ function upgradeFactory(position, upgradeNum){
     
 }
 function GetUpgradeCost(position, upgradeNum){
+
     if (factories.upgradeData.costs[upgradeNum] +"" === "NaN") {
         console.error("Upgrade cost is NaN  :" + upgradeNum + " :");
+        
 
         return
     }
-    if (upgradeNumbers[(position << 6) + upgradeNum] +"" === "NaN") {
+    if ((1.15 ** (upgradeNumbers[(position << 6) + upgradeNum]+1)) + "" === "NaN") {
         console.error("positon retuns NaN");
         return
     }
-   return factories.upgradeData.costs[upgradeNum] * Math.pow(1.15 ,(upgradeNumbers[(position << 6) + upgradeNum] +1))
+    if (condition) {
+        
+    }
+   return factories.upgradeData.costs[upgradeNum] * (1.15 **(upgradeNumbers[(position << 6) + upgradeNum] +1))
 }
 function buyFactory(position, factoryPreset){
     if(position < 0 || position > 63) return;
@@ -504,7 +510,7 @@ function gameLogicTick() {
 
     
     gameState.hour++;//increases time by 1
-    console.log(gameState.hour);
+    //console.log(gameState.hour);
     display.postMessage([8]);
     UpdateUI();
     if (gameState.hour === 24) { //day end

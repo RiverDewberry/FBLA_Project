@@ -559,7 +559,7 @@ onmessage = (e) => {
             break;
         case 8:
             FramesRenderd = FramesRenderd +1 ;
-            console.log(FramesRenderd)
+            //console.log(FramesRenderd)
             RenderBack = true;
             drawScreen();
 
