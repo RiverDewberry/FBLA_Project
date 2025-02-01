@@ -458,14 +458,16 @@ function GetUpgradeCost(position, upgradeNum){
 
         return
     }
-    if ((1.15 ** (upgradeNumbers[(position << 6) + upgradeNum]+1)) + "" === "NaN") {
+    if ((1.15 ** (upgradeNumbers[(position * factories.upgradeData.names.length) + upgradeNum])) + "" === "NaN") {
+        console.error((position << 6) + upgradeNum);
+        console.log(upgradeNumbers.length + "FUCKYOU");
         console.error("positon retuns NaN");
         return
     }
     if (condition) {
         
     }
-   return factories.upgradeData.costs[upgradeNum] * (1.15 **(upgradeNumbers[(position << 6) + upgradeNum] +1))
+   return factories.upgradeData.costs[upgradeNum] * (1.15 **(upgradeNumbers[(position * factories.upgradeData.names.length) + upgradeNum]))
 }
 function buyFactory(position, factoryPreset){
     if(position < 0 || position > 63) return;
