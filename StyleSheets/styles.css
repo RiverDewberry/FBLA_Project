@@ -2,10 +2,10 @@
 :root{
     --MainGameColor: #ffffff44;
     --SecondaryGameColor: #b60000;
-    --TertiaryGameColor:  #6bd600;
+    --TertiaryGameColor:  #00B6B6;
     --Textcolor: #ffffff;
     --transpar: #00000000;
-    --DarkModeMain: #0e0e0eff;
+    --DarkModeMain: rgb(23, 23, 23);
     font-family: 'RETROTECH', monospace;
     letter-spacing: .1rem;
 }
@@ -16,6 +16,11 @@ button{
     border-radius:5px ;
     font-size: 150%;
     font-family: 'RETROTECH', monospace;
+    border-color: color-mix(in oklab,var(--DarkModeMain) 80%,white);
+    color: color-mix(in oklab,var(--SecondaryGameColor) 50%, black);
+}
+button:hover{
+    background-color: color-mix(in oklab,var(--TertiaryGameColor) 90%,black) ;
 }
 .DarkBack{
     background-color: var(--DarkModeMain);
@@ -262,4 +267,16 @@ label{
     width: auto;
     aspect-ratio: 1 / 1;
     background-size:contain ;
+}
+#HoverTextDisplay{
+    width: 15%;
+    height: 0%;
+    background-color: var(--DarkModeMain);
+    color: var(--Textcolor);
+    position: relative;
+    
+    padding: 0%;
+}
+#HoverText{
+    white-space:pre-wrap;
 }

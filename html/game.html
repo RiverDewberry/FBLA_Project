@@ -9,7 +9,9 @@
 </head>
 <body class="GameHolder">
     <script src="../js/main.js" type="module"></script>
-    <div class="GameHolder">   
+    
+    <div class="GameHolder"> 
+          
         <div id="TopUI"       class="UiBasic">
             <div class="InfoDisplay">
                 <img src="/sprites/Money.png" class="InfoImg" alt="">
@@ -36,7 +38,7 @@
                 <img src="/sprites/Goods.png" class="InfoImg" alt="">
                 <p id="GoodsDisplay" class="InfoText">UnSoldGoods:-100000</p>
             </div>
-            <div id="THING" class="InfoDisplay">
+            <div id="THING" style="scroll-behavior: auto;" class="InfoDisplay">
                 
             </div>
 
@@ -101,8 +103,11 @@
                 <button style="align-self: center;width: 25%; margin-left: 35%; ;">ok</button>
             </div>
         </div>
+        
         <canvas id="canvas" style="background-color: black; position: absolute;"></canvas>
-       
+        <div id="HoverTextDisplay">
+            <p id="HoverText" class="HoverText">HoverText</p>
+        </div>
     </div>
     
 </body>

@@ -59,8 +59,10 @@ for (let i = 1; i < 16; i++) {
     let t = document.createElement("button");
     t.classList.add("BoxButton");
     t.style.backgroundImage = "url('../sprites/factory" + (i) + ".png')";
-    t.addEventListener("click",function(){SelctedBuyType = i;})
-
+    t.addEventListener("click",SwitchSelcted);
+    t.addEventListener("mouseover",HoverText);
+    t.id = "FacButton:" +i;
+    t.name = i;
     document.getElementById("THING").appendChild(t);
 }
 CreatePolicyUI(PUICount,true);
@@ -71,7 +73,7 @@ setInterval(gameLogicTick,500)
 
 //Game VARS
 const gameState = {
-    funds: 10500000000,//how much money the player has
+    funds: 10500,//how much money the player has
     Debt: -1000000,
     Goodsheld: 0,
     CostPerGood: 1,// how much each good is sold for
@@ -245,6 +247,7 @@ function UpdateUI(){
     document.getElementById("ProductionDisplay").textContent = "Production:" + gameState.HourlyProduction +" per hour";
     document.getElementById("FactoryName").children[0].textContent = factories.presetNames[factories.getFactoryType(SellectedFactory)];
     document.getElementById("PayDebt").addEventListener("click",PayDebts)
+
     if (gameState.hour % 24 < 12) {
         document.getElementById("TimeDisplay").textContent = (((gameState.hour -1) % 12) +1) + " AM"
     }
@@ -285,6 +288,19 @@ function UpdateUI(){
             Cur.style.display = 'none';
         }
     }
+}
+function SwitchSelcted(){
+        document.getElementById("FacButton:" + SelctedBuyType).style.border = "solid 2px black";
+        SelctedBuyType = (this.name -0);
+        this.style.border = "solid 2px red";
+}
+function HoverText(){
+    let h= document.getElementById("HoverTextDisplay");
+    console.log(this.name);
+    h.style.left = (this.offsetLeft) + "px";
+    h.style.top = (this.offsetTop + (this.clientHeight * .75)) + "px";
+    h.style.zIndex = "9000000"
+    h.children[0].textContent = factories.presetNames[this.name -0] + '\n' + factories.presetDescriptions[this.name -0] + '\n' + "Cost: $" + IntToPlaceValue(factories.presetCosts[this.name -0]);
 }
 function PayDebts(){
     gameState.Debt += gameState.funds;
