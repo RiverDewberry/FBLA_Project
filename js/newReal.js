@@ -16,7 +16,10 @@ export const NewsReal = {
     "Ten Percent Of U.S. High School Students Graduating Without Basic Object Permanence Skills",
     "dictaor in 3rd world contry wins elction again by 500%",
     "Time tavler comes back nothing changed reoprts JKF age 130",
-    
+    "Local Mayor Declares Himself ‘Supreme Overlord’",
+    "Ancient Scrolls Found In Cave Actually Just Really Old IKEA Instructions",
+    "sutdy on demantia was forgen to be published"
+
     ]
 
 }

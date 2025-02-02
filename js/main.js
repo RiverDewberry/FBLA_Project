@@ -59,7 +59,7 @@ CreatePolicyUI(PUICount,true);
 //End of set up
 DisplayMesage("Welcome to Factory sim","Place a factory by clicking on a space")
 setInterval(ScrollText,1)
-setInterval(gameLogicTick,200)
+setInterval(gameLogicTick,500)
 
 //Game VARS
 const gameState = {
@@ -236,6 +236,7 @@ function UpdateUI(){
     document.getElementById("GoodsDisplay").textContent = "UnSold Goods:" + IntToPlaceValue(gameState.goods);
     document.getElementById("ProductionDisplay").textContent = "Production:" + gameState.HourlyProduction +" per hour";
     document.getElementById("FactoryName").children[0].textContent = factories.presetNames[factories.getFactoryType(SellectedFactory)];
+    document.getElementById("PayDebt").addEventListener("click",PayDebts)
     if (gameState.hour % 24 < 12) {
         document.getElementById("TimeDisplay").textContent = (((gameState.hour -1) % 12) +1) + " AM"
     }
@@ -276,6 +277,10 @@ function UpdateUI(){
             Cur.style.display = 'none';
         }
     }
+}
+function PayDebts(){
+    gameState.Debt += gameState.funds;
+    gameState.funds = 0;
 }
 function DisplayMesage (tital,subtital){
     const MsgD = document.getElementById("EventDisplay");
@@ -518,6 +523,7 @@ function gameLogicTick() {
         let GoodsSold  = Math.round(ClampMax(PeopleWhoPurcahse(gameState.CostPerGood,EconomyVars.population * gameState.Marketablity,2),gameState.goods));
         gameState.funds += GoodsSold  * gameState.CostPerGood;
         gameState.goods -=  GoodsSold;
+        gameState.Debt = gameState.Debt * (1 + EconomyVars.DebtInfaltionRate);
         if (gameState.funds <= 0) {
             DisplayMesage("Bankrupcy","You lost")
         }
