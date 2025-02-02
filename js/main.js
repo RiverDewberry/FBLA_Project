@@ -55,6 +55,14 @@ for (let i = 1; i < PUICount; i++) {
     CreatePolicyUI(i,false);
     
 }
+for (let i = 1; i < 16; i++) {
+    let t = document.createElement("button");
+    t.classList.add("BoxButton");
+    t.style.backgroundImage = "url('../sprites/factory" + (i) + ".png')";
+    t.addEventListener("click",function(){SelctedBuyType = i;})
+
+    document.getElementById("THING").appendChild(t);
+}
 CreatePolicyUI(PUICount,true);
 //End of set up
 DisplayMesage("Welcome to Factory sim","Place a factory by clicking on a space")
@@ -63,7 +71,7 @@ setInterval(gameLogicTick,500)
 
 //Game VARS
 const gameState = {
-    funds: 10500,//how much money the player has
+    funds: 10500000000,//how much money the player has
     Debt: -1000000,
     Goodsheld: 0,
     CostPerGood: 1,// how much each good is sold for
@@ -165,7 +173,7 @@ canvas.addEventListener("mouseup", (e) => {
     }
 });
 document.addEventListener("keydown", (e) => {
-    for(let i = 1; i < 3; i++){
+    for(let i = 1; i < 9; i++){
         if(e.key === i + ""){
             SelctedBuyType = i;
             return;
