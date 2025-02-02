@@ -73,7 +73,7 @@ setInterval(gameLogicTick,500)
 
 //Game VARS
 const gameState = {
-    funds: 10500,//how much money the player has
+    funds: 105000,//how much money the player has
     Debt: -1000000,
     Goodsheld: 0,
     CostPerGood: 1,// how much each good is sold for
@@ -245,7 +245,10 @@ function UpdateUI(){
     document.getElementById("DebtDisplay").textContent = "Debt:"+ IntToPlaceValue(gameState.Debt);
     document.getElementById("GoodsDisplay").textContent = "UnSold Goods:" + IntToPlaceValue(gameState.goods);
     document.getElementById("ProductionDisplay").textContent = "Production:" + gameState.HourlyProduction +" per hour";
-    document.getElementById("FactoryName").children[0].textContent = factories.presetNames[factories.getFactoryType(SellectedFactory)];
+    if (SellectedFactory !== -1) {
+        document.getElementById("FactoryName").children[0].textContent = factories.presetNames[factories.getFactoryType(SellectedFactory)];  
+    }
+    
     document.getElementById("PayDebt").addEventListener("click",PayDebts)
 
     if (gameState.hour % 24 < 12) {
