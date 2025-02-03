@@ -33,4 +33,4 @@ StyleSheet - all .css files and font files
     RETROTECH.ttf - a font file used for some of the ui
     styles.css - the main stylesheet
 
-Sprites - all of the images that this priject uses
+Sprites - all of the images that this project uses
