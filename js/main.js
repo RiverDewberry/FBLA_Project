@@ -72,6 +72,32 @@ setInterval(ScrollText,1)
 setInterval(gameLogicTick,500)
 
 //Game VARS
+
+let boughtFactories = [];
+//this array exists to load bought factories
+
+function getSave() {
+	const currSave = [gameState, EconomyVars, factories, boughtFactories, upgradeNumbers];
+
+	return btoa(JSON.stringify(currSave));
+}
+
+function loadSave(save) {
+	const currSave = JSON.parse(atob(save));
+
+	gameState = currSave[0];
+	EconomyVars = currSave[1];
+	factories = currSave[2];
+	boughtFactories = currSave[3];
+	upgradeNumbers = currSave[4];
+
+	for(let i = 0; i < 64; i++)
+	{
+		if(boughtFactories[i] !== undefined)
+			display.postMessage([7, i, boughtFactories[i]]);
+	}
+}
+
 const gameState = {
     funds: 10500,//how much money the player has
     Debt: -1000000,
@@ -226,7 +252,7 @@ function NewsRealSetUp(){
     }
     for (let i = 0; i < NewsReal.Headlines.length; i++) {
         R = Math.round(Math.random() * (temp.length -1))
-        Comb = Comb+Gap +"BREAKING:" + NewsReal.Headlines[temp[R]];   
+        Comb = Comb+Gap +"BREAKING: " + NewsReal.Headlines[temp[R]];   
         temp.splice(R,1); 
     }
     document.getElementById("NewsReal").textContent = Comb;
@@ -515,6 +541,8 @@ function buyFactory(position, factoryPreset){
     factories.makePresetFactory(factoryPreset);
     display.postMessage([7, position, "factory" + factoryPreset]);
     
+    boughtFactories[position] = "factory" + factoryPreset;
+
     SellectedFactory =  (factories.length -1);
     SellectedFactoryPos = position;
     UpdateUI();
@@ -527,6 +555,9 @@ function removeFactory(position) {
     let index = factoryLinks.indexOf(position);
     factoryLinks.splice(index, 1);
     display.postMessage([7, position, "grass" + Math.floor(Math.random() * 5 + 1)]);
+
+    boughtFactories[position] = undefined;
+
     factories.removeFactory(index);
     for(let i = 0; i < factories.upgradeData.names.length; i++) {
         upgradeNumbers[(position << 6) + i] = 0;
