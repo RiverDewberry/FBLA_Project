@@ -73,7 +73,7 @@ setInterval(gameLogicTick,500)
 
 //Game VARS
 const gameState = {
-    funds: 105000,//how much money the player has
+    funds: 10500,//how much money the player has
     Debt: -1000000,
     Goodsheld: 0,
     CostPerGood: 1,// how much each good is sold for
