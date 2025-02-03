@@ -547,7 +547,7 @@ function gameLogicTick() {
         gameState.day++;
 
 
-        let GoodsSold  = Math.round(ClampMax(PeopleWhoPurcahse(gameState.CostPerGood,EconomyVars.population * gameState.Marketablity,2),gameState.goods));
+        let GoodsSold  = Math.ceil(ClampMax(PeopleWhoPurcahse(gameState.CostPerGood,EconomyVars.population * gameState.Marketablity,2),gameState.goods));
         gameState.funds += GoodsSold  * gameState.CostPerGood;
         gameState.goods -=  GoodsSold;
         gameState.Debt = gameState.Debt * (1 + EconomyVars.DebtInfaltionRate);
@@ -613,14 +613,12 @@ function gameLogicTick() {
 
         gameState.funds -= (factories.getHourlyPay(i) * factories.getWorkers(i))//pays workers
 
-        if (factories.getFactoryType(i) == 1) {
-            gameState.goods += factoryNetProfit(i);
-            //the production from each factory is added to the current amount of goods
-        }
-        if (factories.getFactoryType(i) == 2) {
+        if (factories.getFactoryType(i) == 2 || factories.getFactoryType(i) == 10) {
             gameState.Marketablity += MarketingAdd(i);
         }
-            
+         else{
+            gameState.goods += factoryNetProfit(i);
+         }   
 
         if ((factories.getHappiness(i) < 0.5) && (Math.random() > 0.75))
             factories.setWorkers(i, factories.getWorkers(i) - 1);
