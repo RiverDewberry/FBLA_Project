@@ -244,7 +244,7 @@ function UpdateUI(){
     document.getElementById("FactoryCountText").textContent = "Factorys:"+ factories.length;
     document.getElementById("DebtDisplay").textContent = "Debt:"+ IntToPlaceValue(gameState.Debt);
     document.getElementById("GoodsDisplay").textContent = "UnSold Goods:" + IntToPlaceValue(gameState.goods);
-    document.getElementById("ProductionDisplay").textContent = "Production:" + gameState.HourlyProduction +" per hour";
+    document.getElementById("ProductionDisplay").textContent = "Production:" + gameState.HourlyProduction +"";
     if (SellectedFactory !== -1) {
         document.getElementById("FactoryName").children[0].textContent = factories.presetNames[factories.getFactoryType(SellectedFactory)];  
     }
