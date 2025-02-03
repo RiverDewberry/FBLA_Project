@@ -247,6 +247,7 @@ label{
     height: 49%;
     font-size: 120%;
     text-align: center; 
+    overflow: scroll;
 }
 .InfoImg{
     aspect-ratio: 1 / 1;
