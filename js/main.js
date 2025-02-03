@@ -87,7 +87,7 @@ const gameState = {
 const EconomyVars ={
     InflationRate: .03,
     ValueOfDollar: 1,
-    DebtInfaltionRate: .0075,//this was WAY too high
+    DebtInfaltionRate: .03,//this was WAY too high
     living: 8.5, //Cost of livving calulated form ((avg monthly cost)/(avg days in month))/(hours in day)
                                                         //(6k/30.437)/24
     MinimumWage: 7,
@@ -549,7 +549,7 @@ function gameLogicTick() {
         let GoodsSold  = Math.ceil(ClampMax(PeopleWhoPurcahse(gameState.CostPerGood,EconomyVars.population * gameState.Marketablity,2),gameState.goods));
         gameState.funds += GoodsSold  * gameState.CostPerGood;
         gameState.goods -=  GoodsSold;
-        gameState.Debt = gameState.Debt * (1 + EconomyVars.DebtInfaltionRate);
+        gameState.Debt = gameState.Debt * (1 + (EconomyVars.DebtInfaltionRate / 30));
         if (gameState.funds <= 0) {
             DisplayMesage("Bankrupcy","You lost")
         }
