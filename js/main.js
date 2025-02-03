@@ -495,7 +495,6 @@ function GetUpgradeCost(position, upgradeNum){
     }
     if ((1.15 ** (upgradeNumbers[(position * factories.upgradeData.names.length) + upgradeNum])) + "" === "NaN") {
         console.error((position << 6) + upgradeNum);
-        console.log(upgradeNumbers.length + "FUCKYOU");
         console.error("positon retuns NaN");
         return
     }
@@ -567,7 +566,7 @@ function gameLogicTick() {
 
     
     if (gameState.Debt >= 0) {
-        DisplayMesage("YOU WIN","Debt Gone !")
+        DisplayMesage("YOU WIN","Debt Gone! " + " Your score is " + Math.round(1000 * (0.99 ** gameState.day)) + " points");
     }
 
     UpdateUI();
