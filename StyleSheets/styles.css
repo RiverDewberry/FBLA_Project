@@ -247,7 +247,7 @@ label{
     height: 49%;
     font-size: 120%;
     text-align: center; 
-    overflow: scroll;
+    
 }
 .InfoImg{
     aspect-ratio: 1 / 1;
@@ -256,9 +256,9 @@ label{
     background-size:contain;
 }
 .InfoText{
-    line-height:0;
+    
     width:fit-content;
-    word-wrap: unset;
+    word-wrap:wrap;
     margin: auto;
     font-size: 150%;
     color: var(--Textcolor);
@@ -275,8 +275,8 @@ label{
     background-color: var(--DarkModeMain);
     color: var(--Textcolor);
     position: relative;
-    
     padding: 0%;
+   
 }
 #HoverText{
     white-space:pre-wrap;

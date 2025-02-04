@@ -7,12 +7,13 @@ import {Shaders} from "./Shaders.js";
 let captureX, captureY, captureW, captureH, overzoom;
 const PUICount = (3 +1)
 const VarsToChange = [10,7,8,12]
+const StatsToDisplay = [0,1,5,6,7,8,9]
 let SellectedFactory = -1;
 let SellectedFactoryPos = -1;
 let SelctedBuyType = 1;
 let indent = 0;
 
-const StatUICount = (6 +1);
+const StatUICount = (4 +1);
 function factoryAt(x, y) {
     x = Math.round(x * captureW / canvas.width + captureX);
     y = Math.round(y * captureH / canvas.height + captureY);
@@ -297,8 +298,8 @@ function UpdateUI(){
 
         for (let i = 0; i < StatUICount; i++) {
             Cur2 = document.getElementById("StatsRef " + i)
-            Cur2.children[0].children[0].textContent = factories.NamesOfData[i];
-            Cur2.children[1].children[0].textContent = factories.factoryArray.getVal(SellectedFactory,i);
+            Cur2.children[0].children[0].textContent = factories.NamesOfData[StatsToDisplay[i]];
+            Cur2.children[1].children[0].textContent = factories.factoryArray.getVal(SellectedFactory,StatsToDisplay[i]);
             
         }
         for (let i = 0; i < upgradeData.names.length; i++) {
