@@ -98,7 +98,12 @@ function loadSave(save) {
 			display.postMessage([7, i, boughtFactories[i]]);
 	}
 }
+function PlayAudio( FileName )
+{
+    let au = new Audio ("/AudioFlies/" + FileName)
+    au.play();
 
+}
 const gameState = {
     funds: 10500,//how much money the player has
     Debt: -1000000,
