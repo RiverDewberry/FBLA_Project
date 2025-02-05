@@ -8,7 +8,7 @@ export const upgradeData = {
 	//the inital cost of each upgrade
 	descriptions: [],
 	//a description of each upgrade
-	effects: [[0,10],[6,1] ],
+	effects: [[0,10,4,1],[6,1] ],
 	//the effect of each upgrade stored as arrays of 9 values, when an upgrade is applied to a factory, each value in the array that corosponds to the upgrade is added to the corosponding value in the factory data.
 	maxUpgrades: new Uint8Array([])
 }

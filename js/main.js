@@ -71,6 +71,8 @@ CreatePolicyUI(PUICount,true);
 DisplayMesage("Welcome to Factory sim","Place a factory by clicking on a space")
 setInterval(ScrollText,1)
 setInterval(gameLogicTick,500)
+document.getElementById("SaveButton").addEventListener("click",getSave);
+document.getElementById("LoadButton").addEventListener("click",DefaultLoad);
 
 //Game VARS
 
@@ -79,12 +81,20 @@ let boughtFactories = [];
 
 function getSave() {
 	const currSave = [gameState, EconomyVars, factories, boughtFactories, upgradeNumbers];
-
+    navigator.clipboard.writeText((currSave));
 	return btoa(JSON.stringify(currSave));
 }
-
-function loadSave(save) {
-	const currSave = JSON.parse(atob(save));
+function DefaultLoad(){
+    loadSave(navigator.clipboard.readText(),TransformStreamDefaultController);
+}
+function loadSave(save,IsString) {
+    let currSave;
+    if (IsString === true) {
+        currSave = JSON.parse(atob(save));
+    }
+    else{
+        currSave = save;
+    }
 
 	gameState = currSave[0];
 	EconomyVars = currSave[1];
@@ -272,10 +282,10 @@ function ScrollText(){
 }
 function UpdateUI(){
     document.getElementById("DelButon").addEventListener("click",delCurFac)
-    document.getElementById("MoneyText").textContent ="Money:$" + IntToPlaceValue(gameState.funds);
-    document.getElementById("FactoryCountText").textContent = "Factorys:"+ factories.length;
-    document.getElementById("DebtDisplay").textContent = "Debt:"+ IntToPlaceValue(gameState.Debt);
-    document.getElementById("GoodsDisplay").textContent = "UnSold Goods:" + IntToPlaceValue(gameState.goods);
+    document.getElementById("MoneyText").textContent         = "Money:$"     + IntToPlaceValue(gameState.funds);
+    document.getElementById("FactoryCountText").textContent  = "Factorys:"   + factories.length;
+    document.getElementById("DebtDisplay").textContent       = "Debt:"       + IntToPlaceValue(gameState.Debt);
+    document.getElementById("GoodsDisplay").textContent      = "Goods:"      + IntToPlaceValue(gameState.goods);
     document.getElementById("ProductionDisplay").textContent = "Production:" + gameState.HourlyProduction +"";
     if (SellectedFactory !== -1) {
         document.getElementById("FactoryName").children[0].textContent = factories.presetNames[factories.getFactoryType(SellectedFactory)];  
@@ -681,9 +691,6 @@ function PeopleWhoPurcahse (Price,MaxPeopleWhoPurchase,PrecevedValue){
 
 }
 function MarketingAdd (index){
-   
-   
-   
     return factories.getProduction(index) * HapeinesMultipire(index) * .0000001;
 }
 
