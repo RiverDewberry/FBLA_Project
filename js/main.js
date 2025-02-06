@@ -31,7 +31,7 @@ function factoryAt(x, y) {
     return -1;
 };
 
-const factoryLinks = [];
+let factoryLinks = [];
 const upgradeNumbers = new Uint8Array(factories.upgradeData.names.length << 6); // creates an array of 0s for num of factorys * 64
 //DISPLAY
 //creating and setting up canvas
@@ -80,14 +80,35 @@ let boughtFactories = [];
 //this array exists to load bought factories
 
 function getSave() {
-	const currSave = [gameState, EconomyVars, factories, boughtFactories, upgradeNumbers];
-    navigator.clipboard.writeText((currSave));
-	return btoa(JSON.stringify(currSave));
+	let factoryData = [];
+
+	let tl = factories.factoryArray.types.length;
+	let fl = factories.factoryArray.usedLength;
+
+	for(let i = 0; i < fl; i++)
+	{
+		factoryData.push([]);
+		for(let j = 0; j < tl; j++)
+		{
+			factoryData[i].push(factories.factoryArray.getVal(i, j));
+		}
+	}
+
+	const currSave = [
+		gameState,
+		EconomyVars,
+		factoryData,
+		boughtFactories,
+		upgradeNumbers,
+		factoryLinks
+	];
+    navigator.clipboard.writeText(btoa(JSON.stringify(currSave)));
 }
 function DefaultLoad(){
-    loadSave(navigator.clipboard.readText(),TransformStreamDefaultController);
+    loadSave(prompt("Please enter your save: ", ""), true);
 }
-function loadSave(save,IsString) {
+function loadSave(save,IsString) {//WHYYYYYYYYYYY
+
     let currSave;
     if (IsString === true) {
         currSave = JSON.parse(atob(save));
@@ -97,15 +118,54 @@ function loadSave(save,IsString) {
     }
 
 	gameState = currSave[0];
-	EconomyVars = currSave[1];
-	factories = currSave[2];
-	boughtFactories = currSave[3];
-	upgradeNumbers = currSave[4];
+	
+	display.postMessage([9, gameState.hour + (gameState.day * 8)]);
 
+
+	EconomyVars = currSave[1];
+	let factoryData = currSave[2];
+
+	factoryLinks = currSave[5];
+
+	let tl = factories.factoryArray.types.length;
+	let fl = factories.factoryArray.usedLength;
+
+	for(let i = 0; i < fl; i++)
+	{
+		factories.factoryArray.removeInstance(0);
+	}
+
+	for(let i = 0; i < factoryData.length; i++)
+	{
+		factories.makePresetFactory(i, 0);
+		for(let j = 0; j < factoryData[i].length; j++)
+		{
+			factories.factoryArray.setVal(i, j, factoryData[i][j]);
+		}
+	}
+
+	for(let i = 0; i < fl; i++)
+	{
+		factoryData.push([]);
+		for(let j = 0; j < tl; j++)
+		{
+			factoryData[i].push(factories.factoryArray.getVal(i, j));
+		}
+	}
+
+
+	boughtFactories = currSave[3];
+	for(let x in currSave[4])
+	{
+		upgradeNumbers[Number(x)] = currSave[4][x];
+	}
 	for(let i = 0; i < 64; i++)
 	{
-		if(boughtFactories[i] !== undefined)
+		if(typeof boughtFactories[i] === "string")
+		{
 			display.postMessage([7, i, boughtFactories[i]]);
+	
+		}
 	}
 }
 function PlayAudio( FileName )
@@ -114,7 +174,7 @@ function PlayAudio( FileName )
     au.play();
 
 }
-const gameState = {
+let gameState = {
     funds: 10500,//how much money the player has
     Debt: -1000000,
     Goodsheld: 0,
@@ -126,7 +186,7 @@ const gameState = {
     goods: 0,//the amount of goods the player has, which they can sell for money
     HourlyProduction:0 //DOOOOO NOT USE THIS FOR CALCULATIONS THIS IS FOR UI OLNLY
 }
-const EconomyVars ={
+let EconomyVars ={
     InflationRate: .03,
     ValueOfDollar: 1,
     DebtInfaltionRate: .03,//this was WAY too high
