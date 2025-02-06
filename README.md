@@ -5,6 +5,8 @@ This is a submision for the "Computer Game & Simulation Programming" event
 This repo is structured such that if it was cloned, the directory could be run in an http-server, as such index.html not being in the html directory is necessary
 
 ### files
+
+    Documentation for this project can be found in documentation.txt
     
     index.html - the home page
     makefile - the makefile
