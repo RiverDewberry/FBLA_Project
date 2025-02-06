@@ -62,15 +62,16 @@ for (let i = 1; i < 16; i++) {
     t.style.backgroundImage = "url('../sprites/factory" + (i) + ".png')";
     t.addEventListener("click",SwitchSelcted);
     t.addEventListener("mouseover",HoverText);
+    t.addEventListener("mouseout",function(){document.getElementById("HoverTextDisplay").style.display = "none";});
     t.id = "FacButton:" +i;
     t.name = i;
     document.getElementById("THING").appendChild(t);
 }
 CreatePolicyUI(PUICount,true);
 //End of set up
-DisplayMesage("Welcome to Factory sim","Place a factory by clicking on a space")
-setInterval(ScrollText,1)
-setInterval(gameLogicTick,500)
+DisplayMesage("Welcome to Factory sim","Place a factory by clicking on a space");
+setInterval(ScrollText,1);
+setInterval(gameLogicTick,500);
 document.getElementById("SaveButton").addEventListener("click",getSave);
 document.getElementById("LoadButton").addEventListener("click",DefaultLoad);
 
@@ -342,6 +343,7 @@ function SwitchSelcted(){
 function HoverText(){
     let h= document.getElementById("HoverTextDisplay");
     console.log(this.name);
+    h.style.display = "inherit";
     h.style.left = (this.offsetLeft) + "px";
     h.style.top = (this.offsetTop + (this.clientHeight * .75)) + "px";
     h.style.zIndex = "9000000"
