@@ -562,7 +562,9 @@ onmessage = (e) => {
             //console.log(FramesRenderd)
             RenderBack = true;
             drawScreen();
-
-        break;
+            break;
+	case 9:
+	    FramesRenderd = e.data[1];
+	    break;
     }
 }

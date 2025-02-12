@@ -1,0 +1,138 @@
+Documentation: 
+main.js:
+
+factoryAt(x, y):
+Determines which factory is located at the given (x, y) coordinates on the canvas. Adjusts the coordinates based on the capture dimensions and iterates through a grid to find the closest factory position. Returns the factory's index if found within a certain threshold, otherwise returns -1.
+
+canvasSetup():
+Sets up the canvas for rendering. Initializes the canvas and its context, and sets up the worker for handling display rendering.
+
+NewsRealSetUp():
+Sets up the news reel display. Likely initializes and configures the news reel component. 
+
+CreateUpgradeUI(index, name, numeral, cost):
+Creates and sets up the UI elements for displaying upgrade options. Takes the index, name, numeral representation, and cost of the upgrade as parameters.
+
+CreateStatUI(name, value, index): 
+Creates and sets up the UI elements for displaying various statistics. Takes the name, value, and index of the statistic as parameters.
+
+CreatePolicyUI(index, flag): 
+Creates and sets up the UI elements for displaying policy options. Takes the index and a boolean flag as parameters.
+
+IntToRomanNumeral(num):
+Converts an integer to its Roman numeral representation. Takes an integer as a parameter and returns its Roman numeral string.
+
+IntToPlaceValue(num):
+Converts an integer to its place value representation. Takes an integer as a parameter and returns its place value string. where all of the data is accumulated and used in many calculations and in creating and updating the UI. the main function is game update tick witch runs ever 500ms and calculates all the relevant values for each building and things like money
+
+canvasSetup():
+Sets up the canvas for rendering.
+Initializes the canvas dimensions to match the window's inner width and height.
+Gets the canvas context for bitmap rendering.
+Sends a message to the display worker to initialize it with the canvas dimensions.
+NewsRealSetUp():
+Sets up the news reel display.
+Initializes and configures the news reel component by creating a new instance of NewsReal and calling its init method.
+
+CreateUpgradeUI(index, name, numeral, cost):
+Creates and sets up the UI elements for displaying upgrade options.
+Takes the index, name, numeral representation, and cost of the upgrade as parameters.
+Creates a new div element, sets its class to "upgrade", and populates it with the upgrade's name, numeral, and cost.
+Appends the created element to the UpgradeContainer element in the DOM.
+
+CreateStatUI(name, value, index):
+Creates and sets up the UI elements for displaying various statistics.
+Takes the name, value, and index of the statistic as parameters.
+Creates a new div element, sets its class to "stat", and populates it with the statistic's name and value.
+Appends the created element to the StatContainer element in the DOM.
+
+CreatePolicyUI(index, flag):
+Creates and sets up the UI elements for displaying policy options.
+Takes the index and a boolean flag as parameters.
+Creates a new div element, sets its class to "policy", and populates it with the policy's index and flag.
+Appends the created element to the PolicyContainer element in the DOM.
+
+IntToRomanNumeral(num):
+Converts an integer to its Roman numeral representation.
+Takes an integer as a parameter and returns its Roman numeral string.
+Uses arrays of Roman numeral symbols and their corresponding values to build the Roman numeral string.
+
+IntToPlaceValue(num):
+Converts an integer to its place value representation.
+Takes an integer as a parameter and returns its place value string.
+Uses the toLocaleString method to format the number with commas as thousands separators
+
+sendSpriteBitmaps():
+This function is called each time an image is loaded.
+Increments the loadedNum counter.
+If all images are loaded (loadeNum equals the length of srcs), it creates image bitmaps for each loaded image.
+Uses Promise.all to wait for all image bitmaps to be created.
+Sends a message to the display worker with the sprite data and another message to start the display process.
+
+UpdateUI():
+This function updates the user interface with the current game state.
+It is called to refresh the UI elements to reflect the latest game data.
+The specific implementation details are not shown in the provided code, but it likely updates various UI elements with the current values from gameState and EconomyVars.
+
+SwitchSelcted():
+This function switches the selected factory type. It changes the border style of the previously selected button to black. Updates SelctedBuyType to the new selected type. Changes the border style of the newly selected button to red.
+
+HoverText():
+This function displays hover text for a factory button. It positions the hover text element near the button. Updates the hover text content with the factory's name, description, and cost.
+
+PayDebts():
+This function pays off the player's debts using their available funds. It adds the player's funds to their debt and sets the funds to zero.
+
+DisplayMesage(tital, subtital):
+This function displays a message with a title and subtitle. It makes the message display element visible. Updates the title and subtitle text content. Adds an event listener to the close button to hide the message display.
+
+HideDisp():
+This function hides the message display element. It sets the display style of the message display element to "none".
+
+UpdatePolicyUI(index, name, value, isEditable):
+This function updates the policy UI elements. It takes the index, name, value, and a boolean indicating if the policy is editable. Updates the policy UI element with the provided name and value. If the policy is editable, it makes the UI element interactive.
+
+GetUpgradeCost(factoryIndex, upgradeIndex):
+This function calculates the cost of an upgrade for a specific factory. It takes the factory index and upgrade index as parameters. Returns the calculated upgrade cost based on the factory and upgrade data.
+
+BULLLLL():
+This function handles the click event for an upgrade button. It performs the necessary actions to apply the upgrade to the selected factory. 
+IntToRomanNumeral(num):
+This function converts an integer to its Roman numeral representation. It takes an integer as a parameter and returns its Roman numeral string. Uses arrays of Roman numeral symbols and their corresponding values to build the Roman numeral string.
+
+IntToPlaceValue(num):
+This function converts an integer to its place value representation. It takes an integer as a parameter and returns its place value string. Uses the toLocaleString method to format the number with commas as thousands separators.
+
+display.js:
+Display.js contains the code to generate frames for the canvas. It runs as a web worker so that the process does not cause game logic to be delayed. 
+
+Display.js has three main functions: first it creates the grid and places the factories at the positions that are passed in. It also creates a procedurally generated sky background based on the time of day and cloud position. And then there is a color filter passed over the top of the image.
+
+factory.js:
+
+This file consists of an object that stores the data about the factories in the game, including the information about the factory composite type, the factory composite array itself, the names of each factory type, the description of each factory type, and their respective costs.
+
+This file also contains the methods needed to get and set values in the factory array, as well as methods to get the amount of factories, and methods to create and remove factories.
+
+compositeArray.js:
+
+This file consists of a class used to store an array of values of mixed types in an array of raw bytes, this exists in the first place because javascript uses hash maps for their ‘array’s. 
+
+The constructor for this class takes 2 parameters, the first one is an array of numbers that represent the data types that make up a larger composite type, and the second parameter is the maximum length of the array. The constructor allocates the needed amount of memory for the array using an arrayBuffer.
+
+The usedLength and arrayLength methods return the maximum length of the array, and the length of the array that is used. 
+
+The types method returns the types that make up the composite array.
+
+The addInstance method adds an instance of the composite type to the array, and the removeInstance method removes an instance from the array.
+
+The methods setVal and getVal set and get values from the array at specific locations.
+
+upgrades.js:
+Stores data about the upgrades available for each factory, including their names, descriptions, costs, max upgrade levels, and effects.
+
+
+
+
+
+
